@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>医疗器械管理系统菜单测试</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .result { margin: 20px 0; padding: 15px; border-radius: 5px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .warning { background-color: #fff3cd; border: 1px solid #ffeaa7; color: #856404; }
+        .info { background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        h2 { color: #333; }
+        ul { list-style-type: none; padding-left: 0; }
+        li { padding: 5px 0; }
+    </style>
+</head>
+<body>
+    <h1>医疗器械管理系统菜单测试</h1>
+    <p>测试时间: <span id="test-time"></span></p>
+    
+    <div class="result info">
+        <h2>1. 加载的JS文件</h2>
+        <div id="js-files"></div>
+    </div>
+    
+    <div class="result">
+        <h2>2. 菜单项检查</h2>
+        <div id="menu-check"></div>
+    </div>
+    
+    <div class="result">
+        <h2>3. 系统建议</h2>
+        <div id="suggestions"></div>
+    </div>
+    
+    <script>
+        // 设置测试时间
+        document.getElementById('test-time').textContent = new Date().toLocaleString('zh-CN');
+        
+        // 1. 检查加载的JS文件
+        var scripts = document.getElementsByTagName('script');
+        var loadedFiles = [];
+        for (var i = 0; i < scripts.length; i++) {
+            if (scripts[i].src && scripts[i].src.includes('app.')) {
+                loadedFiles.push(scripts[i].src);
+            }
+        }
+        
+        var jsFilesDiv = document.getElementById('js-files');
+        if (loadedFiles.length > 0) {
+            jsFilesDiv.innerHTML = '<ul>' + loadedFiles.map(f => '<li>✓ ' + f + '</li>').join('') + '</ul>';
+        } else {
+            jsFilesDiv.innerHTML = '<div class="error">未找到app.js文件</div>';
+        }
+        
+        // 2. 检查菜单项
+        var menuCheckDiv = document.getElementById('menu-check');
+        
+        // 等待页面加载完成后检查菜单
+        setTimeout(function() {
+            var menuItems = [];
+            var foundProduct = false;
+            var foundCustomer = false;
+            
+            // 尝试查找菜单元素
+            var menuElements = document.querySelectorAll('[class*="menu"], [class*="nav"], [id*="menu"], [id*="nav"]');
+            
+            if (menuElements.length > 0) {
+                menuElements.forEach(function(el) {
+                    var text = el.textContent || el.innerText;
+                    if (text.includes('产品信息')) foundProduct = true;
+                    if (text.includes('客户信息')) foundCustomer = true;
+                    if (text.trim().length > 0 && text.length < 50) {
+                        menuItems.push(text.trim());
+                    }
+                });
+            }
+            
+            // 检查结果
+            var resultHtml = '<h3>检测到的菜单项：</h3>';
+            if (menuItems.length > 0) {
+                resultHtml += '<ul>' + menuItems.map(item => '<li>' + item + '</li>').join('') + '</ul>';
+            } else {
+                resultHtml += '<div class="warning">未检测到菜单项（可能需要登录）</div>';
+            }
+            
+            resultHtml += '<h3>关键菜单检查：</h3>';
+            resultHtml += '<ul>';
+            resultHtml += '<li>' + (foundProduct ? '✅ 产品信息菜单: 存在' : '❌ 产品信息菜单: 缺失') + '</li>';
+            resultHtml += '<li>' + (foundCustomer ? '✅ 客户信息菜单: 存在' : '❌ 客户信息菜单: 缺失') + '</li>';
+            resultHtml += '</ul>';
+            
+            menuCheckDiv.innerHTML = resultHtml;
+            
+            // 3. 系统建议
+            var suggestionsDiv = document.getElementById('suggestions');
+            var suggestions = [];
+            
+            if (!foundProduct || !foundCustomer) {
+                suggestions.push('<strong>问题：</strong>产品信息或客户信息菜单缺失');
+                suggestions.push('<strong>可能原因：</strong>');
+                suggestions.push('- JS文件未正确修复');
+                suggestions.push('- 浏览器缓存问题');
+                suggestions.push('- 错误的app.js文件被加载');
+                suggestions.push('<strong>解决方案：</strong>');
+                suggestions.push('1. 清除浏览器缓存并刷新页面');
+                suggestions.push('2. 检查服务器上正确的app.js文件');
+                suggestions.push('3. 使用Perl命令修复菜单项');
+                suggestions.push('4. 重启Nginx服务');
+            } else {
+                suggestions.push('✅ 所有菜单项正常显示');
+            }
+            
+            suggestionsDiv.innerHTML = '<ul>' + suggestions.map(s => '<li>' + s + '</li>').join('') + '</ul>';
+            
+        }, 1000); // 等待1秒让页面加载
+    </script>
+    
+    <div class="result info">
+        <h2>4. 测试说明</h2>
+        <ul>
+            <li>此页面用于检测医疗器械管理系统的菜单显示问题</li>
+            <li>如果显示"产品信息菜单: 缺失"或"客户信息菜单: 缺失"，说明需要修复</li>
+            <li>修复方法：在服务器上使用Perl命令修改app.js文件</li>
+            <li>命令示例：<code>perl -i -pe 's/"生产信息"/"生产信息","产品信息","客户信息"/' app.xxxxxxx.js</code></li>
+        </ul>
+    </div>
+</body>
+</html>

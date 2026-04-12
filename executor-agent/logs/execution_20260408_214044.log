@@ -1,0 +1,34 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:40:44 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 医疗器械系统诊断 ===' && echo '时间: $(date)' && echo '' && echo '1. 检查Docker容器:' && docker ps | grep -E 'medgsp|medical' && echo '' && echo '2. 检查应用目录:' && ls -la /root/medgsp* /opt/medical* 2>/dev/null | head -10 && echo '' && echo '3. 检查服务状态:' && systemctl list-units --type=service | grep -i medical 2>/dev/null || echo '无systemctl服务'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 医疗器械系统诊断 ===' && echo '时间: $(date)' && echo '' && echo '1. 检查Docker容器:' && docker ps | grep -E 'medgsp|medical' && echo '' && echo '2. 检查应用目录:' && ls -la /root/medgsp* /opt/medical* 2>/dev/null | head -10 && echo '' && echo '3. 检查服务状态:' && systemctl list-units --type=service | grep -i medical 2>/dev/null || echo '无systemctl服务'
+=== 医疗器械系统诊断 ===
+时间: $(date)
+
+1. 检查Docker容器:
+6d4361523e1f   mysql:8.0            "docker-entrypoint.s…"   7 days ago    Up 7 days   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   mysql-medgsp
+f3429fe2876e   postgres:15          "docker-entrypoint.s…"   3 weeks ago   Up 9 days   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp              postgres-medgsp
+
+2. 检查应用目录:
+-rw-r--r-- 1 root root 11566291 Apr  3 13:03 /root/medgsp_complete_20260403_1303.tar.gz
+-rw-r--r-- 1 root root 11570292 Apr  3 13:08 /root/medgsp_final_20260403_1308.tar.gz
+-rw-r--r-- 1 root root 11566384 Apr  3 13:06 /root/medgsp_with_db_20260403_1306.tar.gz
+
+/root/medgsp_backup_20260403_1300:
+total 32
+drwxr-xr-x   4 root root 4096 Apr  3 13:08 .
+dr-xr-x---. 14 root root 4096 Apr  8 21:10 ..
+-rw-r--r--   1 root root  793 Apr  3 13:07 database_correct.sql
+-rw-r--r--   1 root root 7204 Apr  3 13:08 database_final.sql
+
+3. 检查服务状态:
+无systemctl服务
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:40:49 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214044.log

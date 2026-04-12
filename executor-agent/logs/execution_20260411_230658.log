@@ -1,0 +1,643 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 23:06:58 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 创建简化的动态菜单系统 ===' && echo '' && echo '1. 创建简化的动态菜单集成脚本:' && cat > /opt/med-gsp-system/frontend/js/dynamic-menu-integration.js << 'EOF'
+// 动态菜单集成脚本
+// 将三个核心环节串联起来：数据源 → 响应式绑定 → 权限过滤
+
+console.log('🚀 开始集成动态菜单系统...');
+
+// 第一步：导入统一菜单数据源
+import menuConfig from './menu-config.js';
+
+// 第二步：创建响应式权限存储
+const permissionStore = (function() {
+    let state = {
+        sidebarRoutes: [],
+        userRole: 'USER',
+        isLoading: false
+    };
+    
+    const listeners = [];
+    
+    function getState() {
+        return { ...state };
+    }
+    
+    function setState(newState) {
+        state = { ...state, ...newState };
+        listeners.forEach(listener => listener(state));
+        console.log('🔄 状态更新:', state);
+    }
+    
+    function subscribe(listener) {
+        listeners.push(listener);
+        return () => {
+            const index = listeners.indexOf(listener);
+            if (index > -1) listeners.splice(index, 1);
+        };
+    }
+    
+    // 权限过滤函数
+    function filterMenuByRole(menuItems, userRole) {
+        return menuItems.filter(item => {
+            if (item.roles && !item.roles.includes(userRole)) {
+                return false;
+            }
+            
+            if (item.children) {
+                item.children = filterMenuByRole(item.children, userRole);
+                if (item.children.length === 0) {
+                    return false;
+                }
+            }
+            
+            return true;
+        });
+    }
+    
+    // 获取用户角色
+    function getUserRole() {
+        try {
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                return user.role || 'USER';
+            }
+        } catch (error) {
+            console.error('获取用户角色失败:', error);
+        }
+        return 'USER';
+    }
+    
+    // 生成菜单路由
+    async function generateRoutes() {
+        setState({ isLoading: true });
+        
+        try {
+            const userRole = getUserRole();
+            const accessedRoutes = filterMenuByRole(menuConfig, userRole);
+            
+            setState({
+                sidebarRoutes: accessedRoutes,
+                userRole: userRole,
+                isLoading: false
+            });
+            
+            console.log('✅ 菜单路由生成完成');
+            console.log('👤 用户角色:', userRole);
+            console.log('📋 可用菜单项:', accessedRoutes.length);
+            
+            return accessedRoutes;
+        } catch (error) {
+            console.error('❌ 生成菜单路由失败:', error);
+            const defaultRoutes = filterMenuByRole(menuConfig, 'USER');
+            setState({
+                sidebarRoutes: defaultRoutes,
+                isLoading: false
+            });
+            return defaultRoutes;
+        }
+    }
+    
+    // 更新用户角色
+    async function updateUserRole(role) {
+        console.log('🔄 更新用户角色为:', role);
+        setState({ userRole: role });
+        return generateRoutes();
+    }
+    
+    // 刷新菜单
+    async function refreshMenu() {
+        console.log('🔄 刷新菜单...');
+        return generateRoutes();
+    }
+    
+    return {
+        getState,
+        setState,
+        subscribe,
+        generateRoutes,
+        updateUserRole,
+        refreshMenu
+    };
+})();
+
+// 第三步：创建动态菜单渲染器
+const dynamicMenuRenderer = (function() {
+    // 渲染菜单项的HTML
+    function renderMenuItem(item, isCollapse = false) {
+        if (item.children && item.children.length > 0) {
+            // 渲染子菜单
+            return `
+                <el-sub-menu index=${item.path} key=${item.path}>
+                    <template #title>
+                        <el-icon><${item.icon} /></el-icon>
+                        <span>${!isCollapse ? item.title : ''}</span>
+                    </template>
+                    ${item.children.map(child => renderMenuItem(child, isCollapse)).join('')}
+                </el-sub-menu>
+            `;
+        } else {
+            // 渲染菜单项
+            return `
+                <el-menu-item index=${item.path} key=${item.path}>
+                    <el-icon><${item.icon} /></el-icon>
+                    <span>${!isCollapse ? item.title : ''}</span>
+                </el-menu-item>
+            `;
+        }
+    }
+    
+    // 渲染整个菜单
+    function renderMenu(menuRoutes, currentPath = '/', isCollapse = false) {
+        if (!menuRoutes || menuRoutes.length === 0) {
+            return `
+                <div class=menu-empty>
+                    <el-icon><el-icon-warning /></el-icon>
+                    <span>暂无可用菜单</span>
+                </div>
+            `;
+        }
+        
+        return `
+            <el-menu
+                default-active=${currentPath}
+                class=sidebar-menu
+                :collapse=${isCollapse}
+                :collapse-transition=false
+                router
+            >
+                ${menuRoutes.map(item => renderMenuItem(item, isCollapse)).join('')}
+            </el-menu>
+        `;
+    }
+    
+    // 替换现有硬编码菜单
+    function replaceHardcodedMenu() {
+        console.log('🔧 开始替换硬编码菜单...');
+        
+        // 获取当前路由路径
+        const currentPath = window.location.pathname;
+        
+        // 获取菜单数据
+        const state = permissionStore.getState();
+        
+        // 渲染动态菜单
+        const menuHtml = renderMenu(state.sidebarRoutes, currentPath, false);
+        
+        // 查找现有的菜单容器
+        const menuContainer = document.querySelector('.sidebar-menu');
+        if (menuContainer) {
+            console.log('✅ 找到现有菜单容器，准备替换...');
+            
+            // 创建新的菜单容器
+            const newMenuContainer = document.createElement('div');
+            newMenuContainer.innerHTML = menuHtml;
+            newMenuContainer.className = 'dynamic-sidebar-menu';
+            
+            // 替换现有菜单
+            menuContainer.parentNode.replaceChild(newMenuContainer.firstElementChild, menuContainer);
+            
+            console.log('✅ 硬编码菜单已替换为动态菜单');
+            
+            // 重新初始化Vue组件（如果需要）
+            if (window.Vue && window.ElementPlus) {
+                setTimeout(() => {
+                    console.log('🔄 重新初始化Vue组件...');
+                    // 这里可以添加Vue组件重新初始化的逻辑
+                }, 100);
+            }
+        } else {
+            console.log('⚠️ 未找到现有菜单容器，创建新的...');
+            
+            // 查找侧边栏容器
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                // 查找logo容器后的位置
+                const logoContainer = sidebar.querySelector('.logo-container');
+                if (logoContainer) {
+                    const menuDiv = document.createElement('div');
+                    menuDiv.innerHTML = menuHtml;
+                    menuDiv.className = 'dynamic-sidebar-menu';
+                    
+                    // 插入到logo容器后面
+                    logoContainer.parentNode.insertBefore(menuDiv.firstElementChild, logoContainer.nextSibling);
+                    console.log('✅ 动态菜单已插入到侧边栏');
+                }
+            }
+        }
+    }
+    
+    // 监听菜单变化并自动更新
+    function setupAutoUpdate() {
+        // 订阅权限存储变化
+        permissionStore.subscribe((state) => {
+            console.log('🔄 菜单数据变化，自动更新...');
+            replaceHardcodedMenu();
+        });
+        
+        // 监听路由变化
+        if (window.Vue && window.VueRouter) {
+            const router = window.VueRouter.default || window.VueRouter;
+            router.afterEach((to) => {
+                console.log('🔄 路由变化到:', to.path);
+                replaceHardcodedMenu();
+            });
+        }
+        
+        // 监听用户登录状态变化
+        const originalSetItem = localStorage.setItem;
+        localStorage.setItem = function(key, value) {
+            originalSetItem.apply(this, arguments);
+            if (key === 'user') {
+                console.log('👤 用户信息变化，刷新菜单...');
+                permissionStore.refreshMenu();
+            }
+        };
+    }
+    
+    return {
+        renderMenu,
+        replaceHardcodedMenu,
+        setupAutoUpdate
+    };
+})();
+
+// 主初始化函数
+async function initDynamicMenuSystem() {
+    console.log('🚀 初始化动态菜单系统...');
+    
+    try {
+        // 1. 生成初始菜单路由
+        await permissionStore.generateRoutes();
+        
+        // 2. 替换硬编码菜单
+        dynamicMenuRenderer.replaceHardcodedMenu();
+        
+        // 3. 设置自动更新
+        dynamicMenuRenderer.setupAutoUpdate();
+        
+        console.log('✅ 动态菜单系统初始化完成');
+        
+        // 将系统挂载到全局
+        window.DynamicMenuSystem = {
+            permissionStore,
+            dynamicMenuRenderer,
+            version: '1.0.0',
+            initTime: new Date().toISOString()
+        };
+        
+        return window.DynamicMenuSystem;
+    } catch (error) {
+        console.error('❌ 动态菜单系统初始化失败:', error);
+        return null;
+    }
+}
+
+// 自动初始化
+if (typeof window !== 'undefined') {
+    // 等待页面加载完成
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => initDynamicMenuSystem(), 500);
+        });
+    } else {
+        setTimeout(() => initDynamicMenuSystem(), 500);
+    }
+}
+
+// 导出API
+export default {
+    initDynamicMenuSystem,
+    permissionStore,
+    dynamicMenuRenderer
+};
+EOF
+echo '✅ 动态菜单集成脚本已创建: /opt/med-gsp-system/frontend/js/dynamic-menu-integration.js'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 创建简化的动态菜单系统 ===' && echo '' && echo '1. 创建简化的动态菜单集成脚本:' && cat > /opt/med-gsp-system/frontend/js/dynamic-menu-integration.js << 'EOF'
+// 动态菜单集成脚本
+// 将三个核心环节串联起来：数据源 → 响应式绑定 → 权限过滤
+
+console.log('🚀 开始集成动态菜单系统...');
+
+// 第一步：导入统一菜单数据源
+import menuConfig from './menu-config.js';
+
+// 第二步：创建响应式权限存储
+const permissionStore = (function() {
+    let state = {
+        sidebarRoutes: [],
+        userRole: 'USER',
+        isLoading: false
+    };
+    
+    const listeners = [];
+    
+    function getState() {
+        return { ...state };
+    }
+    
+    function setState(newState) {
+        state = { ...state, ...newState };
+        listeners.forEach(listener => listener(state));
+        console.log('🔄 状态更新:', state);
+    }
+    
+    function subscribe(listener) {
+        listeners.push(listener);
+        return () => {
+            const index = listeners.indexOf(listener);
+            if (index > -1) listeners.splice(index, 1);
+        };
+    }
+    
+    // 权限过滤函数
+    function filterMenuByRole(menuItems, userRole) {
+        return menuItems.filter(item => {
+            if (item.roles && !item.roles.includes(userRole)) {
+                return false;
+            }
+            
+            if (item.children) {
+                item.children = filterMenuByRole(item.children, userRole);
+                if (item.children.length === 0) {
+                    return false;
+                }
+            }
+            
+            return true;
+        });
+    }
+    
+    // 获取用户角色
+    function getUserRole() {
+        try {
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                return user.role || 'USER';
+            }
+        } catch (error) {
+            console.error('获取用户角色失败:', error);
+        }
+        return 'USER';
+    }
+    
+    // 生成菜单路由
+    async function generateRoutes() {
+        setState({ isLoading: true });
+        
+        try {
+            const userRole = getUserRole();
+            const accessedRoutes = filterMenuByRole(menuConfig, userRole);
+            
+            setState({
+                sidebarRoutes: accessedRoutes,
+                userRole: userRole,
+                isLoading: false
+            });
+            
+            console.log('✅ 菜单路由生成完成');
+            console.log('👤 用户角色:', userRole);
+            console.log('📋 可用菜单项:', accessedRoutes.length);
+            
+            return accessedRoutes;
+        } catch (error) {
+            console.error('❌ 生成菜单路由失败:', error);
+            const defaultRoutes = filterMenuByRole(menuConfig, 'USER');
+            setState({
+                sidebarRoutes: defaultRoutes,
+                isLoading: false
+            });
+            return defaultRoutes;
+        }
+    }
+    
+    // 更新用户角色
+    async function updateUserRole(role) {
+        console.log('🔄 更新用户角色为:', role);
+        setState({ userRole: role });
+        return generateRoutes();
+    }
+    
+    // 刷新菜单
+    async function refreshMenu() {
+        console.log('🔄 刷新菜单...');
+        return generateRoutes();
+    }
+    
+    return {
+        getState,
+        setState,
+        subscribe,
+        generateRoutes,
+        updateUserRole,
+        refreshMenu
+    };
+})();
+
+// 第三步：创建动态菜单渲染器
+const dynamicMenuRenderer = (function() {
+    // 渲染菜单项的HTML
+    function renderMenuItem(item, isCollapse = false) {
+        if (item.children && item.children.length > 0) {
+            // 渲染子菜单
+            return `
+                <el-sub-menu index=${item.path} key=${item.path}>
+                    <template #title>
+                        <el-icon><${item.icon} /></el-icon>
+                        <span>${!isCollapse ? item.title : ''}</span>
+                    </template>
+                    ${item.children.map(child => renderMenuItem(child, isCollapse)).join('')}
+                </el-sub-menu>
+            `;
+        } else {
+            // 渲染菜单项
+            return `
+                <el-menu-item index=${item.path} key=${item.path}>
+                    <el-icon><${item.icon} /></el-icon>
+                    <span>${!isCollapse ? item.title : ''}</span>
+                </el-menu-item>
+            `;
+        }
+    }
+    
+    // 渲染整个菜单
+    function renderMenu(menuRoutes, currentPath = '/', isCollapse = false) {
+        if (!menuRoutes || menuRoutes.length === 0) {
+            return `
+                <div class=menu-empty>
+                    <el-icon><el-icon-warning /></el-icon>
+                    <span>暂无可用菜单</span>
+                </div>
+            `;
+        }
+        
+        return `
+            <el-menu
+                default-active=${currentPath}
+                class=sidebar-menu
+                :collapse=${isCollapse}
+                :collapse-transition=false
+                router
+            >
+                ${menuRoutes.map(item => renderMenuItem(item, isCollapse)).join('')}
+            </el-menu>
+        `;
+    }
+    
+    // 替换现有硬编码菜单
+    function replaceHardcodedMenu() {
+        console.log('🔧 开始替换硬编码菜单...');
+        
+        // 获取当前路由路径
+        const currentPath = window.location.pathname;
+        
+        // 获取菜单数据
+        const state = permissionStore.getState();
+        
+        // 渲染动态菜单
+        const menuHtml = renderMenu(state.sidebarRoutes, currentPath, false);
+        
+        // 查找现有的菜单容器
+        const menuContainer = document.querySelector('.sidebar-menu');
+        if (menuContainer) {
+            console.log('✅ 找到现有菜单容器，准备替换...');
+            
+            // 创建新的菜单容器
+            const newMenuContainer = document.createElement('div');
+            newMenuContainer.innerHTML = menuHtml;
+            newMenuContainer.className = 'dynamic-sidebar-menu';
+            
+            // 替换现有菜单
+            menuContainer.parentNode.replaceChild(newMenuContainer.firstElementChild, menuContainer);
+            
+            console.log('✅ 硬编码菜单已替换为动态菜单');
+            
+            // 重新初始化Vue组件（如果需要）
+            if (window.Vue && window.ElementPlus) {
+                setTimeout(() => {
+                    console.log('🔄 重新初始化Vue组件...');
+                    // 这里可以添加Vue组件重新初始化的逻辑
+                }, 100);
+            }
+        } else {
+            console.log('⚠️ 未找到现有菜单容器，创建新的...');
+            
+            // 查找侧边栏容器
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) {
+                // 查找logo容器后的位置
+                const logoContainer = sidebar.querySelector('.logo-container');
+                if (logoContainer) {
+                    const menuDiv = document.createElement('div');
+                    menuDiv.innerHTML = menuHtml;
+                    menuDiv.className = 'dynamic-sidebar-menu';
+                    
+                    // 插入到logo容器后面
+                    logoContainer.parentNode.insertBefore(menuDiv.firstElementChild, logoContainer.nextSibling);
+                    console.log('✅ 动态菜单已插入到侧边栏');
+                }
+            }
+        }
+    }
+    
+    // 监听菜单变化并自动更新
+    function setupAutoUpdate() {
+        // 订阅权限存储变化
+        permissionStore.subscribe((state) => {
+            console.log('🔄 菜单数据变化，自动更新...');
+            replaceHardcodedMenu();
+        });
+        
+        // 监听路由变化
+        if (window.Vue && window.VueRouter) {
+            const router = window.VueRouter.default || window.VueRouter;
+            router.afterEach((to) => {
+                console.log('🔄 路由变化到:', to.path);
+                replaceHardcodedMenu();
+            });
+        }
+        
+        // 监听用户登录状态变化
+        const originalSetItem = localStorage.setItem;
+        localStorage.setItem = function(key, value) {
+            originalSetItem.apply(this, arguments);
+            if (key === 'user') {
+                console.log('👤 用户信息变化，刷新菜单...');
+                permissionStore.refreshMenu();
+            }
+        };
+    }
+    
+    return {
+        renderMenu,
+        replaceHardcodedMenu,
+        setupAutoUpdate
+    };
+})();
+
+// 主初始化函数
+async function initDynamicMenuSystem() {
+    console.log('🚀 初始化动态菜单系统...');
+    
+    try {
+        // 1. 生成初始菜单路由
+        await permissionStore.generateRoutes();
+        
+        // 2. 替换硬编码菜单
+        dynamicMenuRenderer.replaceHardcodedMenu();
+        
+        // 3. 设置自动更新
+        dynamicMenuRenderer.setupAutoUpdate();
+        
+        console.log('✅ 动态菜单系统初始化完成');
+        
+        // 将系统挂载到全局
+        window.DynamicMenuSystem = {
+            permissionStore,
+            dynamicMenuRenderer,
+            version: '1.0.0',
+            initTime: new Date().toISOString()
+        };
+        
+        return window.DynamicMenuSystem;
+    } catch (error) {
+        console.error('❌ 动态菜单系统初始化失败:', error);
+        return null;
+    }
+}
+
+// 自动初始化
+if (typeof window !== 'undefined') {
+    // 等待页面加载完成
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => initDynamicMenuSystem(), 500);
+        });
+    } else {
+        setTimeout(() => initDynamicMenuSystem(), 500);
+    }
+}
+
+// 导出API
+export default {
+    initDynamicMenuSystem,
+    permissionStore,
+    dynamicMenuRenderer
+};
+EOF
+echo '✅ 动态菜单集成脚本已创建: /opt/med-gsp-system/frontend/js/dynamic-menu-integration.js'
+=== 创建简化的动态菜单系统 ===
+
+1. 创建简化的动态菜单集成脚本:
+✅ 动态菜单集成脚本已创建: /opt/med-gsp-system/frontend/js/dynamic-menu-integration.js
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 23:07:03 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_230658.log

@@ -1,0 +1,194 @@
+=== 执行者智能体启动 ===
+时间: Fri Apr 10 13:29:26 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 检查菜单调试页面 ===' && echo '' && echo '1. 检查文件是否存在:' && ls -la /opt/med-gsp-system/frontend/debug-menu.html 2>/dev/null || echo '❌ 文件不存在' && echo '' && echo '2. 检查Nginx配置:' && grep -n 'debug-menu' /etc/nginx/conf.d/medgsp.conf && echo '' && echo '3. 创建简单的测试页面:' && cat > /opt/med-gsp-system/frontend/test-menu-simple.html << 'HTML'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>菜单配置测试</title>
+</head>
+<body>
+    <h2>菜单配置测试</h2>
+    <div id="result">
+        <h3>测试结果:</h3>
+        <div id="test">测试中...</div>
+    </div>
+    <script>
+        const test = document.getElementById('test');
+        
+        // 测试1: 检查主应用文件
+        test.innerHTML += '<p>测试1: 检查主应用文件...</p>';
+        fetch('/js/app.3b24beff.js')
+            .then(response => response.text())
+            .then(text => {
+                // 检查路由配置
+                const hasCustomerRoute = text.includes('/customer');
+                const hasProductRoute = text.includes('/product');
+                const hasCustomerMenu = text.includes('客户管理');
+                const hasProductMenu = text.includes('产品管理');
+                
+                test.innerHTML += `<p>${hasCustomerRoute ? '✅' : '❌'} 找到/customer路由配置</p>`;
+                test.innerHTML += `<p>${hasProductRoute ? '✅' : '❌'} 找到/product路由配置</p>`;
+                test.innerHTML += `<p>${hasCustomerMenu ? '✅' : '❌'} 找到客户管理菜单</p>`;
+                test.innerHTML += `<p>${hasProductMenu ? '✅' : '❌'} 找到产品管理菜单</p>`;
+                
+                // 显示路由配置片段
+                if (hasCustomerRoute) {
+                    const start = Math.max(0, text.indexOf('/customer') - 200);
+                    const end = Math.min(text.length, text.indexOf('/customer') + 300);
+                    test.innerHTML += '<p>路由配置片段:</p>';
+                    test.innerHTML += `<pre style="background:#f5f5f5;padding:10px;overflow:auto;">${text.substring(start, end)}</pre>`;
+                }
+            })
+            .catch(err => {
+                test.innerHTML += '<p style="color:red;">❌ 无法读取主应用文件: ' + err.message + '</p>';
+            });
+        
+        // 测试2: 测试路由访问
+        setTimeout(() => {
+            test.innerHTML += '<p>测试2: 测试路由访问...</p>';
+            fetch('/customer')
+                .then(response => {
+                    test.innerHTML += `<p>${response.ok ? '✅' : '❌'} /customer路由可访问 (状态: ${response.status})</p>`;
+                })
+                .catch(err => {
+                    test.innerHTML += '<p style="color:red;">❌ /customer路由访问失败: ' + err.message + '</p>';
+                });
+            
+            fetch('/product')
+                .then(response => {
+                    test.innerHTML += `<p>${response.ok ? '✅' : '❌'} /product路由可访问 (状态: ${response.status})</p>`;
+                })
+                .catch(err => {
+                    test.innerHTML += '<p style="color:red;">❌ /product路由访问失败: ' + err.message + '</p>';
+                });
+        }, 1000);
+        
+        // 测试3: 检查组件文件
+        setTimeout(() => {
+            test.innerHTML += '<p>测试3: 检查组件文件...</p>';
+            fetch('/js/components/customerList.js')
+                .then(response => {
+                    test.innerHTML += `<p>${response.ok ? '✅' : '❌'} 客户管理组件文件可访问 (状态: ${response.status})</p>`;
+                })
+                .catch(err => {
+                    test.innerHTML += '<p style="color:red;">❌ 客户管理组件文件访问失败: ' + err.message + '</p>';
+                });
+            
+            fetch('/js/components/productList.js')
+                .then(response => {
+                    test.innerHTML += `<p>${response.ok ? '✅' : '❌'} 产品管理组件文件可访问 (状态: ${response.status})</p>`;
+                })
+                .catch(err => {
+                    test.innerHTML += '<p style="color:red;">❌ 产品管理组件文件访问失败: ' + err.message + '</p>';
+                });
+        }, 2000);
+    </script>
+</body>
+</html>
+HTML
+echo '✅ 简单测试页面已创建: http://8.217.249.184/test-menu-simple.html'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 检查菜单调试页面 ===' && echo '' && echo '1. 检查文件是否存在:' && ls -la /opt/med-gsp-system/frontend/debug-menu.html 2>/dev/null || echo '❌ 文件不存在' && echo '' && echo '2. 检查Nginx配置:' && grep -n 'debug-menu' /etc/nginx/conf.d/medgsp.conf && echo '' && echo '3. 创建简单的测试页面:' && cat > /opt/med-gsp-system/frontend/test-menu-simple.html << 'HTML'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>菜单配置测试</title>
+</head>
+<body>
+    <h2>菜单配置测试</h2>
+    <div id="result">
+        <h3>测试结果:</h3>
+        <div id="test">测试中...</div>
+    </div>
+    <script>
+        const test = document.getElementById('test');
+        
+        // 测试1: 检查主应用文件
+        test.innerHTML += '<p>测试1: 检查主应用文件...</p>';
+        fetch('/js/app.3b24beff.js')
+            .then(response => response.text())
+            .then(text => {
+                // 检查路由配置
+                const hasCustomerRoute = text.includes('/customer');
+                const hasProductRoute = text.includes('/product');
+                const hasCustomerMenu = text.includes('客户管理');
+                const hasProductMenu = text.includes('产品管理');
+                
+                test.innerHTML += `<p>${hasCustomerRoute ? '✅' : '❌'} 找到/customer路由配置</p>`;
+                test.innerHTML += `<p>${hasProductRoute ? '✅' : '❌'} 找到/product路由配置</p>`;
+                test.innerHTML += `<p>${hasCustomerMenu ? '✅' : '❌'} 找到客户管理菜单</p>`;
+                test.innerHTML += `<p>${hasProductMenu ? '✅' : '❌'} 找到产品管理菜单</p>`;
+                
+                // 显示路由配置片段
+                if (hasCustomerRoute) {
+                    const start = Math.max(0, text.indexOf('/customer') - 200);
+                    const end = Math.min(text.length, text.indexOf('/customer') + 300);
+                    test.innerHTML += '<p>路由配置片段:</p>';
+                    test.innerHTML += `<pre style="background:#f5f5f5;padding:10px;overflow:auto;">${text.substring(start, end)}</pre>`;
+                }
+            })
+            .catch(err => {
+                test.innerHTML += '<p style="color:red;">❌ 无法读取主应用文件: ' + err.message + '</p>';
+            });
+        
+        // 测试2: 测试路由访问
+        setTimeout(() => {
+            test.innerHTML += '<p>测试2: 测试路由访问...</p>';
+            fetch('/customer')
+                .then(response => {
+                    test.innerHTML += `<p>${response.ok ? '✅' : '❌'} /customer路由可访问 (状态: ${response.status})</p>`;
+                })
+                .catch(err => {
+                    test.innerHTML += '<p style="color:red;">❌ /customer路由访问失败: ' + err.message + '</p>';
+                });
+            
+            fetch('/product')
+                .then(response => {
+                    test.innerHTML += `<p>${response.ok ? '✅' : '❌'} /product路由可访问 (状态: ${response.status})</p>`;
+                })
+                .catch(err => {
+                    test.innerHTML += '<p style="color:red;">❌ /product路由访问失败: ' + err.message + '</p>';
+                });
+        }, 1000);
+        
+        // 测试3: 检查组件文件
+        setTimeout(() => {
+            test.innerHTML += '<p>测试3: 检查组件文件...</p>';
+            fetch('/js/components/customerList.js')
+                .then(response => {
+                    test.innerHTML += `<p>${response.ok ? '✅' : '❌'} 客户管理组件文件可访问 (状态: ${response.status})</p>`;
+                })
+                .catch(err => {
+                    test.innerHTML += '<p style="color:red;">❌ 客户管理组件文件访问失败: ' + err.message + '</p>';
+                });
+            
+            fetch('/js/components/productList.js')
+                .then(response => {
+                    test.innerHTML += `<p>${response.ok ? '✅' : '❌'} 产品管理组件文件可访问 (状态: ${response.status})</p>`;
+                })
+                .catch(err => {
+                    test.innerHTML += '<p style="color:red;">❌ 产品管理组件文件访问失败: ' + err.message + '</p>';
+                });
+        }, 2000);
+    </script>
+</body>
+</html>
+HTML
+echo '✅ 简单测试页面已创建: http://8.217.249.184/test-menu-simple.html'
+=== 检查菜单调试页面 ===
+
+1. 检查文件是否存在:
+❌ 文件不存在
+
+2. 检查Nginx配置:
+✅ 简单测试页面已创建: http://8.217.249.184/test-menu-simple.html
+
+=== 执行完成 ===
+完成时间: Fri Apr 10 13:29:28 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260410_132926.log

@@ -1,0 +1,28 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 23:15:35 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 检查备份中的前端源码 ===' && echo '' && echo '1. 检查备份目录:' && find /opt/med-gsp-system/medgsp_backup_20260403_1300 -name '*.vue' -o -name 'package.json' 2>/dev/null | head -10 && echo '' && echo '2. 检查前端构建产物:' && ls -la /opt/med-gsp-system/medgsp_backup_20260403_1300/web/ 2>/dev/null | head -10
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 检查备份中的前端源码 ===' && echo '' && echo '1. 检查备份目录:' && find /opt/med-gsp-system/medgsp_backup_20260403_1300 -name '*.vue' -o -name 'package.json' 2>/dev/null | head -10 && echo '' && echo '2. 检查前端构建产物:' && ls -la /opt/med-gsp-system/medgsp_backup_20260403_1300/web/ 2>/dev/null | head -10
+=== 检查备份中的前端源码 ===
+
+1. 检查备份目录:
+
+2. 检查前端构建产物:
+total 192
+drwxr-xr-x 4 root root  4096 Apr  3 13:00 .
+drwxr-xr-x 4 root root  4096 Apr  3 13:08 ..
+drwx------ 2 root root  4096 Apr  3 13:00 css
+-rw-r--r-- 1 root root  6734 Apr  3 13:00 export.html
+-rwxr-xr-x 1 root root  4286 Apr  3 13:00 favicon.ico
+-rw-r--r-- 1 root root   464 Apr  3 13:00 final-test.html
+-rw-r--r-- 1 root root   461 Apr  3 13:00 force-refresh.html
+-rwxr-xr-x 1 root root   647 Apr  3 13:00 index.html
+-rwxr-xr-x 1 root root   647 Apr  3 13:00 index.html.backup.20260401100146
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 23:15:37 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_231535.log

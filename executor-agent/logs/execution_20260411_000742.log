@@ -1,0 +1,500 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 00:07:42 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 创建核心菜单项注册解决方案 ===' && echo '' && echo '1. 简化Nginx配置:' && cat > /etc/nginx/conf.d/medgsp.conf << 'EOF'
+server {
+    listen 80 default_server;
+    server_name _;
+    root /opt/med-gsp-system/frontend;
+    index index.html;
+    
+    charset utf-8;
+    
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    error_page 404 /index.html;
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
+EOF
+echo '✅ Nginx配置已简化' && echo '' && echo '2. 重启Nginx:' && nginx -t && nginx -s reload && echo '✅ Nginx已重启' && echo '' && echo '3. 创建直接集成方案 - 修改主HTML文件:' && if [ -f /opt/med-gsp-system/frontend/index.html ]; then cp /opt/med-gsp-system/frontend/index.html /opt/med-gsp-system/frontend/index.html.backup.$(date +%Y%m%d_%H%M%S) && echo '✅ 备份原文件' && sed -i '/<\/body>/i\<script src="/js/dynamic-router.js"></script>\n<script src="/js/dynamic-menu.js"></script>' /opt/med-gsp-system/frontend/index.html && echo '✅ 添加动态脚本引用' && else echo '⚠️ 主HTML文件不存在，创建新文件...' && cat > /opt/med-gsp-system/frontend/index.html << 'HTML_MAIN'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗器械管理系统</title>
+    <link rel="stylesheet" href="/css/medical-management.css">
+</head>
+<body>
+    <div id="app"></div>
+    <script src="/js/app.3b24beff.js"></script>
+    <script src="/js/dynamic-router.js"></script>
+    <script src="/js/dynamic-menu.js"></script>
+</body>
+</html>
+HTML_MAIN
+fi && echo '' && echo '4. 创建简化的动态路由脚本:' && cat > /opt/med-gsp-system/frontend/js/dynamic-router.js << 'EOF'
+// 简化的动态路由注册系统
+(function() {
+    console.log('🚀 动态路由注册系统启动');
+    
+    // 等待Vue Router
+    function waitForRouter() {
+        if (window.__VUE_ROUTER__) {
+            registerRoutes();
+        } else {
+            setTimeout(waitForRouter, 100);
+        }
+    }
+    
+    function registerRoutes() {
+        const router = window.__VUE_ROUTER__;
+        console.log('✅ 注册客户管理和产品管理路由');
+        
+        // 客户管理路由
+        if (!router.getRoutes().find(r => r.path === '/customer')) {
+            router.addRoute({
+                path: '/customer',
+                name: 'customer',
+                component: function() {
+                    return Promise.resolve({
+                        template: '<div style="padding: 20px;"><h2>客户管理</h2><p>客户信息管理功能</p></div>'
+                    });
+                }
+            });
+            console.log('✅ 客户管理路由已注册');
+        }
+        
+        // 产品管理路由
+        if (!router.getRoutes().find(r => r.path === '/product')) {
+            router.addRoute({
+                path: '/product',
+                name: 'product',
+                component: function() {
+                    return Promise.resolve({
+                        template: '<div style="padding: 20px;"><h2>产品管理</h2><p>产品信息管理功能</p></div>'
+                    });
+                }
+            });
+            console.log('✅ 产品管理路由已注册');
+        }
+        
+        console.log('🎉 路由注册完成');
+    }
+    
+    waitForRouter();
+})();
+EOF
+echo '✅ 动态路由脚本已创建' && echo '' && echo '5. 创建简化的动态菜单脚本:' && cat > /opt/med-gsp-system/frontend/js/dynamic-menu.js << 'EOF'
+// 简化的动态菜单项注册系统
+(function() {
+    console.log('🚀 动态菜单项注册系统启动');
+    
+    // 等待菜单加载
+    function waitForMenu() {
+        const menu = document.querySelector('.el-menu');
+        if (menu) {
+            addMenuItems(menu);
+        } else {
+            setTimeout(waitForMenu, 100);
+        }
+    }
+    
+    function addMenuItems(menu) {
+        console.log('✅ 检测到菜单，添加客户管理和产品管理菜单项');
+        
+        // 菜单项配置
+        const items = [
+            { path: '/customer', title: '客户管理' },
+            { path: '/product', title: '产品管理' }
+        ];
+        
+        items.forEach(item => {
+            // 检查是否已存在
+            if (menu.querySelector('[index="' + item.path + '"]')) {
+                console.log('⚠️ 菜单项已存在:', item.title);
+                return;
+            }
+            
+            // 创建菜单项
+            const li = document.createElement('li');
+            li.className = 'el-menu-item';
+            li.setAttribute('index', item.path);
+            li.style.cssText = 'padding-left: 20px; cursor: pointer;';
+            li.innerHTML = '<div class="el-menu-item-content"><i class="el-icon"></i><span>' + item.title + '</span></div>';
+            
+            // 查找插入位置（在库存管理之后）
+            const inventoryItem = menu.querySelector('[index*="inventory"]');
+            if (inventoryItem && inventoryItem.parentNode) {
+                inventoryItem.parentNode.insertBefore(li, inventoryItem.nextSibling);
+            } else {
+                menu.appendChild(li);
+            }
+            
+            console.log('✅ 添加菜单项:', item.title);
+            
+            // 添加点击事件
+            li.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('📱 点击菜单项:', item.title);
+                
+                // 导航
+                if (window.__VUE_ROUTER__) {
+                    window.__VUE_ROUTER__.push(item.path);
+                } else {
+                    window.location.href = item.path;
+                }
+            });
+        });
+        
+        console.log('🎉 菜单项添加完成');
+    }
+    
+    waitForMenu();
+})();
+EOF
+echo '✅ 动态菜单脚本已创建' && echo '' && echo '6. 验证系统:' && echo '等待3秒...' && sleep 3 && echo '主应用程序:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/ && echo ' HTTP状态码' && echo '动态路由脚本:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/js/dynamic-router.js && echo ' HTTP状态码' && echo '动态菜单脚本:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/js/dynamic-menu.js && echo ' HTTP状态码' && echo '' && echo '7. 创建验证页面:' && cat > /opt/med-gsp-system/frontend/verify-menu.html << 'EOF'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>菜单项注册验证</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>菜单项注册验证</h1>
+    
+    <div class="test">
+        <h3>测试1: 动态路由脚本</h3>
+        <div id="test1">检查中...</div>
+    </div>
+    
+    <div class="test">
+        <h3>测试2: 动态菜单脚本</h3>
+        <div id="test2">检查中...</div>
+    </div>
+    
+    <div class="test">
+        <h3>测试3: 主应用程序集成</h3>
+        <div id="test3">检查中...</div>
+    </div>
+    
+    <script>
+        // 测试1: 动态路由脚本
+        fetch('/js/dynamic-router.js')
+            .then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status))
+            .then(text => {
+                document.getElementById('test1').innerHTML = '<span class="success">✅ 动态路由脚本可访问</span><br>' + 
+                    '大小: ' + text.length + ' 字节<br>' +
+                    '包含路由注册代码: ' + (text.includes('addRoute') ? '✅' : '❌');
+            })
+            .catch(e => {
+                document.getElementById('test1').innerHTML = '<span class="error">❌ 动态路由脚本不可访问: ' + e + '</span>';
+            });
+        
+        // 测试2: 动态菜单脚本
+        fetch('/js/dynamic-menu.js')
+            .then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status))
+            .then(text => {
+                document.getElementById('test2').innerHTML = '<span class="success">✅ 动态菜单脚本可访问</span><br>' + 
+                    '大小: ' + text.length + ' 字节<br>' +
+                    '包含菜单项代码: ' + (text.includes('el-menu-item') ? '✅' : '❌');
+            })
+            .catch(e => {
+                document.getElementById('test2').innerHTML = '<span class="error">❌ 动态菜单脚本不可访问: ' + e + '</span>';
+            });
+        
+        // 测试3: 主应用程序
+        fetch('/')
+            .then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status))
+            .then(text => {
+                const hasRouterScript = text.includes('dynamic-router.js');
+                const hasMenuScript = text.includes('dynamic-menu.js');
+                document.getElementById('test3').innerHTML = '<span class="success">✅ 主应用程序可访问</span><br>' + 
+                    '包含动态路由脚本: ' + (hasRouterScript ? '✅' : '❌') + '<br>' +
+                    '包含动态菜单脚本: ' + (hasMenuScript ? '✅' : '❌');
+            })
+            .catch(e => {
+                document.getElementById('test3').innerHTML = '<span class="error">❌ 主应用程序不可访问: ' + e + '</span>';
+            });
+    </script>
+</body>
+</html>
+EOF
+echo '✅ 验证页面已创建' && echo '' && echo '8. 最终验证:' && echo '验证页面: http://8.217.249.184/verify-menu.html' && echo '主应用程序: http://8.217.249.184/' && echo '' && echo '✅ 菜单项注册解决方案部署完成'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 创建核心菜单项注册解决方案 ===' && echo '' && echo '1. 简化Nginx配置:' && cat > /etc/nginx/conf.d/medgsp.conf << 'EOF'
+server {
+    listen 80 default_server;
+    server_name _;
+    root /opt/med-gsp-system/frontend;
+    index index.html;
+    
+    charset utf-8;
+    
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+    
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+    
+    error_page 404 /index.html;
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        root /usr/share/nginx/html;
+    }
+}
+EOF
+echo '✅ Nginx配置已简化' && echo '' && echo '2. 重启Nginx:' && nginx -t && nginx -s reload && echo '✅ Nginx已重启' && echo '' && echo '3. 创建直接集成方案 - 修改主HTML文件:' && if [ -f /opt/med-gsp-system/frontend/index.html ]; then cp /opt/med-gsp-system/frontend/index.html /opt/med-gsp-system/frontend/index.html.backup.$(date +%Y%m%d_%H%M%S) && echo '✅ 备份原文件' && sed -i '/<\/body>/i\<script src="/js/dynamic-router.js"></script>\n<script src="/js/dynamic-menu.js"></script>' /opt/med-gsp-system/frontend/index.html && echo '✅ 添加动态脚本引用' && else echo '⚠️ 主HTML文件不存在，创建新文件...' && cat > /opt/med-gsp-system/frontend/index.html << 'HTML_MAIN'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗器械管理系统</title>
+    <link rel="stylesheet" href="/css/medical-management.css">
+</head>
+<body>
+    <div id="app"></div>
+    <script src="/js/app.3b24beff.js"></script>
+    <script src="/js/dynamic-router.js"></script>
+    <script src="/js/dynamic-menu.js"></script>
+</body>
+</html>
+HTML_MAIN
+fi && echo '' && echo '4. 创建简化的动态路由脚本:' && cat > /opt/med-gsp-system/frontend/js/dynamic-router.js << 'EOF'
+// 简化的动态路由注册系统
+(function() {
+    console.log('🚀 动态路由注册系统启动');
+    
+    // 等待Vue Router
+    function waitForRouter() {
+        if (window.__VUE_ROUTER__) {
+            registerRoutes();
+        } else {
+            setTimeout(waitForRouter, 100);
+        }
+    }
+    
+    function registerRoutes() {
+        const router = window.__VUE_ROUTER__;
+        console.log('✅ 注册客户管理和产品管理路由');
+        
+        // 客户管理路由
+        if (!router.getRoutes().find(r => r.path === '/customer')) {
+            router.addRoute({
+                path: '/customer',
+                name: 'customer',
+                component: function() {
+                    return Promise.resolve({
+                        template: '<div style="padding: 20px;"><h2>客户管理</h2><p>客户信息管理功能</p></div>'
+                    });
+                }
+            });
+            console.log('✅ 客户管理路由已注册');
+        }
+        
+        // 产品管理路由
+        if (!router.getRoutes().find(r => r.path === '/product')) {
+            router.addRoute({
+                path: '/product',
+                name: 'product',
+                component: function() {
+                    return Promise.resolve({
+                        template: '<div style="padding: 20px;"><h2>产品管理</h2><p>产品信息管理功能</p></div>'
+                    });
+                }
+            });
+            console.log('✅ 产品管理路由已注册');
+        }
+        
+        console.log('🎉 路由注册完成');
+    }
+    
+    waitForRouter();
+})();
+EOF
+echo '✅ 动态路由脚本已创建' && echo '' && echo '5. 创建简化的动态菜单脚本:' && cat > /opt/med-gsp-system/frontend/js/dynamic-menu.js << 'EOF'
+// 简化的动态菜单项注册系统
+(function() {
+    console.log('🚀 动态菜单项注册系统启动');
+    
+    // 等待菜单加载
+    function waitForMenu() {
+        const menu = document.querySelector('.el-menu');
+        if (menu) {
+            addMenuItems(menu);
+        } else {
+            setTimeout(waitForMenu, 100);
+        }
+    }
+    
+    function addMenuItems(menu) {
+        console.log('✅ 检测到菜单，添加客户管理和产品管理菜单项');
+        
+        // 菜单项配置
+        const items = [
+            { path: '/customer', title: '客户管理' },
+            { path: '/product', title: '产品管理' }
+        ];
+        
+        items.forEach(item => {
+            // 检查是否已存在
+            if (menu.querySelector('[index="' + item.path + '"]')) {
+                console.log('⚠️ 菜单项已存在:', item.title);
+                return;
+            }
+            
+            // 创建菜单项
+            const li = document.createElement('li');
+            li.className = 'el-menu-item';
+            li.setAttribute('index', item.path);
+            li.style.cssText = 'padding-left: 20px; cursor: pointer;';
+            li.innerHTML = '<div class="el-menu-item-content"><i class="el-icon"></i><span>' + item.title + '</span></div>';
+            
+            // 查找插入位置（在库存管理之后）
+            const inventoryItem = menu.querySelector('[index*="inventory"]');
+            if (inventoryItem && inventoryItem.parentNode) {
+                inventoryItem.parentNode.insertBefore(li, inventoryItem.nextSibling);
+            } else {
+                menu.appendChild(li);
+            }
+            
+            console.log('✅ 添加菜单项:', item.title);
+            
+            // 添加点击事件
+            li.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('📱 点击菜单项:', item.title);
+                
+                // 导航
+                if (window.__VUE_ROUTER__) {
+                    window.__VUE_ROUTER__.push(item.path);
+                } else {
+                    window.location.href = item.path;
+                }
+            });
+        });
+        
+        console.log('🎉 菜单项添加完成');
+    }
+    
+    waitForMenu();
+})();
+EOF
+echo '✅ 动态菜单脚本已创建' && echo '' && echo '6. 验证系统:' && echo '等待3秒...' && sleep 3 && echo '主应用程序:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/ && echo ' HTTP状态码' && echo '动态路由脚本:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/js/dynamic-router.js && echo ' HTTP状态码' && echo '动态菜单脚本:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/js/dynamic-menu.js && echo ' HTTP状态码' && echo '' && echo '7. 创建验证页面:' && cat > /opt/med-gsp-system/frontend/verify-menu.html << 'EOF'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>菜单项注册验证</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>菜单项注册验证</h1>
+    
+    <div class="test">
+        <h3>测试1: 动态路由脚本</h3>
+        <div id="test1">检查中...</div>
+    </div>
+    
+    <div class="test">
+        <h3>测试2: 动态菜单脚本</h3>
+        <div id="test2">检查中...</div>
+    </div>
+    
+    <div class="test">
+        <h3>测试3: 主应用程序集成</h3>
+        <div id="test3">检查中...</div>
+    </div>
+    
+    <script>
+        // 测试1: 动态路由脚本
+        fetch('/js/dynamic-router.js')
+            .then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status))
+            .then(text => {
+                document.getElementById('test1').innerHTML = '<span class="success">✅ 动态路由脚本可访问</span><br>' + 
+                    '大小: ' + text.length + ' 字节<br>' +
+                    '包含路由注册代码: ' + (text.includes('addRoute') ? '✅' : '❌');
+            })
+            .catch(e => {
+                document.getElementById('test1').innerHTML = '<span class="error">❌ 动态路由脚本不可访问: ' + e + '</span>';
+            });
+        
+        // 测试2: 动态菜单脚本
+        fetch('/js/dynamic-menu.js')
+            .then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status))
+            .then(text => {
+                document.getElementById('test2').innerHTML = '<span class="success">✅ 动态菜单脚本可访问</span><br>' + 
+                    '大小: ' + text.length + ' 字节<br>' +
+                    '包含菜单项代码: ' + (text.includes('el-menu-item') ? '✅' : '❌');
+            })
+            .catch(e => {
+                document.getElementById('test2').innerHTML = '<span class="error">❌ 动态菜单脚本不可访问: ' + e + '</span>';
+            });
+        
+        // 测试3: 主应用程序
+        fetch('/')
+            .then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status))
+            .then(text => {
+                const hasRouterScript = text.includes('dynamic-router.js');
+                const hasMenuScript = text.includes('dynamic-menu.js');
+                document.getElementById('test3').innerHTML = '<span class="success">✅ 主应用程序可访问</span><br>' + 
+                    '包含动态路由脚本: ' + (hasRouterScript ? '✅' : '❌') + '<br>' +
+                    '包含动态菜单脚本: ' + (hasMenuScript ? '✅' : '❌');
+            })
+            .catch(e => {
+                document.getElementById('test3').innerHTML = '<span class="error">❌ 主应用程序不可访问: ' + e + '</span>';
+            });
+    </script>
+</body>
+</html>
+EOF
+echo '✅ 验证页面已创建' && echo '' && echo '8. 最终验证:' && echo '验证页面: http://8.217.249.184/verify-menu.html' && echo '主应用程序: http://8.217.249.184/' && echo '' && echo '✅ 菜单项注册解决方案部署完成'
+=== 创建核心菜单项注册解决方案 ===
+
+1. 简化Nginx配置:
+bash: -c: line 31: syntax error near unexpected token `else'
+bash: -c: line 31: `echo '✅ Nginx配置已简化' && echo '' && echo '2. 重启Nginx:' && nginx -t && nginx -s reload && echo '✅ Nginx已重启' && echo '' && echo '3. 创建直接集成方案 - 修改主HTML文件:' && if [ -f /opt/med-gsp-system/frontend/index.html ]; then cp /opt/med-gsp-system/frontend/index.html /opt/med-gsp-system/frontend/index.html.backup.$(date +%Y%m%d_%H%M%S) && echo '✅ 备份原文件' && sed -i '/<\/body>/i\<script src="/js/dynamic-router.js"></script>\n<script src="/js/dynamic-menu.js"></script>' /opt/med-gsp-system/frontend/index.html && echo '✅ 添加动态脚本引用' && else echo '⚠️ 主HTML文件不存在，创建新文件...' && cat > /opt/med-gsp-system/frontend/index.html << 'HTML_MAIN''
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 00:07:45 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_000742.log

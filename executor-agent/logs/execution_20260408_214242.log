@@ -1,0 +1,13 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:42:42 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: find /opt/med-gsp-system -name '*.jar' -type f
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: find /opt/med-gsp-system -name '*.jar' -type f
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:42:47 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214242.log

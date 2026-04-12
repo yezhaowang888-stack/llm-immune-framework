@@ -1,0 +1,33 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:41:19 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 查找医疗器械应用 ===' && echo '' && echo '1. 搜索应用文件:' && find / -type d -name '*medgsp*' 2>/dev/null | head -10 && echo '' && echo '2. 检查/opt目录:' && ls -la /opt/ 2>/dev/null | head -10 && echo '' && echo '3. 检查/home目录:' && ls -la /home/ 2>/dev/null | head -10
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 查找医疗器械应用 ===' && echo '' && echo '1. 搜索应用文件:' && find / -type d -name '*medgsp*' 2>/dev/null | head -10 && echo '' && echo '2. 检查/opt目录:' && ls -la /opt/ 2>/dev/null | head -10 && echo '' && echo '3. 检查/home目录:' && ls -la /home/ 2>/dev/null | head -10
+=== 查找医疗器械应用 ===
+
+1. 搜索应用文件:
+/opt/med-gsp-system/backend/src/main/java/com/medgsp
+/root/medgsp_backup_20260403_1300
+/root/medgsp_backup_20260403_1300/source/backend/src/main/java/com/medgsp
+
+2. 检查/opt目录:
+total 20
+drwxr-xr-x.  5 root root 4096 Mar 30 23:29 .
+dr-xr-xr-x. 21 root root 4096 Apr  1 08:30 ..
+drwx--x--x   4 root root 4096 Mar 12 11:12 containerd
+drwxrwxrwx   4 root root 4096 Mar 30 23:29 gitea
+drwxr-xr-x   7 root root 4096 Mar 30 23:35 med-gsp-system
+
+3. 检查/home目录:
+total 12
+drwxr-xr-x.  3 root  root  4096 Apr  4 21:00 .
+dr-xr-xr-x. 21 root  root  4096 Apr  1 08:30 ..
+drwx------   4 admin admin 4096 Mar 12 19:47 admin
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:41:28 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214119.log

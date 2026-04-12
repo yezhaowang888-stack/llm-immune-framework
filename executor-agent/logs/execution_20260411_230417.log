@@ -1,0 +1,457 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 23:04:17 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 创建响应式权限存储系统 ===' && echo '' && echo '1. 创建权限存储模块:' && cat > /opt/med-gsp-system/frontend/js/permission-store.js << 'EOF'
+// 响应式权限存储系统
+// 解决菜单系统与权限系统脱节问题
+
+// 导入菜单配置
+import menuItems, { filterMenuByRole, getUserRole } from './menu-config.js';
+
+// 权限存储状态
+const state = {
+    sidebarRoutes: [],      // 侧边栏菜单路由
+    userRole: 'USER',       // 当前用户角色
+    isLoading: false        // 加载状态
+};
+
+// 响应式数据更新
+const mutations = {
+    SET_SIDEBAR_ROUTES: (state, routes) => {
+        state.sidebarRoutes = routes;
+        console.log('🔄 菜单路由已更新:', routes.length, '项');
+    },
+    
+    SET_USER_ROLE: (state, role) => {
+        state.userRole = role;
+        console.log('👤 用户角色已更新:', role);
+    },
+    
+    SET_LOADING: (state, loading) => {
+        state.isLoading = loading;
+    }
+};
+
+// 异步操作
+const actions = {
+    // 生成菜单路由
+    generateRoutes({ commit, state }) {
+        return new Promise(resolve => {
+            commit('SET_LOADING', true);
+            
+            try {
+                // 获取用户角色
+                const userRole = getUserRole();
+                commit('SET_USER_ROLE', userRole);
+                
+                // 根据角色过滤菜单
+                const accessedRoutes = filterMenuByRole(menuItems, userRole);
+                
+                // 更新菜单路由
+                commit('SET_SIDEBAR_ROUTES', accessedRoutes);
+                
+                console.log('✅ 菜单路由生成完成');
+                console.log('📊 用户角色:', userRole);
+                console.log('📋 可用菜单项:', accessedRoutes.length);
+                
+                resolve(accessedRoutes);
+            } catch (error) {
+                console.error('❌ 生成菜单路由失败:', error);
+                // 返回默认菜单
+                const defaultRoutes = filterMenuByRole(menuItems, 'USER');
+                commit('SET_SIDEBAR_ROUTES', defaultRoutes);
+                resolve(defaultRoutes);
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        });
+    },
+    
+    // 更新用户角色
+    updateUserRole({ commit, dispatch }, role) {
+        commit('SET_USER_ROLE', role);
+        console.log('🔄 用户角色更新为:', role);
+        
+        // 重新生成菜单
+        return dispatch('generateRoutes');
+    },
+    
+    // 刷新菜单（权限变化时调用）
+    refreshMenu({ dispatch }) {
+        console.log('🔄 刷新菜单...');
+        return dispatch('generateRoutes');
+    }
+};
+
+// 获取状态
+const getters = {
+    // 获取侧边栏菜单（过滤隐藏项）
+    sidebarMenu: (state) => {
+        return state.sidebarRoutes.filter(route => {
+            // 这里可以添加其他过滤逻辑
+            return !route.hidden;
+        });
+    },
+    
+    // 获取用户角色
+    currentRole: (state) => state.userRole,
+    
+    // 获取加载状态
+    isLoading: (state) => state.isLoading,
+    
+    // 检查是否有特定菜单权限
+    hasMenuPermission: (state) => (menuPath) => {
+        const menu = state.sidebarRoutes.find(item => {
+            if (item.path === menuPath) return true;
+            if (item.children) {
+                return item.children.some(child => child.path === menuPath);
+            }
+            return false;
+        });
+        return !!menu;
+    }
+};
+
+// 导出权限存储
+export default {
+    namespaced: true,
+    state,
+    mutations,
+    actions,
+    getters
+};
+
+// 创建Vue响应式存储的简化版本
+export function createPermissionStore() {
+    let storeState = {
+        sidebarRoutes: [],
+        userRole: 'USER',
+        isLoading: false
+    };
+    
+    const listeners = [];
+    
+    function commit(mutation, payload) {
+        switch (mutation) {
+            case 'SET_SIDEBAR_ROUTES':
+                storeState.sidebarRoutes = payload;
+                break;
+            case 'SET_USER_ROLE':
+                storeState.userRole = payload;
+                break;
+            case 'SET_LOADING':
+                storeState.isLoading = payload;
+                break;
+        }
+        
+        // 通知所有监听器
+        listeners.forEach(listener => listener(storeState));
+        console.log('🔄 状态更新:', mutation, payload);
+    }
+    
+    async function dispatch(action, payload) {
+        console.log('🚀 执行动作:', action, payload);
+        
+        switch (action) {
+            case 'generateRoutes':
+                commit('SET_LOADING', true);
+                try {
+                    const userRole = getUserRole();
+                    commit('SET_USER_ROLE', userRole);
+                    
+                    const accessedRoutes = filterMenuByRole(menuItems, userRole);
+                    commit('SET_SIDEBAR_ROUTES', accessedRoutes);
+                    
+                    console.log('✅ 菜单生成完成:', accessedRoutes.length, '项');
+                    return accessedRoutes;
+                } catch (error) {
+                    console.error('❌ 菜单生成失败:', error);
+                    const defaultRoutes = filterMenuByRole(menuItems, 'USER');
+                    commit('SET_SIDEBAR_ROUTES', defaultRoutes);
+                    return defaultRoutes;
+                } finally {
+                    commit('SET_LOADING', false);
+                }
+                
+            case 'updateUserRole':
+                commit('SET_USER_ROLE', payload);
+                return dispatch('generateRoutes');
+                
+            case 'refreshMenu':
+                return dispatch('generateRoutes');
+        }
+    }
+    
+    function subscribe(listener) {
+        listeners.push(listener);
+        return () => {
+            const index = listeners.indexOf(listener);
+            if (index > -1) listeners.splice(index, 1);
+        };
+    }
+    
+    function getState() {
+        return { ...storeState };
+    }
+    
+    return {
+        commit,
+        dispatch,
+        subscribe,
+        getState
+    };
+}
+
+// 全局权限存储实例
+let globalPermissionStore = null;
+
+export function usePermissionStore() {
+    if (!globalPermissionStore) {
+        globalPermissionStore = createPermissionStore();
+        console.log('🔧 权限存储实例已创建');
+    }
+    return globalPermissionStore;
+}
+
+// 初始化权限系统
+export function initPermissionSystem() {
+    const store = usePermissionStore();
+    store.dispatch('generateRoutes');
+    console.log('🚀 权限系统初始化完成');
+    return store;
+}
+EOF
+echo '✅ 响应式权限存储系统已创建: /opt/med-gsp-system/frontend/js/permission-store.js'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 创建响应式权限存储系统 ===' && echo '' && echo '1. 创建权限存储模块:' && cat > /opt/med-gsp-system/frontend/js/permission-store.js << 'EOF'
+// 响应式权限存储系统
+// 解决菜单系统与权限系统脱节问题
+
+// 导入菜单配置
+import menuItems, { filterMenuByRole, getUserRole } from './menu-config.js';
+
+// 权限存储状态
+const state = {
+    sidebarRoutes: [],      // 侧边栏菜单路由
+    userRole: 'USER',       // 当前用户角色
+    isLoading: false        // 加载状态
+};
+
+// 响应式数据更新
+const mutations = {
+    SET_SIDEBAR_ROUTES: (state, routes) => {
+        state.sidebarRoutes = routes;
+        console.log('🔄 菜单路由已更新:', routes.length, '项');
+    },
+    
+    SET_USER_ROLE: (state, role) => {
+        state.userRole = role;
+        console.log('👤 用户角色已更新:', role);
+    },
+    
+    SET_LOADING: (state, loading) => {
+        state.isLoading = loading;
+    }
+};
+
+// 异步操作
+const actions = {
+    // 生成菜单路由
+    generateRoutes({ commit, state }) {
+        return new Promise(resolve => {
+            commit('SET_LOADING', true);
+            
+            try {
+                // 获取用户角色
+                const userRole = getUserRole();
+                commit('SET_USER_ROLE', userRole);
+                
+                // 根据角色过滤菜单
+                const accessedRoutes = filterMenuByRole(menuItems, userRole);
+                
+                // 更新菜单路由
+                commit('SET_SIDEBAR_ROUTES', accessedRoutes);
+                
+                console.log('✅ 菜单路由生成完成');
+                console.log('📊 用户角色:', userRole);
+                console.log('📋 可用菜单项:', accessedRoutes.length);
+                
+                resolve(accessedRoutes);
+            } catch (error) {
+                console.error('❌ 生成菜单路由失败:', error);
+                // 返回默认菜单
+                const defaultRoutes = filterMenuByRole(menuItems, 'USER');
+                commit('SET_SIDEBAR_ROUTES', defaultRoutes);
+                resolve(defaultRoutes);
+            } finally {
+                commit('SET_LOADING', false);
+            }
+        });
+    },
+    
+    // 更新用户角色
+    updateUserRole({ commit, dispatch }, role) {
+        commit('SET_USER_ROLE', role);
+        console.log('🔄 用户角色更新为:', role);
+        
+        // 重新生成菜单
+        return dispatch('generateRoutes');
+    },
+    
+    // 刷新菜单（权限变化时调用）
+    refreshMenu({ dispatch }) {
+        console.log('🔄 刷新菜单...');
+        return dispatch('generateRoutes');
+    }
+};
+
+// 获取状态
+const getters = {
+    // 获取侧边栏菜单（过滤隐藏项）
+    sidebarMenu: (state) => {
+        return state.sidebarRoutes.filter(route => {
+            // 这里可以添加其他过滤逻辑
+            return !route.hidden;
+        });
+    },
+    
+    // 获取用户角色
+    currentRole: (state) => state.userRole,
+    
+    // 获取加载状态
+    isLoading: (state) => state.isLoading,
+    
+    // 检查是否有特定菜单权限
+    hasMenuPermission: (state) => (menuPath) => {
+        const menu = state.sidebarRoutes.find(item => {
+            if (item.path === menuPath) return true;
+            if (item.children) {
+                return item.children.some(child => child.path === menuPath);
+            }
+            return false;
+        });
+        return !!menu;
+    }
+};
+
+// 导出权限存储
+export default {
+    namespaced: true,
+    state,
+    mutations,
+    actions,
+    getters
+};
+
+// 创建Vue响应式存储的简化版本
+export function createPermissionStore() {
+    let storeState = {
+        sidebarRoutes: [],
+        userRole: 'USER',
+        isLoading: false
+    };
+    
+    const listeners = [];
+    
+    function commit(mutation, payload) {
+        switch (mutation) {
+            case 'SET_SIDEBAR_ROUTES':
+                storeState.sidebarRoutes = payload;
+                break;
+            case 'SET_USER_ROLE':
+                storeState.userRole = payload;
+                break;
+            case 'SET_LOADING':
+                storeState.isLoading = payload;
+                break;
+        }
+        
+        // 通知所有监听器
+        listeners.forEach(listener => listener(storeState));
+        console.log('🔄 状态更新:', mutation, payload);
+    }
+    
+    async function dispatch(action, payload) {
+        console.log('🚀 执行动作:', action, payload);
+        
+        switch (action) {
+            case 'generateRoutes':
+                commit('SET_LOADING', true);
+                try {
+                    const userRole = getUserRole();
+                    commit('SET_USER_ROLE', userRole);
+                    
+                    const accessedRoutes = filterMenuByRole(menuItems, userRole);
+                    commit('SET_SIDEBAR_ROUTES', accessedRoutes);
+                    
+                    console.log('✅ 菜单生成完成:', accessedRoutes.length, '项');
+                    return accessedRoutes;
+                } catch (error) {
+                    console.error('❌ 菜单生成失败:', error);
+                    const defaultRoutes = filterMenuByRole(menuItems, 'USER');
+                    commit('SET_SIDEBAR_ROUTES', defaultRoutes);
+                    return defaultRoutes;
+                } finally {
+                    commit('SET_LOADING', false);
+                }
+                
+            case 'updateUserRole':
+                commit('SET_USER_ROLE', payload);
+                return dispatch('generateRoutes');
+                
+            case 'refreshMenu':
+                return dispatch('generateRoutes');
+        }
+    }
+    
+    function subscribe(listener) {
+        listeners.push(listener);
+        return () => {
+            const index = listeners.indexOf(listener);
+            if (index > -1) listeners.splice(index, 1);
+        };
+    }
+    
+    function getState() {
+        return { ...storeState };
+    }
+    
+    return {
+        commit,
+        dispatch,
+        subscribe,
+        getState
+    };
+}
+
+// 全局权限存储实例
+let globalPermissionStore = null;
+
+export function usePermissionStore() {
+    if (!globalPermissionStore) {
+        globalPermissionStore = createPermissionStore();
+        console.log('🔧 权限存储实例已创建');
+    }
+    return globalPermissionStore;
+}
+
+// 初始化权限系统
+export function initPermissionSystem() {
+    const store = usePermissionStore();
+    store.dispatch('generateRoutes');
+    console.log('🚀 权限系统初始化完成');
+    return store;
+}
+EOF
+echo '✅ 响应式权限存储系统已创建: /opt/med-gsp-system/frontend/js/permission-store.js'
+=== 创建响应式权限存储系统 ===
+
+1. 创建权限存储模块:
+✅ 响应式权限存储系统已创建: /opt/med-gsp-system/frontend/js/permission-store.js
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 23:04:21 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_230417.log

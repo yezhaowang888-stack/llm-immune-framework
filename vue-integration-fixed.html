@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗器械管理系统</title>
+    <!-- Vue.js 3 CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- 集成样式 -->
+    <link rel="stylesheet" href="/css/vue-integration-styles.css">
+    <style>
+        .app-nav {
+            background: #1e293b;
+            padding: 15px 20px;
+            display: flex;
+            gap: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link.active {
+            background: #3b82f6;
+        }
+        
+        .nav-link.products {
+            background: #059669;
+        }
+        
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .app-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .app-header h1 {
+            color: #1e40af;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .app-header p {
+            color: #64748b;
+            font-size: 16px;
+        }
+        
+        .content-area {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+        
+        .welcome-message h2 {
+            color: #1e40af;
+            margin-bottom: 20px;
+        }
+        
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-5px);
+        }
+        
+        .feature-card h3 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+        
+        .feature-card p {
+            color: #64748b;
+            margin-bottom: 15px;
+        }
+        
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="app-container">
+            <div class="app-header">
+                <h1>🏥 医疗器械管理系统</h1>
+                <p>专业管理医疗器械客户和产品信息</p>
+            </div>
+            
+            <nav class="app-nav">
+                <a href="#" class="nav-link" :class="{ active: currentView === 'home' }" @click="switchView('home')">🏠 首页</a>
+                <a href="#" class="nav-link" :class="{ active: currentView === 'customers' }" @click="switchView('customers')">👥 客户管理</a>
+                <a href="#" class="nav-link products" :class="{ active: currentView === 'products' }" @click="switchView('products')">📦 产品管理</a>
+            </nav>
+            
+            <div class="content-area">
+                <!-- 首页 -->
+                <div v-if="currentView === 'home'" class="welcome-message">
+                    <h2>欢迎使用医疗器械管理系统</h2>
+                    <p>这是一个专业的医疗器械行业管理系统，帮助您高效管理客户和产品信息。</p>
+                    
+                    <div class="feature-cards">
+                        <div class="feature-card">
+                            <div class="feature-icon">👥</div>
+                            <h3>客户管理</h3>
+                            <p>管理医疗器械客户信息，包括营业执照、开票信息、联系人及资质证件</p>
+                            <button class="btn btn-primary" @click="switchView('customers')">进入客户管理</button>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <div class="feature-icon">📦</div>
+                            <h3>产品管理</h3>
+                            <p>管理医疗器械产品信息，包括注册证号、库存预警、价格及供应商信息</p>
+                            <button class="btn" style="background: #059669; color: white;" @click="switchView('products')">进入产品管理</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 客户管理 -->
+                <div v-if="currentView === 'customers'">
+                    <div id="customers-component"></div>
+                </div>
+                
+                <!-- 产品管理 -->
+                <div v-if="currentView === 'products'">
+                    <div id="products-component"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 主Vue应用
+        const { createApp } = Vue;
+        
+        const app = createApp({
+            data() {
+                return {
+                    currentView: 'home'
+                };
+            },
+            methods: {
+                switchView(view) {
+                    this.currentView = view;
+                    console.log('切换到视图:', view);
+                    
+                    // 动态加载组件
+                    if (view === 'customers') {
+                        this.loadCustomersComponent();
+                    } else if (view === 'products') {
+                        this.loadProductsComponent();
+                    }
+                },
+                
+                loadCustomersComponent() {
+                    // 简单客户管理组件
+                    const customersHtml = `
+                        <div class="customers-container">
+                            <header class="customers-header">
+                                <h1>🏥 医疗器械客户全信息管理系统</h1>
+                                <p>完整管理客户营业执照、开票信息、联系人、授权人及各类资质证件</p>
+                            </header>
+                            
+                            <div class="stats-cards">
+                                <div class="stat-card">
+                                    <div class="stat-label">总客户数</div>
+                                    <div class="stat-value">3</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">资质有效</div>
+                                    <div class="stat-value" style="color: #10b981;">2</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">即将到期</div>
+                                    <div class="stat-value" style="color: #f59e0b;">0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">已过期</div>
+                                    <div class="stat-value" style="color: #ef4444;">1</div>
+                                </div>
+                            </div>
+                            
+                            <div class="toolbar">
+                                <button class="btn btn-primary" onclick="alert('新增客户功能')">➕ 新增客户</button>
+                                <button class="btn btn-success" onclick="location.reload()">🔄 刷新</button>
+                                <button class="btn" style="background: #8b5cf6; color: white;" onclick="alert('导出数据功能')">📥 导出数据</button>
+                                <input type="text" class="search-box" placeholder="搜索客户名称、统一信用代码、联系人...">
+                            </div>
+                            
+                            <div class="customers-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>客户编码</th>
+                                            <th>客户名称</th>
+                                            <th>统一信用代码</th>
+                                            <th>联系人</th>
+                                            <th>联系电话</th>
+                                            <th>资质到期</th>
+                                            <th>状态</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>CUST2026001</td>
+                                            <td>北京协和医院医疗器械有限公司</td>
+                                            <td>91110108MA01XYZ123</td>
+                                            <td>张主任</td>
+                                            <td>13800138000</td>
+                                            <td>2026-12-31</td>
+                                            <td class="status-valid">有效</td>
+                                            <td>
+                                                <button class="btn-edit" onclick="alert('编辑客户')">编辑</button>
+                                                <button class="btn-delete" onclick="alert('删除客户')">删除</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>CUST2026002</td>
+                                            <td>上海华山医疗器械集团</td>
+                                            <td>91310115MA01ABC456</td>
+                                            <td>陈经理</td>
+                                            <td>13900139001</td>
+                                            <td>2026-06-30</td>
+                                            <td class="status-valid">有效</td>
+                                            <td>
+                                                <button class="btn-edit" onclick="alert('编辑客户')">编辑</button>
+                                                <button class="btn-delete" onclick="alert('删除客户')">删除</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>CUST2026003</td>
+                                            <td>广州中山医疗设备公司</td>
+                                            <td>91440101MA59DEF789</td>
+                                            <td>王总监</td>
+                                            <td>13700137002</td>
+                                            <td>2025-12-31</td>
+                                            <td class="status-expired">已过期</td>
+                                            <td>
+                                                <button class="btn-edit" onclick="alert('编辑客户')">编辑</button>
+                                                <button class="btn-delete" onclick="alert('删除客户')">删除</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('customers-component').innerHTML = customersHtml;
+                },
+                
+                loadProductsComponent() {
+                    // 简单产品管理组件
+                    const productsHtml = `
+                        <div class="products-container">
+                            <header class="products-header">
+                                <h1>🏥 医疗器械产品信息管理系统</h1>
+                                <p>管理医疗器械产品信息、库存、价格及资质证件</p>
+                            </header>
+                            
+                            <div class="stats-cards">
+                                <div class="stat-card">
+                                    <div class="stat-label">总产品数</div>
+                                    <div class="stat-value">3</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">库存充足</div>
+                                    <div class="stat-value" style="color: #10b981;">1</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">库存预警</div>
+                                    <div class="stat-value" style="color: #f59e0b;">1</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-label">缺货产品</div>
+                                    <div class="stat-value" style="color: #ef4444;">1</div>
+                                </div>
+                            </div>
+                            
+                            <div class="toolbar">
+                                <button class="btn btn-primary" onclick="alert('新增产品功能')">➕ 新增产品</button>
+                                <button class="btn btn-success" onclick="location.reload()">🔄 刷新</button>
+                                <button class="btn" style="background: #8b5cf6; color: white;" onclick="alert('导出数据功能')">📥 导出数据</button>
+                                <input type="text" class="search-box" placeholder="搜索产品名称、型号、注册证号...">
+                            </div>
+                            
+                            <div class="products-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>产品编码</th>
+                                            <th>产品名称</th>
+                                            <th>型号</th>
+                                            <th>注册证号</th>
+                                            <th>库存数量</th>
+                                            <th>库存状态</th>
+                                            <th>销售单价</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>PROD2026001</td>
+                                            <td>一次性使用无菌注射器</td>
+                                            <td>5ml</td>
+                                            <td>国械注准20213456789</td>
+                                            <td>150 支</td>
+                                            <td class="status-instock">库存充足</td>
+                                            <td>¥2.50</td>
+                                            <td>
+                                                <button class="btn-edit" onclick="alert('编辑产品')">编辑</button>
+                                                <button class="btn-delete" onclick="alert('删除产品')">删除</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PROD2026002</td>
+                                            <td>医用外科口罩</td>
+                                            <td>三层</td>
+                                            <td>国械注准20212345678</td>
+                                            <td>25 盒</td>
+                                            <td class="status-lowstock">库存预警</td>
+                                            <td>¥15.00</td>
+                                            <td>
+                                                <button class="btn-edit" onclick="alert('编辑产品')">编辑</button>
+                                                <button class="btn-delete" onclick="alert('删除产品')">删除</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>PROD2026003</td>
+                                            <td>电子体温计</td>
+                                            <td>DT-01</td>
+                                            <td>国械注准20211234567</td>
+                                            <td>0 个</td>
+                                            <td class="status-outstock">缺货</td>
+                                            <td>¥89.00</td>
+                                            <td>
+                                                <button class="btn-edit" onclick="alert('编辑产品')">编辑</button>
+                                                <button class="btn-delete" onclick="alert('删除产品')">删除</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                    
+                    document.getElementById('products-component').innerHTML = productsHtml;
+                }
+            }
+        });
+        
+        app.mount('#app');
+    </script>
+</body>
+</html>

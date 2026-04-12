@@ -1,0 +1,41 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:46:48 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 医疗器械系统全面诊断 ===' && echo '时间: $(date)' && echo '' && echo '1. 系统基础状态:' && echo '内存: $(free -h | grep Mem)' && echo '磁盘: $(df -h / | tail -1)' && echo 'CPU: $(uptime)' && echo '' && echo '2. 容器服务状态:' && docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' | head -10 && echo '' && echo '3. Web服务状态:' && netstat -tln 2>/dev/null | grep -E ':80|:443|:8080|:3000' && echo '' && echo '4. 应用目录状态:' && du -sh /opt/med-gsp-system/* 2>/dev/null
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 医疗器械系统全面诊断 ===' && echo '时间: $(date)' && echo '' && echo '1. 系统基础状态:' && echo '内存: $(free -h | grep Mem)' && echo '磁盘: $(df -h / | tail -1)' && echo 'CPU: $(uptime)' && echo '' && echo '2. 容器服务状态:' && docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' | head -10 && echo '' && echo '3. Web服务状态:' && netstat -tln 2>/dev/null | grep -E ':80|:443|:8080|:3000' && echo '' && echo '4. 应用目录状态:' && du -sh /opt/med-gsp-system/* 2>/dev/null
+=== 医疗器械系统全面诊断 ===
+时间: $(date)
+
+1. 系统基础状态:
+内存: $(free -h | grep Mem)
+磁盘: $(df -h / | tail -1)
+CPU: $(uptime)
+
+2. 容器服务状态:
+NAMES             STATUS      PORTS
+mysql-medgsp      Up 7 days   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp
+gitea             Up 8 days   127.0.0.1:3000->3000/tcp, 127.0.0.1:2222->22/tcp
+postgres-medgsp   Up 9 days   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp
+
+3. Web服务状态:
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN     
+tcp        0      0 172.19.51.227:8081      0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:3000          0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN     
+tcp6       0      0 :::8080                 :::*                    LISTEN     
+
+4. 应用目录状态:
+60K	/opt/med-gsp-system/backend
+24K	/opt/med-gsp-system/database
+43M	/opt/med-gsp-system/frontend
+43M	/opt/med-gsp-system/medgsp_backup_20260403_1300
+4.0K	/opt/med-gsp-system/PROJECT_STATUS.md
+4.0K	/opt/med-gsp-system/scripts
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:46:55 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214648.log

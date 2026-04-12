@@ -1,0 +1,41 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 23:48:46 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 紧急诊断 ===' && echo '' && echo '时间: Sat Apr 11 23:48:46 CST 2026' && echo '' && echo '1. 检查menu-config.js第256行:' && sed -n '255,260p' /opt/med-gsp-system/frontend/js/menu-config.js && echo '' && echo '2. 检查dynamic-router.js版本:' && head -5 /opt/med-gsp-system/frontend/js/dynamic-router.js && echo '' && echo '3. 检查文件修改时间:' && ls -la /opt/med-gsp-system/frontend/js/menu-config.js /opt/med-gsp-system/frontend/js/dynamic-router.js && echo '' && echo '4. 强制修复menu-config.js:' && echo '备份:' && cp /opt/med-gsp-system/frontend/js/menu-config.js /opt/med-gsp-system/frontend/js/menu-config.js.backup.20260411_2348 && echo '✅ 备份完成' && echo '' && echo '删除第250行之后的所有内容:' && head -250 /opt/med-gsp-system/frontend/js/menu-config.js > /tmp/menu-fixed.js && mv /tmp/menu-fixed.js /opt/med-gsp-system/frontend/js/menu-config.js && echo '✅ 修复完成' && echo '' && echo '5. 验证修复:' && echo '文件行数:' && wc -l /opt/med-gsp-system/frontend/js/menu-config.js && echo '语法检查:' && node -c /opt/med-gsp-system/frontend/js/menu-config.js 2>&1
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 紧急诊断 ===' && echo '' && echo '时间: Sat Apr 11 23:48:46 CST 2026' && echo '' && echo '1. 检查menu-config.js第256行:' && sed -n '255,260p' /opt/med-gsp-system/frontend/js/menu-config.js && echo '' && echo '2. 检查dynamic-router.js版本:' && head -5 /opt/med-gsp-system/frontend/js/dynamic-router.js && echo '' && echo '3. 检查文件修改时间:' && ls -la /opt/med-gsp-system/frontend/js/menu-config.js /opt/med-gsp-system/frontend/js/dynamic-router.js && echo '' && echo '4. 强制修复menu-config.js:' && echo '备份:' && cp /opt/med-gsp-system/frontend/js/menu-config.js /opt/med-gsp-system/frontend/js/menu-config.js.backup.20260411_2348 && echo '✅ 备份完成' && echo '' && echo '删除第250行之后的所有内容:' && head -250 /opt/med-gsp-system/frontend/js/menu-config.js > /tmp/menu-fixed.js && mv /tmp/menu-fixed.js /opt/med-gsp-system/frontend/js/menu-config.js && echo '✅ 修复完成' && echo '' && echo '5. 验证修复:' && echo '文件行数:' && wc -l /opt/med-gsp-system/frontend/js/menu-config.js && echo '语法检查:' && node -c /opt/med-gsp-system/frontend/js/menu-config.js 2>&1
+=== 紧急诊断 ===
+
+时间: Sat Apr 11 23:48:46 CST 2026
+
+1. 检查menu-config.js第256行:
+
+2. 检查dynamic-router.js版本:
+console.log('🔧 动态路由注册系统启动（等待Vue Router版）');
+
+// 等待 Vue Router 初始化完成
+(function waitForRouter() {
+    // 检查各种可能的 Vue Router 实例
+
+3. 检查文件修改时间:
+-rw-r--r-- 1 root root 2410 Apr 11 23:46 /opt/med-gsp-system/frontend/js/dynamic-router.js
+-rw-r--r-- 1 root root 6930 Apr 11 23:44 /opt/med-gsp-system/frontend/js/menu-config.js
+
+4. 强制修复menu-config.js:
+备份:
+✅ 备份完成
+
+删除第250行之后的所有内容:
+✅ 修复完成
+
+5. 验证修复:
+文件行数:
+250 /opt/med-gsp-system/frontend/js/menu-config.js
+语法检查:
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 23:48:50 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_234846.log

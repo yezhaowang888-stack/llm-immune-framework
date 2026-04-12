@@ -1,0 +1,26 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 08:44:25 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 诊断JS文件加载问题 ===' && echo '' && echo '1. 检查实际加载的JS文件内容:' && ACTUAL_JS=$(curl -s http://localhost/ | grep -o 'app\.[a-f0-9]*\.js' | head -1) && echo '检查文件: ' $ACTUAL_JS && echo '' && echo '2. 查看文件前100字符:' && curl -s http://localhost/$ACTUAL_JS | head -c 100 && echo '' && echo '' && echo '3. 检查文件实际内容类型:' && curl -s -I http://localhost/$ACTUAL_JS | grep -i 'content-type' && echo '' && echo '4. 检查文件是否存在:' && ls -la /opt/med-gsp-system/frontend/js/$ACTUAL_JS 2>/dev/null
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 诊断JS文件加载问题 ===' && echo '' && echo '1. 检查实际加载的JS文件内容:' && ACTUAL_JS=$(curl -s http://localhost/ | grep -o 'app\.[a-f0-9]*\.js' | head -1) && echo '检查文件: ' $ACTUAL_JS && echo '' && echo '2. 查看文件前100字符:' && curl -s http://localhost/$ACTUAL_JS | head -c 100 && echo '' && echo '' && echo '3. 检查文件实际内容类型:' && curl -s -I http://localhost/$ACTUAL_JS | grep -i 'content-type' && echo '' && echo '4. 检查文件是否存在:' && ls -la /opt/med-gsp-system/frontend/js/$ACTUAL_JS 2>/dev/null
+=== 诊断JS文件加载问题 ===
+
+1. 检查实际加载的JS文件内容:
+检查文件:  app.ae2715d5.js
+
+2. 查看文件前100字符:
+<!doctype html><html lang=""><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content=
+
+3. 检查文件实际内容类型:
+Content-Type: text/html
+
+4. 检查文件是否存在:
+-rwxr-xr-x 1 nginx nginx 27278 Apr  8 21:44 /opt/med-gsp-system/frontend/js/app.ae2715d5.js
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 08:44:27 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_084425.log

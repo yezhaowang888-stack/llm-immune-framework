@@ -1,0 +1,21 @@
+{
+  "taskId": "REMINDER-20260401-1845",
+  "title": "菜单修复任务提醒",
+  "description": "菜单修复脚本已准备就绪，请系统维护完成后执行。修复脚本位置：/root/huimai-openclaw/tasks/fix-menu-script.sh，测试页面：test-menu-simple.html",
+  "priority": "medium",
+  "category": "reminder",
+  "status": "pending",
+  "assignedTo": "hk-engineer",
+  "createdBy": "senior-engineer",
+  "createdAt": "2026-04-01T18:45:00+08:00",
+  "dueDate": "2026-04-02T09:00:00+08:00",
+  "reminder": true,
+  "reminderTime": "2026-04-02T09:00:00+08:00",
+  "actions": [
+    "1. 执行修复脚本: ./fix-menu-script.sh",
+    "2. 验证修复效果: 访问测试页面",
+    "3. 登录系统检查菜单显示",
+    "4. 更新任务状态为完成"
+  ],
+  "notes": "系统维护完成后请优先执行此任务，菜单问题影响业务使用。"
+}

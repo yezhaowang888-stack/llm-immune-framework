@@ -1,0 +1,25 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:48:07 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 后端API测试 ===' && echo '' && echo '1. 测试本地API:' && curl -s http://localhost:8080/api/health 2>&1 | head -5 || echo '健康检查端点不存在' && echo '' && echo '2. 测试通过Nginx代理:' && curl -s http://localhost/api/health 2>&1 | head -5 || echo 'Nginx代理未配置' && echo '' && echo '3. 检查应用日志:' && find / -name '*medgsp*.log' -type f 2>/dev/null | head -3
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 后端API测试 ===' && echo '' && echo '1. 测试本地API:' && curl -s http://localhost:8080/api/health 2>&1 | head -5 || echo '健康检查端点不存在' && echo '' && echo '2. 测试通过Nginx代理:' && curl -s http://localhost/api/health 2>&1 | head -5 || echo 'Nginx代理未配置' && echo '' && echo '3. 检查应用日志:' && find / -name '*medgsp*.log' -type f 2>/dev/null | head -3
+=== 后端API测试 ===
+
+1. 测试本地API:
+{"timestamp":"2026-04-08T13:48:12.473+00:00","status":404,"error":"Not Found","path":"/api/health"}
+2. 测试通过Nginx代理:
+<html>
+<head><title>404 Not Found</title></head>
+<body>
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.28.2</center>
+
+3. 检查应用日志:
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:48:13 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214807.log

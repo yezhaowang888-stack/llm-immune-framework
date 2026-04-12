@@ -1,0 +1,28 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 23:16:37 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 系统最终稳定性验证 ===' && echo '时间: $(date)' && echo '' && echo '1. 核心功能验证:' && for page in / /device /sales /purchase /inventory /product /customer /report /system; do echo -n "${page}: "; curl -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://localhost${page} 2>/dev/null || echo '失败'; done && echo '' && echo '2. 后端API验证:' && curl -s http://localhost/api/products | jq '. | length' 2>/dev/null && echo '产品API正常，返回数据条数如上' && echo '' && echo '3. 数据库验证:' && docker ps | grep mysql && echo 'MySQL容器运行正常' && echo '' && echo '4. 清理占位页面:' && rm -f /opt/med-gsp-system/frontend/account-placeholder.html && echo '占位页面已清理'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 系统最终稳定性验证 ===' && echo '时间: $(date)' && echo '' && echo '1. 核心功能验证:' && for page in / /device /sales /purchase /inventory /product /customer /report /system; do echo -n "${page}: "; curl -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://localhost${page} 2>/dev/null || echo '失败'; done && echo '' && echo '2. 后端API验证:' && curl -s http://localhost/api/products | jq '. | length' 2>/dev/null && echo '产品API正常，返回数据条数如上' && echo '' && echo '3. 数据库验证:' && docker ps | grep mysql && echo 'MySQL容器运行正常' && echo '' && echo '4. 清理占位页面:' && rm -f /opt/med-gsp-system/frontend/account-placeholder.html && echo '占位页面已清理'
+=== 系统最终稳定性验证 ===
+时间: $(date)
+
+1. 核心功能验证:
+/: 200/device: 200/sales: 200/purchase: 200/inventory: 200/product: 200/customer: 200/report: 200/system: 200
+2. 后端API验证:
+3
+产品API正常，返回数据条数如上
+
+3. 数据库验证:
+6d4361523e1f   mysql:8.0            "docker-entrypoint.s…"   7 days ago    Up 7 days   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   mysql-medgsp
+MySQL容器运行正常
+
+4. 清理占位页面:
+占位页面已清理
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 23:16:39 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_231637.log

@@ -1,0 +1,216 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 22:55:14 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 验证真实组件是否生效 ===' && echo '' && echo '1. 检查动态路由文件内容:' && head -30 /opt/med-gsp-system/frontend/js/dynamic-router.js && echo '' && echo '---' && echo '' && echo '2. 重启Nginx确保配置生效:' && systemctl restart nginx && sleep 2 && systemctl status nginx --no-pager | head -5 && echo '' && echo '---' && echo '' && echo '3. 创建直接测试页面:' && cat > /opt/med-gsp-system/frontend/direct-test.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <title>直接功能测试</title>
+    <script>
+        function testCustomerPage() {
+            fetch('/customer')
+                .then(response => response.text())
+                .then(html => {
+                    const result = document.getElementById('customer-result');
+                    // 检查是否包含真实内容
+                    if (html.includes('客户信息管理') || html.includes('核心功能')) {
+                        result.innerHTML = '<span style="color: green;">✅ 客户页面包含真实内容</span>';
+                        result.innerHTML += '<pre style="background: #f5f5f5; padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto;">' + 
+                                          html.substring(0, 1000) + '...</pre>';
+                    } else {
+                        result.innerHTML = '<span style="color: red;">❌ 客户页面可能还是空白</span>';
+                        result.innerHTML += '<pre style="background: #f5f5f5; padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto;">' + 
+                                          html.substring(0, 500) + '...</pre>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('customer-result').innerHTML = 
+                        '<span style="color: red;">❌ 请求失败: ' + error + '</span>';
+                });
+        }
+        
+        function testProductPage() {
+            fetch('/product')
+                .then(response => response.text())
+                .then(html => {
+                    const result = document.getElementById('product-result');
+                    if (html.includes('产品信息管理') || html.includes('核心功能')) {
+                        result.innerHTML = '<span style="color: green;">✅ 产品页面包含真实内容</span>';
+                        result.innerHTML += '<pre style="background: #f5f5f5; padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto;">' + 
+                                          html.substring(0, 1000) + '...</pre>';
+                    } else {
+                        result.innerHTML = '<span style="color: red;">❌ 产品页面可能还是空白</span>';
+                        result.innerHTML += '<pre style="background: #f5f5f5; padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto;">' + 
+                                          html.substring(0, 500) + '...</pre>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('product-result').innerHTML = 
+                        '<span style="color: red;">❌ 请求失败: ' + error + '</span>';
+                });
+        }
+        
+        function checkConsole() {
+            console.log('=== 手动控制台检查 ===');
+            console.log('时间:', new Date().toLocaleString('zh-CN'));
+            console.log('动态路由系统应该输出注册成功消息');
+            document.getElementById('console-result').innerHTML = 
+                '<span style="color: blue;">🔍 请查看浏览器控制台(F12)</span>';
+        }
+    </script>
+</head>
+<body>
+    <h1>直接功能测试</h1>
+    
+    <div style="margin: 20px 0;">
+        <button onclick="testCustomerPage()">测试客户页面</button>
+        <div id="customer-result" style="margin-top: 10px;">等待测试...</div>
+    </div>
+    
+    <div style="margin: 20px 0;">
+        <button onclick="testProductPage()">测试产品页面</button>
+        <div id="product-result" style="margin-top: 10px;">等待测试...</div>
+    </div>
+    
+    <div style="margin: 20px 0;">
+        <button onclick="checkConsole()">检查控制台</button>
+        <div id="console-result" style="margin-top: 10px;">等待检查...</div>
+    </div>
+</body>
+</html>
+EOF
+echo '✅ 直接测试页面已创建: http://8.217.249.184/direct-test.html'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 验证真实组件是否生效 ===' && echo '' && echo '1. 检查动态路由文件内容:' && head -30 /opt/med-gsp-system/frontend/js/dynamic-router.js && echo '' && echo '---' && echo '' && echo '2. 重启Nginx确保配置生效:' && systemctl restart nginx && sleep 2 && systemctl status nginx --no-pager | head -5 && echo '' && echo '---' && echo '' && echo '3. 创建直接测试页面:' && cat > /opt/med-gsp-system/frontend/direct-test.html << 'EOF'
+<!DOCTYPE html>
+<html>
+<head>
+    <title>直接功能测试</title>
+    <script>
+        function testCustomerPage() {
+            fetch('/customer')
+                .then(response => response.text())
+                .then(html => {
+                    const result = document.getElementById('customer-result');
+                    // 检查是否包含真实内容
+                    if (html.includes('客户信息管理') || html.includes('核心功能')) {
+                        result.innerHTML = '<span style="color: green;">✅ 客户页面包含真实内容</span>';
+                        result.innerHTML += '<pre style="background: #f5f5f5; padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto;">' + 
+                                          html.substring(0, 1000) + '...</pre>';
+                    } else {
+                        result.innerHTML = '<span style="color: red;">❌ 客户页面可能还是空白</span>';
+                        result.innerHTML += '<pre style="background: #f5f5f5; padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto;">' + 
+                                          html.substring(0, 500) + '...</pre>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('customer-result').innerHTML = 
+                        '<span style="color: red;">❌ 请求失败: ' + error + '</span>';
+                });
+        }
+        
+        function testProductPage() {
+            fetch('/product')
+                .then(response => response.text())
+                .then(html => {
+                    const result = document.getElementById('product-result');
+                    if (html.includes('产品信息管理') || html.includes('核心功能')) {
+                        result.innerHTML = '<span style="color: green;">✅ 产品页面包含真实内容</span>';
+                        result.innerHTML += '<pre style="background: #f5f5f5; padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto;">' + 
+                                          html.substring(0, 1000) + '...</pre>';
+                    } else {
+                        result.innerHTML = '<span style="color: red;">❌ 产品页面可能还是空白</span>';
+                        result.innerHTML += '<pre style="background: #f5f5f5; padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto;">' + 
+                                          html.substring(0, 500) + '...</pre>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('product-result').innerHTML = 
+                        '<span style="color: red;">❌ 请求失败: ' + error + '</span>';
+                });
+        }
+        
+        function checkConsole() {
+            console.log('=== 手动控制台检查 ===');
+            console.log('时间:', new Date().toLocaleString('zh-CN'));
+            console.log('动态路由系统应该输出注册成功消息');
+            document.getElementById('console-result').innerHTML = 
+                '<span style="color: blue;">🔍 请查看浏览器控制台(F12)</span>';
+        }
+    </script>
+</head>
+<body>
+    <h1>直接功能测试</h1>
+    
+    <div style="margin: 20px 0;">
+        <button onclick="testCustomerPage()">测试客户页面</button>
+        <div id="customer-result" style="margin-top: 10px;">等待测试...</div>
+    </div>
+    
+    <div style="margin: 20px 0;">
+        <button onclick="testProductPage()">测试产品页面</button>
+        <div id="product-result" style="margin-top: 10px;">等待测试...</div>
+    </div>
+    
+    <div style="margin: 20px 0;">
+        <button onclick="checkConsole()">检查控制台</button>
+        <div id="console-result" style="margin-top: 10px;">等待检查...</div>
+    </div>
+</body>
+</html>
+EOF
+echo '✅ 直接测试页面已创建: http://8.217.249.184/direct-test.html'
+=== 验证真实组件是否生效 ===
+
+1. 检查动态路由文件内容:
+// 动态路由注册 - 使用真实组件
+(function() {
+    console.log('🔧 动态路由注册系统启动（真实组件版）');
+    
+    // 等待Vue Router
+    let checkCount = 0;
+    function checkRouter() {
+        if (window.__VUE_ROUTER__) {
+            registerRealRoutes();
+        } else if (checkCount < 50) {
+            checkCount++;
+            setTimeout(checkRouter, 100);
+        } else {
+            console.log('⚠️ 未检测到Vue Router');
+        }
+    }
+    
+    function registerRealRoutes() {
+        const router = window.__VUE_ROUTER__;
+        console.log('✅ 检测到Vue Router，开始注册真实路由');
+        
+        // 客户管理路由 - 使用真实组件
+        if (!routerHasRoute(router, '/customer')) {
+            router.addRoute({
+                path: '/customer',
+                name: 'customer',
+                component: () => Promise.resolve().then(() => {
+                    return {
+                        template: `
+                            <div style="padding: 20px;">
+
+---
+
+2. 重启Nginx确保配置生效:
+● nginx.service - nginx - high performance web server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sat 2026-04-11 22:57:04 CST; 2s ago
+     Docs: http://nginx.org/en/docs/
+  Process: 387113 ExecStop=/bin/sh -c /bin/kill -s TERM $(/bin/cat /run/nginx.pid) (code=exited, status=0/SUCCESS)
+
+---
+
+3. 创建直接测试页面:
+✅ 直接测试页面已创建: http://8.217.249.184/direct-test.html
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 22:57:07 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_225514.log

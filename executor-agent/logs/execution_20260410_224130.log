@@ -1,0 +1,261 @@
+=== 执行者智能体启动 ===
+时间: Fri Apr 10 22:41:30 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 紧急恢复主应用文件 ===' && echo '' && echo '1. 检查备份文件:' && ls -la /opt/med-gsp-system/frontend/js/app.3b24beff.js* && echo '' && echo '2. 检查备份文件大小:' && for f in /opt/med-gsp-system/frontend/js/app.3b24beff.js.*; do echo "$(basename $f): $(stat -c%s $f) 字节"; done && echo '' && echo '3. 恢复最新的备份文件:' && BACKUP=$(ls -t /opt/med-gsp-system/frontend/js/app.3b24beff.js.* | head -1) && echo "最新备份: $BACKUP" && cp "$BACKUP" /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '✅ 已恢复备份文件' && echo '' && echo '4. 检查恢复后的文件大小:' && ls -la /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '5. 检查文件内容:' && echo '显示前100行...' && head -100 /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '6. 检查路由配置:' && grep -n 'path:"/customer"\|path:"/product"' /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '7. 检查菜单项:' && grep -n '客户管理\|产品管理' /opt/med-gsp-system/frontend/js/app.3b24beff.js | grep -v 'meta:{title:' && echo '' && echo '8. 添加菜单项到恢复的文件:' && echo '查找库存管理菜单项...' && INVENTORY_LINE=$(grep -n '库存管理' /opt/med-gsp-system/frontend/js/app.3b24beff.js | grep -v 'meta:{title:' | head -1 | cut -d: -f1) && echo "库存管理在第 $INVENTORY_LINE 行" && echo '查找报表分析菜单项...' && REPORT_LINE=$(grep -n '报表分析' /opt/med-gsp-system/frontend/js/app.3b24beff.js | grep -v 'meta:{title:' | head -1 | cut -d: -f1) && echo "报表分析在第 $REPORT_LINE 行" && if [ -n "$INVENTORY_LINE" ] && [ -n "$REPORT_LINE" ]; then CUSTOMER_MENU='        <el-menu-item index="/customer"><el-icon><el-icon-user /></el-icon><span>客户管理</span></el-menu-item>' && PRODUCT_MENU='        <el-menu-item index="/product"><el-icon><el-icon-box /></el-icon><span>产品管理</span></el-menu-item>' && sed -i "${REPORT_LINE}i\${CUSTOMER_MENU}" /opt/med-gsp-system/frontend/js/app.3b24beff.js && sed -i "${REPORT_LINE}i\${PRODUCT_MENU}" /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '✅ 已添加客户和产品管理菜单项'; else echo '❌ 未找到菜单项位置'; fi && echo '' && echo '9. 验证修复结果:' && echo '检查客户管理菜单项...' && grep -n 'index="/customer"' /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '检查产品管理菜单项...' && grep -n 'index="/product"' /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '10. 重启Nginx:' && nginx -s reload && echo '✅ Nginx已重启' && echo '' && echo '11. 创建紧急恢复确认页面:' && cat > /opt/med-gsp-system/frontend/emergency-recovery-confirm.html << 'HTML'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>紧急恢复确认</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .critical { background: #fff0f0; padding: 15px; border-left: 4px solid #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>紧急恢复确认</h1>
+    
+    <div class="critical">
+        <h3>⚠️ 紧急恢复完成！</h3>
+        <p>主应用文件被意外清空（只有479字节），已从备份恢复。</p>
+        <p><strong>恢复内容：</strong></p>
+        <ol>
+            <li>✅ 从备份文件恢复主应用JavaScript</li>
+            <li>✅ 添加客户管理菜单项</li>
+            <li>✅ 添加产品管理菜单项</li>
+            <li>✅ 重启Nginx服务</li>
+        </ol>
+    </div>
+    
+    <div>
+        <h2>恢复验证：</h2>
+        <div id="result">检查中...</div>
+    </div>
+    
+    <div class="critical">
+        <h3>🚀 立即测试主应用：</h3>
+        <p><strong>由于文件被恢复，必须完全清除浏览器缓存！</strong></p>
+        <ol>
+            <li>按 <code>Cmd+Shift+Delete</code> (Mac) 清除所有缓存</li>
+            <li>关闭所有浏览器标签页</li>
+            <li>重新打开浏览器</li>
+            <li>点击下面链接测试主应用</li>
+        </ol>
+        <p><a href="/" target="_blank" style="font-size: 20px; font-weight: bold; color: #007bff;">🚀 点击这里测试主应用</a></p>
+    </div>
+    
+    <script>
+        const result = document.getElementById('result');
+        fetch('/js/app.3b24beff.js')
+            .then(response => response.text())
+            .then(text => {
+                // 检查文件大小
+                const size = text.length;
+                result.innerHTML += '<p>文件大小: ' + size + ' 字节</p>';
+                
+                if (size > 1000) {
+                    result.innerHTML += '<p class="success">✅ 文件大小正常</p>';
+                } else {
+                    result.innerHTML += '<p class="error">❌ 文件大小异常（太小）</p>';
+                }
+                
+                // 检查客户管理菜单项
+                if (text.includes('index="/customer"') && text.includes('客户管理')) {
+                    result.innerHTML += '<p class="success">✅ 客户管理菜单项存在</p>';
+                } else {
+                    result.innerHTML += '<p class="error">❌ 客户管理菜单项不存在</p>';
+                }
+                
+                // 检查产品管理菜单项
+                if (text.includes('index="/product"') && text.includes('产品管理')) {
+                    result.innerHTML += '<p class="success">✅ 产品管理菜单项存在</p>';
+                } else {
+                    result.innerHTML += '<p class="error">❌ 产品管理菜单项不存在</p>';
+                }
+                
+                // 检查路由配置
+                if (text.includes('path:"/customer"') && text.includes('客户管理')) {
+                    result.innerHTML += '<p class="success">✅ 客户管理路由配置存在</p>';
+                } else {
+                    result.innerHTML += '<p class="error">❌ 客户管理路由配置不存在</p>';
+                }
+                
+                if (text.includes('path:"/product"') && text.includes('产品管理')) {
+                    result.innerHTML += '<p class="success">✅ 产品管理路由配置存在</p>';
+                } else {
+                    result.innerHTML += '<p class="error">❌ 产品管理路由配置不存在</p>';
+                }
+                
+                result.innerHTML += '<p><strong>恢复验证完成，请测试主应用</strong></p>';
+            })
+            .catch(err => {
+                result.innerHTML += '<p class="error">❌ 检查失败: ' + err.message + '</p>';
+            });
+    </script>
+</body>
+</html>
+HTML
+echo '✅ 紧急恢复确认页面已创建: http://8.217.249.184/emergency-recovery-confirm.html'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 紧急恢复主应用文件 ===' && echo '' && echo '1. 检查备份文件:' && ls -la /opt/med-gsp-system/frontend/js/app.3b24beff.js* && echo '' && echo '2. 检查备份文件大小:' && for f in /opt/med-gsp-system/frontend/js/app.3b24beff.js.*; do echo "$(basename $f): $(stat -c%s $f) 字节"; done && echo '' && echo '3. 恢复最新的备份文件:' && BACKUP=$(ls -t /opt/med-gsp-system/frontend/js/app.3b24beff.js.* | head -1) && echo "最新备份: $BACKUP" && cp "$BACKUP" /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '✅ 已恢复备份文件' && echo '' && echo '4. 检查恢复后的文件大小:' && ls -la /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '5. 检查文件内容:' && echo '显示前100行...' && head -100 /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '6. 检查路由配置:' && grep -n 'path:"/customer"\|path:"/product"' /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '7. 检查菜单项:' && grep -n '客户管理\|产品管理' /opt/med-gsp-system/frontend/js/app.3b24beff.js | grep -v 'meta:{title:' && echo '' && echo '8. 添加菜单项到恢复的文件:' && echo '查找库存管理菜单项...' && INVENTORY_LINE=$(grep -n '库存管理' /opt/med-gsp-system/frontend/js/app.3b24beff.js | grep -v 'meta:{title:' | head -1 | cut -d: -f1) && echo "库存管理在第 $INVENTORY_LINE 行" && echo '查找报表分析菜单项...' && REPORT_LINE=$(grep -n '报表分析' /opt/med-gsp-system/frontend/js/app.3b24beff.js | grep -v 'meta:{title:' | head -1 | cut -d: -f1) && echo "报表分析在第 $REPORT_LINE 行" && if [ -n "$INVENTORY_LINE" ] && [ -n "$REPORT_LINE" ]; then CUSTOMER_MENU='        <el-menu-item index="/customer"><el-icon><el-icon-user /></el-icon><span>客户管理</span></el-menu-item>' && PRODUCT_MENU='        <el-menu-item index="/product"><el-icon><el-icon-box /></el-icon><span>产品管理</span></el-menu-item>' && sed -i "${REPORT_LINE}i\${CUSTOMER_MENU}" /opt/med-gsp-system/frontend/js/app.3b24beff.js && sed -i "${REPORT_LINE}i\${PRODUCT_MENU}" /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '✅ 已添加客户和产品管理菜单项'; else echo '❌ 未找到菜单项位置'; fi && echo '' && echo '9. 验证修复结果:' && echo '检查客户管理菜单项...' && grep -n 'index="/customer"' /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '检查产品管理菜单项...' && grep -n 'index="/product"' /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '10. 重启Nginx:' && nginx -s reload && echo '✅ Nginx已重启' && echo '' && echo '11. 创建紧急恢复确认页面:' && cat > /opt/med-gsp-system/frontend/emergency-recovery-confirm.html << 'HTML'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>紧急恢复确认</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .critical { background: #fff0f0; padding: 15px; border-left: 4px solid #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>紧急恢复确认</h1>
+    
+    <div class="critical">
+        <h3>⚠️ 紧急恢复完成！</h3>
+        <p>主应用文件被意外清空（只有479字节），已从备份恢复。</p>
+        <p><strong>恢复内容：</strong></p>
+        <ol>
+            <li>✅ 从备份文件恢复主应用JavaScript</li>
+            <li>✅ 添加客户管理菜单项</li>
+            <li>✅ 添加产品管理菜单项</li>
+            <li>✅ 重启Nginx服务</li>
+        </ol>
+    </div>
+    
+    <div>
+        <h2>恢复验证：</h2>
+        <div id="result">检查中...</div>
+    </div>
+    
+    <div class="critical">
+        <h3>🚀 立即测试主应用：</h3>
+        <p><strong>由于文件被恢复，必须完全清除浏览器缓存！</strong></p>
+        <ol>
+            <li>按 <code>Cmd+Shift+Delete</code> (Mac) 清除所有缓存</li>
+            <li>关闭所有浏览器标签页</li>
+            <li>重新打开浏览器</li>
+            <li>点击下面链接测试主应用</li>
+        </ol>
+        <p><a href="/" target="_blank" style="font-size: 20px; font-weight: bold; color: #007bff;">🚀 点击这里测试主应用</a></p>
+    </div>
+    
+    <script>
+        const result = document.getElementById('result');
+        fetch('/js/app.3b24beff.js')
+            .then(response => response.text())
+            .then(text => {
+                // 检查文件大小
+                const size = text.length;
+                result.innerHTML += '<p>文件大小: ' + size + ' 字节</p>';
+                
+                if (size > 1000) {
+                    result.innerHTML += '<p class="success">✅ 文件大小正常</p>';
+                } else {
+                    result.innerHTML += '<p class="error">❌ 文件大小异常（太小）</p>';
+                }
+                
+                // 检查客户管理菜单项
+                if (text.includes('index="/customer"') && text.includes('客户管理')) {
+                    result.innerHTML += '<p class="success">✅ 客户管理菜单项存在</p>';
+                } else {
+                    result.innerHTML += '<p class="error">❌ 客户管理菜单项不存在</p>';
+                }
+                
+                // 检查产品管理菜单项
+                if (text.includes('index="/product"') && text.includes('产品管理')) {
+                    result.innerHTML += '<p class="success">✅ 产品管理菜单项存在</p>';
+                } else {
+                    result.innerHTML += '<p class="error">❌ 产品管理菜单项不存在</p>';
+                }
+                
+                // 检查路由配置
+                if (text.includes('path:"/customer"') && text.includes('客户管理')) {
+                    result.innerHTML += '<p class="success">✅ 客户管理路由配置存在</p>';
+                } else {
+                    result.innerHTML += '<p class="error">❌ 客户管理路由配置不存在</p>';
+                }
+                
+                if (text.includes('path:"/product"') && text.includes('产品管理')) {
+                    result.innerHTML += '<p class="success">✅ 产品管理路由配置存在</p>';
+                } else {
+                    result.innerHTML += '<p class="error">❌ 产品管理路由配置不存在</p>';
+                }
+                
+                result.innerHTML += '<p><strong>恢复验证完成，请测试主应用</strong></p>';
+            })
+            .catch(err => {
+                result.innerHTML += '<p class="error">❌ 检查失败: ' + err.message + '</p>';
+            });
+    </script>
+</body>
+</html>
+HTML
+echo '✅ 紧急恢复确认页面已创建: http://8.217.249.184/emergency-recovery-confirm.html'
+=== 紧急恢复主应用文件 ===
+
+1. 检查备份文件:
+-rw-r--r-- 1 root  root    479 Apr 10 21:16 /opt/med-gsp-system/frontend/js/app.3b24beff.js
+-rw-r--r-- 1 nginx nginx 28110 Apr 10 16:21 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup
+-rw-r--r-- 1 nginx nginx 27692 Apr  8 21:44 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup_1774931686
+-rw-r--r-- 1 nginx nginx 27692 Apr  8 21:44 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup_1774934188
+-rw-r--r-- 1 nginx nginx 27692 Apr  8 21:44 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup.20260401070400
+-rw-r--r-- 1 nginx nginx 27692 Apr  8 21:44 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup.20260402_123930
+-rw-r--r-- 1 nginx nginx 27692 Apr  8 21:44 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup.20260402_124201
+-rw-r--r-- 1 nginx nginx 27692 Apr  8 21:44 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup.20260403_091522
+-rw-r--r-- 1 root  root  27692 Apr  9 13:55 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup.20260409_集成前
+-rw-r--r-- 1 root  root  28110 Apr 10 16:21 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup_20260410_162150
+-rw-r--r-- 1 root  root  28530 Apr 10 21:13 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup-final-menu-fix
+-rw-r--r-- 1 root  root  28550 Apr 10 21:16 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup-fix-duplicates
+-rw-r--r-- 1 root  root  28530 Apr 10 20:34 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup-import-fix
+-rw-r--r-- 1 root  root    479 Apr 10 21:36 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup-menu-render-fix
+-rw-r--r-- 1 root  root  27692 Apr  9 18:16 /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup.navigation
+-rw-r--r-- 1 nginx nginx 59834 Apr  8 21:44 /opt/med-gsp-system/frontend/js/app.3b24beff.js.map
+
+2. 检查备份文件大小:
+app.3b24beff.js.backup: 28110 字节
+app.3b24beff.js.backup_1774931686: 27692 字节
+app.3b24beff.js.backup_1774934188: 27692 字节
+app.3b24beff.js.backup.20260401070400: 27692 字节
+app.3b24beff.js.backup.20260402_123930: 27692 字节
+app.3b24beff.js.backup.20260402_124201: 27692 字节
+app.3b24beff.js.backup.20260403_091522: 27692 字节
+app.3b24beff.js.backup.20260409_集成前: 27692 字节
+app.3b24beff.js.backup_20260410_162150: 28110 字节
+app.3b24beff.js.backup-final-menu-fix: 28530 字节
+app.3b24beff.js.backup-fix-duplicates: 28550 字节
+app.3b24beff.js.backup-import-fix: 28530 字节
+app.3b24beff.js.backup-menu-render-fix: 479 字节
+app.3b24beff.js.backup.navigation: 27692 字节
+app.3b24beff.js.map: 59834 字节
+
+3. 恢复最新的备份文件:
+最新备份: /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup-menu-render-fix
+✅ 已恢复备份文件
+
+4. 检查恢复后的文件大小:
+-rw-r--r-- 1 root root 479 Apr 10 22:41 /opt/med-gsp-system/frontend/js/app.3b24beff.js
+
+5. 检查文件内容:
+显示前100行...
+        {path:"/product",component:X,children:[{path:"",name:"productList",component:()=>Promise.resolve().then(()=>require("/js/components/productList.js").default),meta:{title:"产品管理",icon:"el-icon-box"}}]},
+        {path:"/customer",component:X,children:[{path:"",name:"customerList",component:()=>Promise.resolve().then(()=>require("/js/components/customerList.js").default),meta:{title:"客户管理",icon:"el-icon-user"}}]},
+//# sourceMappingURL=app.3b24beff.js.map
+
+6. 检查路由配置:
+1:        {path:"/product",component:X,children:[{path:"",name:"productList",component:()=>Promise.resolve().then(()=>require("/js/components/productList.js").default),meta:{title:"产品管理",icon:"el-icon-box"}}]},
+2:        {path:"/customer",component:X,children:[{path:"",name:"customerList",component:()=>Promise.resolve().then(()=>require("/js/components/customerList.js").default),meta:{title:"客户管理",icon:"el-icon-user"}}]},
+
+7. 检查菜单项:
+✅ 紧急恢复确认页面已创建: http://8.217.249.184/emergency-recovery-confirm.html
+
+=== 执行完成 ===
+完成时间: Fri Apr 10 22:41:37 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260410_224130.log

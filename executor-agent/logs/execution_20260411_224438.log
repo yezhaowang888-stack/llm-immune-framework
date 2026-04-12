@@ -1,0 +1,56 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 22:44:38 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 深入检查页面问题 ===' && echo '' && echo '1. 查看客户页面完整内容:' && curl -s http://localhost/customer && echo '' && echo '---' && echo '' && echo '2. 查看产品页面完整内容:' && curl -s http://localhost/product && echo '' && echo '---' && echo '' && echo '3. 检查Nginx配置:' && grep -A10 -B10 'customer\|product' /etc/nginx/conf.d/medgsp.conf && echo '' && echo '---' && echo '' && echo '4. 检查文件是否存在:' && ls -la /opt/med-gsp-system/frontend/ | head -20
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 深入检查页面问题 ===' && echo '' && echo '1. 查看客户页面完整内容:' && curl -s http://localhost/customer && echo '' && echo '---' && echo '' && echo '2. 查看产品页面完整内容:' && curl -s http://localhost/product && echo '' && echo '---' && echo '' && echo '3. 检查Nginx配置:' && grep -A10 -B10 'customer\|product' /etc/nginx/conf.d/medgsp.conf && echo '' && echo '---' && echo '' && echo '4. 检查文件是否存在:' && ls -la /opt/med-gsp-system/frontend/ | head -20
+=== 深入检查页面问题 ===
+
+1. 查看客户页面完整内容:
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗器械管理系统</title>
+    <link rel="stylesheet" href="/css/medical-management.css">
+</head>
+<body>
+    <div id="app"></div>
+    <script src="/js/app.3b24beff.js"></script>
+    <!-- 动态注册系统 -->
+    <script src="/js/dynamic-router.js"></script>
+    <script src="/js/dynamic-menu.js"></script>
+</body>
+</html>
+
+---
+
+2. 查看产品页面完整内容:
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗器械管理系统</title>
+    <link rel="stylesheet" href="/css/medical-management.css">
+</head>
+<body>
+    <div id="app"></div>
+    <script src="/js/app.3b24beff.js"></script>
+    <!-- 动态注册系统 -->
+    <script src="/js/dynamic-router.js"></script>
+    <script src="/js/dynamic-menu.js"></script>
+</body>
+</html>
+
+---
+
+3. 检查Nginx配置:
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 22:44:43 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_224438.log

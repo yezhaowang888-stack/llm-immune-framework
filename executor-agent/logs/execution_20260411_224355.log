@@ -1,0 +1,48 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 22:43:55 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 紧急检查页面显示状态 ===' && echo '' && echo '1. 检查客户管理页面:' && curl -s -o /dev/null -w "HTTP状态码: %{http_code}\n响应时间: %{time_total}s\n内容长度: %{size_download}字节" http://localhost/customer && echo '' && echo '2. 检查产品管理页面:' && curl -s -o /dev/null -w "HTTP状态码: %{http_code}\n响应时间: %{time_total}s\n内容长度: %{size_download}字节" http://localhost/product && echo '' && echo '3. 检查主应用:' && curl -s -o /dev/null -w "HTTP状态码: %{http_code}\n响应时间: %{time_total}s\n内容长度: %{size_download}字节" http://localhost/ && echo '' && echo '4. 检查Nginx状态:' && systemctl status nginx --no-pager | head -20 && echo '' && echo '5. 检查错误日志:' && tail -20 /var/log/nginx/error.log
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 紧急检查页面显示状态 ===' && echo '' && echo '1. 检查客户管理页面:' && curl -s -o /dev/null -w "HTTP状态码: %{http_code}\n响应时间: %{time_total}s\n内容长度: %{size_download}字节" http://localhost/customer && echo '' && echo '2. 检查产品管理页面:' && curl -s -o /dev/null -w "HTTP状态码: %{http_code}\n响应时间: %{time_total}s\n内容长度: %{size_download}字节" http://localhost/product && echo '' && echo '3. 检查主应用:' && curl -s -o /dev/null -w "HTTP状态码: %{http_code}\n响应时间: %{time_total}s\n内容长度: %{size_download}字节" http://localhost/ && echo '' && echo '4. 检查Nginx状态:' && systemctl status nginx --no-pager | head -20 && echo '' && echo '5. 检查错误日志:' && tail -20 /var/log/nginx/error.log
+=== 紧急检查页面显示状态 ===
+
+1. 检查客户管理页面:
+HTTP状态码: 200
+响应时间: 0.004547s
+内容长度: 486字节
+2. 检查产品管理页面:
+HTTP状态码: 200
+响应时间: 0.004543s
+内容长度: 486字节
+3. 检查主应用:
+HTTP状态码: 200
+响应时间: 0.005151s
+内容长度: 486字节
+4. 检查Nginx状态:
+● nginx.service - nginx - high performance web server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
+   Active: active (running) since Fri 2026-04-10 20:30:24 CST; 1 day 2h ago
+     Docs: http://nginx.org/en/docs/
+  Process: 254794 ExecStop=/bin/sh -c /bin/kill -s TERM $(/bin/cat /run/nginx.pid) (code=exited, status=1/FAILURE)
+  Process: 331388 ExecStart=/usr/sbin/nginx -c ${conffile} (code=exited, status=0/SUCCESS)
+ Main PID: 331389 (nginx)
+    Tasks: 5 (limit: 97014)
+   Memory: 4.5M
+   CGroup: /system.slice/nginx.service
+           ├─331389 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx.conf
+           ├─339851 nginx: worker process
+           ├─339852 nginx: worker process
+           ├─339853 nginx: worker process
+           └─339855 nginx: worker process
+
+Apr 10 20:30:24 iZj6ca2rvea90mqlqj2jaoZ systemd[1]: Starting nginx - high performance web server...
+Apr 10 20:30:24 iZj6ca2rvea90mqlqj2jaoZ systemd[1]: Started nginx - high performance web server.
+
+5. 检查错误日志:
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 22:43:58 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_224355.log

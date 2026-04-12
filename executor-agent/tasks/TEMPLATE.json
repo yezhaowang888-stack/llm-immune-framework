@@ -1,0 +1,15 @@
+{
+  "task_id": "TASK-$(date +%Y%m%d)-001",
+  "title": "任务标题",
+  "description": "任务详细描述",
+  "created_at": "$(date -Iseconds)",
+  "created_by": "惠迈高级工程师",
+  "assigned_to": "执行者智能体",
+  "priority": "normal",
+  "status": "pending",
+  "command": "要执行的SSH命令",
+  "expected_output": "期望的输出",
+  "timeout_seconds": 300,
+  "retry_count": 3,
+  "notes": "额外说明"
+}

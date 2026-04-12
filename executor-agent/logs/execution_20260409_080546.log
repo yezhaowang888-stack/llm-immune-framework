@@ -1,0 +1,26 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 08:05:46 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 医疗器械软件晨间验证 ===' && echo '时间: $(date)' && echo '' && echo '1. 服务状态检查:' && echo 'Java应用: ' $(ps aux | grep '[j]ava.*med-gsp' | wc -l) '个进程' && echo 'Nginx服务: ' $(ps aux | grep '[n]ginx' | wc -l) '个进程' && echo 'MySQL容器: ' $(docker ps | grep mysql | wc -l) '个运行中' && echo '' && echo '2. 核心页面访问测试:' && for page in / /device /sales /purchase /product /customer; do echo -n "${page}: "; curl -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://localhost${page} 2>/dev/null || echo '失败'; done && echo '' && echo '3. API功能验证:' && curl -s http://localhost/api/products | jq '. | length' 2>/dev/null && echo '产品数据条数正常'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 医疗器械软件晨间验证 ===' && echo '时间: $(date)' && echo '' && echo '1. 服务状态检查:' && echo 'Java应用: ' $(ps aux | grep '[j]ava.*med-gsp' | wc -l) '个进程' && echo 'Nginx服务: ' $(ps aux | grep '[n]ginx' | wc -l) '个进程' && echo 'MySQL容器: ' $(docker ps | grep mysql | wc -l) '个运行中' && echo '' && echo '2. 核心页面访问测试:' && for page in / /device /sales /purchase /product /customer; do echo -n "${page}: "; curl -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://localhost${page} 2>/dev/null || echo '失败'; done && echo '' && echo '3. API功能验证:' && curl -s http://localhost/api/products | jq '. | length' 2>/dev/null && echo '产品数据条数正常'
+=== 医疗器械软件晨间验证 ===
+时间: $(date)
+
+1. 服务状态检查:
+Java应用:  1 个进程
+Nginx服务:  5 个进程
+MySQL容器:  1 个运行中
+
+2. 核心页面访问测试:
+/: 200/device: 200/sales: 200/purchase: 200/product: 200/customer: 200
+3. API功能验证:
+3
+产品数据条数正常
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 08:05:48 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_080546.log

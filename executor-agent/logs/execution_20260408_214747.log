@@ -1,0 +1,27 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:47:47 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 后端应用检查 ===' && echo '' && echo '1. 检查Java应用:' && ps aux | grep -E '[j]ava.*jar|[s]pring' && echo '' && echo '2. 检查应用端口:' && netstat -tln 2>/dev/null | grep -E ':8080|:8081|:8090' && echo '' && echo '3. 检查后端目录:' && find /opt/med-gsp-system/backend -name '*.jar' -type f && echo '' && echo '4. 检查应用配置:' && find /opt/med-gsp-system -name 'application*.yml' -o -name 'application*.properties' 2>/dev/null | head -5
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 后端应用检查 ===' && echo '' && echo '1. 检查Java应用:' && ps aux | grep -E '[j]ava.*jar|[s]pring' && echo '' && echo '2. 检查应用端口:' && netstat -tln 2>/dev/null | grep -E ':8080|:8081|:8090' && echo '' && echo '3. 检查后端目录:' && find /opt/med-gsp-system/backend -name '*.jar' -type f && echo '' && echo '4. 检查应用配置:' && find /opt/med-gsp-system -name 'application*.yml' -o -name 'application*.properties' 2>/dev/null | head -5
+=== 后端应用检查 ===
+
+1. 检查Java应用:
+root       32437  0.0  2.6 7913340 410652 ?      Sl   Mar31   7:46 java -cp med-gsp-final-0.0.1-SNAPSHOT.jar:mysql-connector-java-8.0.33.jar org.springframework.boot.loader.JarLauncher
+
+2. 检查应用端口:
+tcp        0      0 172.19.51.227:8081      0.0.0.0:*               LISTEN     
+tcp6       0      0 :::8080                 :::*                    LISTEN     
+
+3. 检查后端目录:
+
+4. 检查应用配置:
+/opt/med-gsp-system/database/application-db.yml
+/opt/med-gsp-system/medgsp_backup_20260403_1300/source/database/application-db.yml
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:47:51 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214747.log

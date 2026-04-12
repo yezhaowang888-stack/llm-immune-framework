@@ -1,0 +1,315 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 12:56:40 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 创建客户信息管理页面（简化版） ===' && echo '' && echo '1. 创建基础HTML页面:' && cat > /opt/med-gsp-system/frontend/customers.html << 'HTML'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户信息管理 - 医疗器械系统</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .toolbar { margin-bottom: 20px; }
+        .btn { padding: 10px 15px; margin-right: 10px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f8f9fa; }
+        .status-valid { color: green; }
+        .status-expiring { color: orange; }
+        .status-expired { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 客户信息管理</h1>
+            <p>管理客户基本信息、资质信息及到期预警</p>
+        </header>
+        
+        <div class="toolbar">
+            <button class="btn btn-primary" onclick="showAddForm()">➕ 新增客户</button>
+            <button class="btn btn-success" onclick="loadCustomers()">🔄 刷新</button>
+        </div>
+        
+        <div id="customerList">
+            <p>加载中...</p>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = '/api/customers';
+        
+        // 页面加载时获取客户列表
+        document.addEventListener('DOMContentLoaded', loadCustomers);
+        
+        async function loadCustomers() {
+            try {
+                const response = await fetch(API_BASE);
+                const customers = await response.json();
+                renderCustomers(customers);
+            } catch (error) {
+                document.getElementById('customerList').innerHTML = '<p style="color: red;">加载失败: ' + error.message + '</p>';
+            }
+        }
+        
+        function renderCustomers(customers) {
+            if (customers.length === 0) {
+                document.getElementById('customerList').innerHTML = '<p>暂无客户数据</p>';
+                return;
+            }
+            
+            let html = '<table><tr><th>客户编码</th><th>客户名称</th><th>联系人</th><th>资质类型</th><th>到期日期</th><th>状态</th></tr>';
+            
+            customers.forEach(customer => {
+                const status = getQualificationStatus(customer.qualificationExpiryDate);
+                const statusClass = 'status-' + status;
+                const statusText = status === 'valid' ? '有效' : status === 'expiring' ? '即将到期' : '已过期';
+                
+                html += `<tr>
+                    <td>${customer.customerCode || ''}</td>
+                    <td>${customer.customerName || ''}</td>
+                    <td>${customer.contactPerson || ''}</td>
+                    <td>${customer.qualificationType || ''}</td>
+                    <td>${customer.qualificationExpiryDate || ''}</td>
+                    <td class="${statusClass}">${statusText}</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            document.getElementById('customerList').innerHTML = html;
+        }
+        
+        function getQualificationStatus(expiryDate) {
+            if (!expiryDate) return 'unknown';
+            const expiry = new Date(expiryDate);
+            const today = new Date();
+            const daysDiff = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+            
+            if (daysDiff < 0) return 'expired';
+            if (daysDiff <= 30) return 'expiring';
+            return 'valid';
+        }
+        
+        function showAddForm() {
+            const formHtml = `
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                    <h3>新增客户</h3>
+                    <form onsubmit="addCustomer(event)">
+                        <div style="margin-bottom: 10px;">
+                            <label>客户编码: </label>
+                            <input type="text" id="newCustomerCode" required>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <label>客户名称: </label>
+                            <input type="text" id="newCustomerName" required>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <label>资质到期日期: </label>
+                            <input type="date" id="newExpiryDate">
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn" onclick="loadCustomers()">取消</button>
+                    </form>
+                </div>
+            `;
+            document.getElementById('customerList').innerHTML = formHtml + document.getElementById('customerList').innerHTML;
+        }
+        
+        async function addCustomer(event) {
+            event.preventDefault();
+            
+            const customer = {
+                customerCode: document.getElementById('newCustomerCode').value,
+                customerName: document.getElementById('newCustomerName').value,
+                qualificationExpiryDate: document.getElementById('newExpiryDate').value
+            };
+            
+            try {
+                const response = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(customer)
+                });
+                
+                if (response.ok) {
+                    alert('客户添加成功');
+                    loadCustomers();
+                } else {
+                    alert('添加失败');
+                }
+            } catch (error) {
+                alert('添加失败: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
+HTML
+echo '2. 客户信息管理页面创建完成，请访问: http://8.217.249.184/customers.html'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 创建客户信息管理页面（简化版） ===' && echo '' && echo '1. 创建基础HTML页面:' && cat > /opt/med-gsp-system/frontend/customers.html << 'HTML'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户信息管理 - 医疗器械系统</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .toolbar { margin-bottom: 20px; }
+        .btn { padding: 10px 15px; margin-right: 10px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: #3498db; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f8f9fa; }
+        .status-valid { color: green; }
+        .status-expiring { color: orange; }
+        .status-expired { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 客户信息管理</h1>
+            <p>管理客户基本信息、资质信息及到期预警</p>
+        </header>
+        
+        <div class="toolbar">
+            <button class="btn btn-primary" onclick="showAddForm()">➕ 新增客户</button>
+            <button class="btn btn-success" onclick="loadCustomers()">🔄 刷新</button>
+        </div>
+        
+        <div id="customerList">
+            <p>加载中...</p>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = '/api/customers';
+        
+        // 页面加载时获取客户列表
+        document.addEventListener('DOMContentLoaded', loadCustomers);
+        
+        async function loadCustomers() {
+            try {
+                const response = await fetch(API_BASE);
+                const customers = await response.json();
+                renderCustomers(customers);
+            } catch (error) {
+                document.getElementById('customerList').innerHTML = '<p style="color: red;">加载失败: ' + error.message + '</p>';
+            }
+        }
+        
+        function renderCustomers(customers) {
+            if (customers.length === 0) {
+                document.getElementById('customerList').innerHTML = '<p>暂无客户数据</p>';
+                return;
+            }
+            
+            let html = '<table><tr><th>客户编码</th><th>客户名称</th><th>联系人</th><th>资质类型</th><th>到期日期</th><th>状态</th></tr>';
+            
+            customers.forEach(customer => {
+                const status = getQualificationStatus(customer.qualificationExpiryDate);
+                const statusClass = 'status-' + status;
+                const statusText = status === 'valid' ? '有效' : status === 'expiring' ? '即将到期' : '已过期';
+                
+                html += `<tr>
+                    <td>${customer.customerCode || ''}</td>
+                    <td>${customer.customerName || ''}</td>
+                    <td>${customer.contactPerson || ''}</td>
+                    <td>${customer.qualificationType || ''}</td>
+                    <td>${customer.qualificationExpiryDate || ''}</td>
+                    <td class="${statusClass}">${statusText}</td>
+                </tr>`;
+            });
+            
+            html += '</table>';
+            document.getElementById('customerList').innerHTML = html;
+        }
+        
+        function getQualificationStatus(expiryDate) {
+            if (!expiryDate) return 'unknown';
+            const expiry = new Date(expiryDate);
+            const today = new Date();
+            const daysDiff = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24));
+            
+            if (daysDiff < 0) return 'expired';
+            if (daysDiff <= 30) return 'expiring';
+            return 'valid';
+        }
+        
+        function showAddForm() {
+            const formHtml = `
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px;">
+                    <h3>新增客户</h3>
+                    <form onsubmit="addCustomer(event)">
+                        <div style="margin-bottom: 10px;">
+                            <label>客户编码: </label>
+                            <input type="text" id="newCustomerCode" required>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <label>客户名称: </label>
+                            <input type="text" id="newCustomerName" required>
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <label>资质到期日期: </label>
+                            <input type="date" id="newExpiryDate">
+                        </div>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <button type="button" class="btn" onclick="loadCustomers()">取消</button>
+                    </form>
+                </div>
+            `;
+            document.getElementById('customerList').innerHTML = formHtml + document.getElementById('customerList').innerHTML;
+        }
+        
+        async function addCustomer(event) {
+            event.preventDefault();
+            
+            const customer = {
+                customerCode: document.getElementById('newCustomerCode').value,
+                customerName: document.getElementById('newCustomerName').value,
+                qualificationExpiryDate: document.getElementById('newExpiryDate').value
+            };
+            
+            try {
+                const response = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(customer)
+                });
+                
+                if (response.ok) {
+                    alert('客户添加成功');
+                    loadCustomers();
+                } else {
+                    alert('添加失败');
+                }
+            } catch (error) {
+                alert('添加失败: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
+HTML
+echo '2. 客户信息管理页面创建完成，请访问: http://8.217.249.184/customers.html'
+=== 创建客户信息管理页面（简化版） ===
+
+1. 创建基础HTML页面:
+2. 客户信息管理页面创建完成，请访问: http://8.217.249.184/customers.html
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 12:56:42 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_125640.log

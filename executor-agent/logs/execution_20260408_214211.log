@@ -1,0 +1,15 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:42:11 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 尝试启动医疗器械应用 ===' && echo '' && echo '1. 检查启动脚本:' && ls -la /opt/med-gsp-system/scripts/ && echo '' && echo '2. 尝试启动后端:' && cd /opt/med-gsp-system/backend && java -jar target/*.jar 2>&1 | head -20 & && echo '启动命令已执行' && sleep 3 && echo '' && echo '3. 检查进程:' && ps aux | grep -E '[j]ava.*medgsp|[j]ava.*jar'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 尝试启动医疗器械应用 ===' && echo '' && echo '1. 检查启动脚本:' && ls -la /opt/med-gsp-system/scripts/ && echo '' && echo '2. 尝试启动后端:' && cd /opt/med-gsp-system/backend && java -jar target/*.jar 2>&1 | head -20 & && echo '启动命令已执行' && sleep 3 && echo '' && echo '3. 检查进程:' && ps aux | grep -E '[j]ava.*medgsp|[j]ava.*jar'
+bash: -c: line 0: syntax error near unexpected token `&&'
+bash: -c: line 0: `echo '=== 尝试启动医疗器械应用 ===' && echo '' && echo '1. 检查启动脚本:' && ls -la /opt/med-gsp-system/scripts/ && echo '' && echo '2. 尝试启动后端:' && cd /opt/med-gsp-system/backend && java -jar target/*.jar 2>&1 | head -20 & && echo '启动命令已执行' && sleep 3 && echo '' && echo '3. 检查进程:' && ps aux | grep -E '[j]ava.*medgsp|[j]ava.*jar''
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:42:18 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214211.log

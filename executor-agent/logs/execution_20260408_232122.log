@@ -1,0 +1,30 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 23:21:22 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 医疗器械软件状态检查 ===' && echo '时间: $(date)' && echo '' && echo '1. 应用运行状态:' && ps aux | grep -E '[j]ava.*med-gsp|[s]pring' | head -3 && echo '' && echo '2. 服务端口监听:' && netstat -tln 2>/dev/null | grep ':8080\|:8081' && echo '' && echo '3. 前端访问测试:' && curl -s -o /dev/null -w '前端首页: %{http_code}' http://localhost/ && echo '' && echo '4. API功能测试:' && curl -s http://localhost/api/products | jq '. | length' 2>/dev/null && echo '产品API返回数据条数如上' && echo '' && echo '5. 数据库连接测试:' && timeout 2 mysql -h 127.0.0.1 -P 3306 -u root -p 2>&1 | grep -i 'connect\|error' | head -2 || echo 'MySQL连接测试完成'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 医疗器械软件状态检查 ===' && echo '时间: $(date)' && echo '' && echo '1. 应用运行状态:' && ps aux | grep -E '[j]ava.*med-gsp|[s]pring' | head -3 && echo '' && echo '2. 服务端口监听:' && netstat -tln 2>/dev/null | grep ':8080\|:8081' && echo '' && echo '3. 前端访问测试:' && curl -s -o /dev/null -w '前端首页: %{http_code}' http://localhost/ && echo '' && echo '4. API功能测试:' && curl -s http://localhost/api/products | jq '. | length' 2>/dev/null && echo '产品API返回数据条数如上' && echo '' && echo '5. 数据库连接测试:' && timeout 2 mysql -h 127.0.0.1 -P 3306 -u root -p 2>&1 | grep -i 'connect\|error' | head -2 || echo 'MySQL连接测试完成'
+=== 医疗器械软件状态检查 ===
+时间: $(date)
+
+1. 应用运行状态:
+root       32437  0.0  2.6 7913340 410732 ?      Sl   Mar31   7:51 java -cp med-gsp-final-0.0.1-SNAPSHOT.jar:mysql-connector-java-8.0.33.jar org.springframework.boot.loader.JarLauncher
+
+2. 服务端口监听:
+tcp        0      0 172.19.51.227:8081      0.0.0.0:*               LISTEN     
+tcp6       0      0 :::8080                 :::*                    LISTEN     
+
+3. 前端访问测试:
+前端首页: 200
+4. API功能测试:
+3
+产品API返回数据条数如上
+
+5. 数据库连接测试:
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 23:21:25 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_232122.log

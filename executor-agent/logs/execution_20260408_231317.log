@@ -1,0 +1,25 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 23:13:17 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 查看前端源码结构 ===' && echo '' && echo '1. 前端目录结构:' && find /opt/med-gsp-system/frontend -type f -name '*.vue' | grep -i 'account\|finance' | head -10 && echo '' && echo '2. 查看views目录:' && ls -la /opt/med-gsp-system/frontend/src/views/ 2>/dev/null || echo '无src/views目录' && echo '' && echo '3. 查看dist目录结构:' && find /opt/med-gsp-system/frontend -maxdepth 3 -type d | sort
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 查看前端源码结构 ===' && echo '' && echo '1. 前端目录结构:' && find /opt/med-gsp-system/frontend -type f -name '*.vue' | grep -i 'account\|finance' | head -10 && echo '' && echo '2. 查看views目录:' && ls -la /opt/med-gsp-system/frontend/src/views/ 2>/dev/null || echo '无src/views目录' && echo '' && echo '3. 查看dist目录结构:' && find /opt/med-gsp-system/frontend -maxdepth 3 -type d | sort
+=== 查看前端源码结构 ===
+
+1. 前端目录结构:
+
+2. 查看views目录:
+无src/views目录
+
+3. 查看dist目录结构:
+/opt/med-gsp-system/frontend
+/opt/med-gsp-system/frontend/css
+/opt/med-gsp-system/frontend/frontend
+/opt/med-gsp-system/frontend/js
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 23:13:19 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_231317.log

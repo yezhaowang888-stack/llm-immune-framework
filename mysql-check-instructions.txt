@@ -1,0 +1,104 @@
+# MySQL容器持久化检查与配置任务
+# 执行时间：2026-04-01 08:20
+# 执行人：香港工程师
+
+## 任务目标
+检查MySQL容器mysql-medgsp的数据目录是否做了持久化挂载。如果没有，按以下步骤操作：
+1. 备份数据
+2. 重新创建容器并挂载 /data/mysql 目录
+
+## 详细步骤
+
+### 1. 检查当前容器状态
+```bash
+# 检查容器是否存在
+docker ps -a | grep mysql-medgsp
+
+# 检查容器挂载情况
+docker inspect mysql-medgsp --format='{{json .Mounts}}'
+```
+
+### 2. 检查数据目录
+```bash
+# 查看容器内MySQL数据目录
+docker exec mysql-medgsp ls -la /var/lib/mysql
+
+# 查看宿主机是否有挂载目录
+ls -la /data/mysql 2>/dev/null || echo "/data/mysql目录不存在"
+```
+
+### 3. 如果没有持久化挂载，执行以下操作
+
+#### 3.1 备份数据
+```bash
+# 创建备份目录
+mkdir -p /backup/mysql-$(date +%Y%m%d)
+
+# 备份数据库（使用mysqldump）
+docker exec mysql-medgsp mysqldump -u root -p[密码] --all-databases > /backup/mysql-$(date +%Y%m%d)/full-backup.sql
+
+# 备份数据文件（直接复制）
+docker cp mysql-medgsp:/var/lib/mysql /backup/mysql-$(date +%Y%m%d)/mysql-data
+```
+
+#### 3.2 停止并删除旧容器
+```bash
+# 停止容器
+docker stop mysql-medgsp
+
+# 删除容器（保留镜像）
+docker rm mysql-medgsp
+```
+
+#### 3.3 创建持久化目录
+```bash
+# 创建数据目录
+mkdir -p /data/mysql
+
+# 设置权限
+chown -R 999:999 /data/mysql  # MySQL容器内用户ID通常是999
+```
+
+#### 3.4 重新创建容器并挂载
+```bash
+# 获取原容器的环境变量和端口映射
+docker inspect mysql-medgsp --format='{{json .Config.Env}}'
+docker inspect mysql-medgsp --format='{{json .NetworkSettings.Ports}}'
+
+# 重新创建容器（示例命令，需要根据实际情况调整）
+docker run -d \
+  --name mysql-medgsp \
+  -v /data/mysql:/var/lib/mysql \
+  -e MYSQL_ROOT_PASSWORD=[原密码] \
+  -p 3306:3306 \
+  mysql:5.7
+```
+
+#### 3.5 恢复数据
+```bash
+# 如果使用mysqldump备份
+docker exec -i mysql-medgsp mysql -u root -p[密码] < /backup/mysql-$(date +%Y%m%d)/full-backup.sql
+
+# 或者直接复制数据文件（如果容器已停止）
+# 将备份的数据文件复制到挂载目录
+cp -r /backup/mysql-$(date +%Y%m%d)/mysql-data/* /data/mysql/
+```
+
+### 4. 验证
+```bash
+# 检查容器运行状态
+docker ps | grep mysql-medgsp
+
+# 检查挂载是否生效
+docker exec mysql-medgsp ls -la /var/lib/mysql
+
+# 测试数据库连接
+docker exec mysql-medgsp mysql -u root -p[密码] -e "SHOW DATABASES;"
+```
+
+## 注意事项
+1. 执行前确认数据库密码
+2. 确保有足够的磁盘空间
+3. 建议在业务低峰期执行
+4. 操作前做好完整备份
+5. 记录所有执行的命令和结果

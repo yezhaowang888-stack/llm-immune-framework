@@ -1,0 +1,29 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 08:08:55 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 检查Vue应用资源加载 ===' && echo '' && echo '1. 检查JS文件可访问:' && for js in /js/chunk-vendors.a12959d7.js /js/app.ae2715d5.js; do echo -n "${js}: "; curl -s -o /dev/null -w '%{http_code}' https://localhost${js} 2>/dev/null || echo '失败'; done && echo '' && echo '2. 检查CSS文件可访问:' && for css in /css/chunk-vendors.e1ad2d5f.css /css/app.6905bf06.css; do echo -n "${css}: "; curl -s -o /dev/null -w '%{http_code}' https://localhost${css} 2>/dev/null || echo '失败'; done && echo '' && echo '3. 检查Nginx错误日志:' && tail -5 /var/log/nginx/error.log 2>/dev/null
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 检查Vue应用资源加载 ===' && echo '' && echo '1. 检查JS文件可访问:' && for js in /js/chunk-vendors.a12959d7.js /js/app.ae2715d5.js; do echo -n "${js}: "; curl -s -o /dev/null -w '%{http_code}' https://localhost${js} 2>/dev/null || echo '失败'; done && echo '' && echo '2. 检查CSS文件可访问:' && for css in /css/chunk-vendors.e1ad2d5f.css /css/app.6905bf06.css; do echo -n "${css}: "; curl -s -o /dev/null -w '%{http_code}' https://localhost${css} 2>/dev/null || echo '失败'; done && echo '' && echo '3. 检查Nginx错误日志:' && tail -5 /var/log/nginx/error.log 2>/dev/null
+=== 检查Vue应用资源加载 ===
+
+1. 检查JS文件可访问:
+/js/chunk-vendors.a12959d7.js: 000失败
+/js/app.ae2715d5.js: 000失败
+
+2. 检查CSS文件可访问:
+/css/chunk-vendors.e1ad2d5f.css: 000失败
+/css/app.6905bf06.css: 000失败
+
+3. 检查Nginx错误日志:
+2026/04/09 08:07:35 [notice] 106722#106722: worker process 254235 exited with code 0
+2026/04/09 08:07:35 [notice] 106722#106722: signal 29 (SIGIO) received
+2026/04/09 08:07:35 [notice] 106722#106722: signal 17 (SIGCHLD) received from 254233
+2026/04/09 08:07:35 [notice] 106722#106722: worker process 254233 exited with code 0
+2026/04/09 08:07:35 [notice] 106722#106722: signal 29 (SIGIO) received
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 08:08:57 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_080855.log

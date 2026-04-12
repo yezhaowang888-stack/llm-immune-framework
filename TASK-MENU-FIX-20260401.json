@@ -1,0 +1,70 @@
+{
+  "task_id": "TASK-MENU-FIX-20260401",
+  "title": "医疗器械管理系统菜单修复",
+  "description": "修复'产品信息'和'客户信息'菜单再次消失的问题。昨天修复后今天复现，需要确定正确的app.js文件并重新修复。",
+  "priority": "紧急",
+  "category": "前端修复",
+  "assigned_to": "hk-engineer",
+  "created_by": "惠迈高级工程师",
+  "created_at": "2026-04-01T13:25:00+08:00",
+  "deadline": "2026-04-01T15:00:00+08:00",
+  "estimated_hours": 1,
+  "status": "in_progress",
+  "progress": 10,
+  "last_updated": "2026-04-02T12:18:00+08:00",
+  "dependencies": [],
+  "attachments": [],
+  "notes": [
+    "13:25: 任务创建 - 菜单问题复现，需要紧急修复",
+    "10:45: 任务严重超时 - 超时19小时35分钟，状态升级为escalated",
+    "10:45: 新截止时间设定 - 2026-04-02 11:30前必须完成",
+    "12:18: 小迈-云确认收到并开始执行 - 预计14:30前完成"
+  ],
+  "completion_criteria": "1. '产品信息'菜单显示在左侧导航栏 2. '客户信息'菜单显示在左侧导航栏 3. 点击菜单能正常跳转到对应页面 4. 所有其他菜单功能正常",
+  "actual_hours": 0,
+  "completed_at": "",
+  "detailed_steps": [
+    {
+      "step": 1,
+      "action": "确定当前使用的app.js文件",
+      "command": "cd /usr/share/nginx/html/bio && ls -la js/app.*.js && grep -o 'app\\.[a-f0-9]*\\.js' index.html"
+    },
+    {
+      "step": 2,
+      "action": "备份当前文件",
+      "command": "CURRENT_APP=\"找到的实际文件名\" && cp js/$CURRENT_APP js/$CURRENT_APP.backup.$(date +%Y%m%d_%H%M%S)"
+    },
+    {
+      "step": 3,
+      "action": "修复菜单项",
+      "command": "perl -i -pe 's/\"生产信息\"/\"生产信息\",\"产品信息\",\"客户信息\"/' js/$CURRENT_APP"
+    },
+    {
+      "step": 4,
+      "action": "验证修复",
+      "command": "grep -o '\\\"产品信息\\\"' js/$CURRENT_APP && grep -o '\\\"客户信息\\\"' js/$CURRENT_APP"
+    },
+    {
+      "step": 5,
+      "action": "重启Nginx并测试",
+      "command": "systemctl restart nginx && systemctl status nginx"
+    }
+  ],
+  "problem_analysis": {
+    "file_path": "/usr/share/nginx/html/bio/js/",
+    "existing_files": [
+      "app.b4001eb8.js (2026-03-21)",
+      "app.ba954fa8.js (2026-03-14)",
+      "app.d6ed4b55.js (2026-03-22)",
+      "app.dcbf8925.js (2026-03-22)",
+      "app.fa378270.js (2026-03-21)"
+    ],
+    "index_html_reference": "app.15aecfa6.js (但此文件不存在)",
+    "possible_causes": [
+      "修复未应用到正确的文件",
+      "浏览器缓存问题",
+      "版本控制问题",
+      "Nginx配置指向错误的文件"
+    ]
+  }
+}

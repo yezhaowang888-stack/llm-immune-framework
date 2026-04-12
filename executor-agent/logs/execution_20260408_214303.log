@@ -1,0 +1,21 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:43:03 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 从备份恢复医疗器械应用 ===' && echo '' && echo '1. 检查备份内容:' && tar -tzf /root/medgsp_final_20260403_1308.tar.gz | grep -E '\.jar$|frontend/|backend/target/' | head -20 && echo '' && echo '2. 提取应用文件:' && tar -xzf /root/medgsp_final_20260403_1308.tar.gz -C /opt/med-gsp-system/ --strip-components=1 2>&1 | tail -10 && echo '' && echo '3. 检查恢复结果:' && find /opt/med-gsp-system -name '*.jar' -type f | head -5
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 从备份恢复医疗器械应用 ===' && echo '' && echo '1. 检查备份内容:' && tar -tzf /root/medgsp_final_20260403_1308.tar.gz | grep -E '\.jar$|frontend/|backend/target/' | head -20 && echo '' && echo '2. 提取应用文件:' && tar -xzf /root/medgsp_final_20260403_1308.tar.gz -C /opt/med-gsp-system/ --strip-components=1 2>&1 | tail -10 && echo '' && echo '3. 检查恢复结果:' && find /opt/med-gsp-system -name '*.jar' -type f | head -5
+=== 从备份恢复医疗器械应用 ===
+
+1. 检查备份内容:
+root/medgsp_backup_20260403_1300/source/frontend/
+
+2. 提取应用文件:
+
+3. 检查恢复结果:
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:43:11 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214303.log

@@ -1,0 +1,28 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 13:02:32 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 全面诊断客户页面问题 ===' && echo '时间: $(date)' && echo '' && echo '1. 检查临时API状态:' && curl -s http://localhost:8082/api/customers && echo '' && echo '2. 检查Nginx代理状态:' && curl -s http://localhost/api/customers && echo '' && echo '3. 检查页面访问:' && curl -s http://localhost/customers.html | grep -o 'API_BASE.*customers' && echo '' && echo '4. 检查浏览器控制台模拟:' && echo '模拟浏览器访问测试...' && curl -s -H 'Accept: text/html' http://localhost/customers.html | grep -o '加载失败\|error\|Error' | head -3
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 全面诊断客户页面问题 ===' && echo '时间: $(date)' && echo '' && echo '1. 检查临时API状态:' && curl -s http://localhost:8082/api/customers && echo '' && echo '2. 检查Nginx代理状态:' && curl -s http://localhost/api/customers && echo '' && echo '3. 检查页面访问:' && curl -s http://localhost/customers.html | grep -o 'API_BASE.*customers' && echo '' && echo '4. 检查浏览器控制台模拟:' && echo '模拟浏览器访问测试...' && curl -s -H 'Accept: text/html' http://localhost/customers.html | grep -o '加载失败\|error\|Error' | head -3
+=== 全面诊断客户页面问题 ===
+时间: $(date)
+
+1. 检查临时API状态:
+[{"id":1,"customerCode":"CUST001","customerName":"北京协和医院","contactPerson":"张主任","phone":"13800138000","qualificationType":"医疗器械经营许可证","qualificationNumber":"京械经2023001","qualificationExpiryDate":"2026-12-31","qualificationStatus":"有效"},{"id":2,"customerCode":"CUST002","customerName":"上海华山医院","contactPerson":"李医生","phone":"13900139000","qualificationType":"医疗器械生产许可证","qualificationNumber":"沪械生2023002","qualificationExpiryDate":"2026-06-30","qualificationStatus":"即将到期"},{"id":3,"customerCode":"CUST003","customerName":"广州中山医院","contactPerson":"王护士长","phone":"13700137000","qualificationType":"医疗器械注册证","qualificationNumber":"粤械注2023003","qualificationExpiryDate":"2025-12-31","qualificationStatus":"已过期"}]
+2. 检查Nginx代理状态:
+[{"id":1,"customerCode":"CUST001","customerName":"北京协和医院","contactPerson":"张主任","phone":"13800138000","qualificationType":"医疗器械经营许可证","qualificationNumber":"京械经2023001","qualificationExpiryDate":"2026-12-31","qualificationStatus":"有效"},{"id":2,"customerCode":"CUST002","customerName":"上海华山医院","contactPerson":"李医生","phone":"13900139000","qualificationType":"医疗器械生产许可证","qualificationNumber":"沪械生2023002","qualificationExpiryDate":"2026-06-30","qualificationStatus":"即将到期"},{"id":3,"customerCode":"CUST003","customerName":"广州中山医院","contactPerson":"王护士长","phone":"13700137000","qualificationType":"医疗器械注册证","qualificationNumber":"粤械注2023003","qualificationExpiryDate":"2025-12-31","qualificationStatus":"已过期"}]
+3. 检查页面访问:
+API_BASE = 'http://localhost:8082/api/customers
+
+4. 检查浏览器控制台模拟:
+模拟浏览器访问测试...
+error
+加载失败
+error
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 13:02:34 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_130232.log

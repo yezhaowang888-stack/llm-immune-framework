@@ -1,0 +1,15 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:43:42 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 直接查看备份前端 ===' && tar -tzf /root/medgsp_final_20260403_1308.tar.gz | grep 'frontend/' | head -20
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 直接查看备份前端 ===' && tar -tzf /root/medgsp_final_20260403_1308.tar.gz | grep 'frontend/' | head -20
+=== 直接查看备份前端 ===
+root/medgsp_backup_20260403_1300/source/frontend/
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:43:49 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214342.log

@@ -1,0 +1,30 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:54:28 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 查看医疗器械Nginx配置 ===' && cat /etc/nginx/conf.d/medgsp.conf 2>/dev/null
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 查看医疗器械Nginx配置 ===' && cat /etc/nginx/conf.d/medgsp.conf 2>/dev/null
+=== 查看医疗器械Nginx配置 ===
+server {
+    listen 80;
+    server_name _;
+    
+    location / {
+        root /opt/med-gsp-system/frontend;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+    }
+    
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:54:34 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_215428.log

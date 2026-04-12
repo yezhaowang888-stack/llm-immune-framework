@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mysql-local:
+    image: mysql:8.0
+    container_name: mysql-medgsp-local
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: local123456
+      MYSQL_DATABASE: medgsp
+      MYSQL_USER: medgsp_user
+      MYSQL_PASSWORD: medgsp123
+    ports:
+      - "3307:3306"  # 使用3307端口，避免与可能存在的其他MySQL冲突
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/backup:/backup
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    command: 
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  adminer:
+    image: adminer
+    container_name: adminer-local
+    restart: always
+    ports:
+      - "8081:8080"

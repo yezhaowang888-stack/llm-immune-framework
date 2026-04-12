@@ -1,0 +1,43 @@
+=== 执行者智能体启动 ===
+时间: Sun Apr 12 09:03:32 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 重新构建前端项目 ===' && echo '' && echo '时间: Sun Apr 12 09:03:32 CST 2026' && echo '' && echo '1. 检查源代码目录结构:' && echo '' && echo '源代码备份位置:' && ls -la /root/medgsp_backup_20260403_1300/source/ && echo '' && echo '2. 检查前端项目:' && find /root/medgsp_backup_20260403_1300/source -name 'package.json' -o -name 'vue.config.js' -o -name 'vite.config.js' -o -name 'webpack.config.js' 2>/dev/null && echo '' && echo '3. 检查前端目录:' && find /root/medgsp_backup_20260403_1300/source -type d -name 'frontend' -o -name 'web' -o -name 'src' 2>/dev/null | head -10 && echo '' && echo '4. 检查Node.js环境:' && node --version && npm --version && echo '' && echo '5. 检查构建工具:' && which npm && which yarn && which pnpm
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 重新构建前端项目 ===' && echo '' && echo '时间: Sun Apr 12 09:03:32 CST 2026' && echo '' && echo '1. 检查源代码目录结构:' && echo '' && echo '源代码备份位置:' && ls -la /root/medgsp_backup_20260403_1300/source/ && echo '' && echo '2. 检查前端项目:' && find /root/medgsp_backup_20260403_1300/source -name 'package.json' -o -name 'vue.config.js' -o -name 'vite.config.js' -o -name 'webpack.config.js' 2>/dev/null && echo '' && echo '3. 检查前端目录:' && find /root/medgsp_backup_20260403_1300/source -type d -name 'frontend' -o -name 'web' -o -name 'src' 2>/dev/null | head -10 && echo '' && echo '4. 检查Node.js环境:' && node --version && npm --version && echo '' && echo '5. 检查构建工具:' && which npm && which yarn && which pnpm
+=== 重新构建前端项目 ===
+
+时间: Sun Apr 12 09:03:32 CST 2026
+
+1. 检查源代码目录结构:
+
+源代码备份位置:
+total 32
+drwxr-xr-x 7 root root 4096 Apr  3 13:03 .
+drwxr-xr-x 4 root root 4096 Apr  3 13:08 ..
+drwxr-xr-x 3 root root 4096 Apr  3 13:03 backend
+drwxr-xr-x 3 root root 4096 Apr  3 13:03 database
+drwxr-xr-x 2 root root 4096 Apr  3 13:03 frontend
+drwxr-xr-x 8 root root 4096 Apr  3 13:03 .git
+-rw-r--r-- 1 root root  688 Apr  3 13:03 PROJECT_STATUS.md
+drwxr-xr-x 2 root root 4096 Apr  3 13:03 scripts
+
+2. 检查前端项目:
+
+3. 检查前端目录:
+/root/medgsp_backup_20260403_1300/source/backend/src
+/root/medgsp_backup_20260403_1300/source/frontend
+
+4. 检查Node.js环境:
+v22.14.0
+10.9.2
+
+5. 检查构建工具:
+/usr/local/bin/npm
+/usr/bin/which: no yarn in (/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin)
+
+=== 执行完成 ===
+完成时间: Sun Apr 12 09:03:34 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260412_090332.log

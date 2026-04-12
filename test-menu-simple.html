@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>菜单简单测试</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>医疗器械管理系统菜单测试</h1>
+    <p>测试时间: <span id="time"></span></p>
+    
+    <h2>JS文件检查</h2>
+    <div id="js-check"></div>
+    
+    <h2>菜单项检查</h2>
+    <div id="menu-check"></div>
+    
+    <script>
+        document.getElementById('time').textContent = new Date().toLocaleString('zh-CN');
+        
+        // 检查JS文件
+        fetch('/js/app.3b24beff.js')
+            .then(response => response.text())
+            .then(text => {
+                const hasProduct = text.includes('"产品信息"');
+                const hasCustomer = text.includes('"客户信息"');
+                const hasProductRoute = text.includes('path:"/product"');
+                const hasCustomerRoute = text.includes('path:"/customer"');
+                
+                document.getElementById('js-check').innerHTML = 
+                    '<p>产品信息: ' + (hasProduct ? '✅ 存在' : '❌ 缺失') + '</p>' +
+                    '<p>客户信息: ' + (hasCustomer ? '✅ 存在' : '❌ 缺失') + '</p>' +
+                    '<p>产品路由: ' + (hasProductRoute ? '✅ 存在' : '❌ 缺失') + '</p>' +
+                    '<p>客户路由: ' + (hasCustomerRoute ? '✅ 存在' : '❌ 缺失') + '</p>';
+                
+                if (hasProduct && hasCustomer && hasProductRoute && hasCustomerRoute) {
+                    document.getElementById('menu-check').innerHTML = 
+                        '<p style="color: green;">✅ JS文件配置正确，菜单应该显示</p>' +
+                        '<p>如果菜单不显示，可能是：</p>' +
+                        '<ul>' +
+                        '<li>浏览器缓存问题 - 请清除浏览器缓存</li>' +
+                        '<li>Nginx缓存问题 - 需要重启Nginx</li>' +
+                        '<li>权限问题 - 需要登录后才能看到菜单</li>' +
+                        '</ul>';
+                } else {
+                    document.getElementById('menu-check').innerHTML = 
+                        '<p style="color: red;">❌ JS文件配置不完整，需要修复</p>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('js-check').innerHTML = 
+                    '<p style="color: red;">❌ 无法加载JS文件: ' + error + '</p>';
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+【任务指令 - MySQL容器部署】
+
+致：香港工程师小迈
+
+请执行MySQL容器部署任务：
+
+1. 部署MySQL容器：
+   docker run -d --name mysql-medgsp -p 3306:3306 \
+     -e MYSQL_ROOT_PASSWORD=YourPassword123! \
+     -e MYSQL_DATABASE=med_gsp \
+     mysql:8.0
+
+2. 验证部署状态：
+   docker ps | grep mysql-medgsp
+   docker logs mysql-medgsp
+
+3. 导入数据库备份（如果需要）：
+   docker exec -i mysql-medgsp mysql -uroot -pYourPassword123! med_gsp < /path/to/backup.sql
+
+4. 回复部署结果：
+   - 容器是否运行正常？
+   - 数据库是否可连接？
+   - 遇到什么问题？
+
+任务优先级：高
+预计时间：30分钟
+{{ADDITIONAL_INSTRUCTIONS}}

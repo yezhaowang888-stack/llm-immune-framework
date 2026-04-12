@@ -1,0 +1,187 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 23:46:13 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 重新创建正确的dynamic-router.js ===' && echo '' && echo '时间: Sat Apr 11 23:46:13 CST 2026' && echo '' && echo '1. 创建正确的等待Vue Router版本:' && cat > /opt/med-gsp-system/frontend/js/dynamic-router.js << 'EOF'
+console.log('🔧 动态路由注册系统启动（等待Vue Router版）');
+
+// 等待 Vue Router 初始化完成
+(function waitForRouter() {
+    // 检查各种可能的 Vue Router 实例
+    if (window.$vueRouter || window.__VUE_ROUTER__) {
+        console.log('✅ Vue Router 已检测到，开始注册动态路由');
+        registerDynamicRoutes();
+    } else if (window.vueApp && window.vueApp.$router) {
+        console.log('✅ Vue Router 已检测到（通过 vueApp），开始注册动态路由');
+        registerDynamicRoutes(window.vueApp.$router);
+    } else if (window.Vue && window.Vue.prototype.$router) {
+        console.log('✅ Vue Router 已检测到（通过 Vue 全局），开始注册动态路由');
+        registerDynamicRoutes(window.Vue.prototype.$router);
+    } else {
+        console.log('⏳ 等待 Vue Router 初始化...');
+        setTimeout(waitForRouter, 100);
+    }
+})();
+
+function registerDynamicRoutes(routerInstance) {
+    const router = routerInstance || window.$vueRouter || window.__VUE_ROUTER__;
+    if (!router) {
+        console.error('❌ 无法获取 Vue Router 实例');
+        return;
+    }
+    
+    console.log('🔧 开始注册动态路由...');
+    
+    // 添加客户管理路由
+    try {
+        router.addRoute({
+            path: '/customer',
+            name: 'Customer',
+            component: {
+                template: '<div><h2>客户信息管理</h2><p>客户信息管理页面</p></div>'
+            },
+            meta: { title: '客户信息', icon: 'el-icon-user' }
+        });
+        console.log('✅ 客户管理路由注册完成');
+    } catch (error) {
+        console.error('❌ 客户管理路由注册失败:', error);
+    }
+    
+    // 添加产品管理路由
+    try {
+        router.addRoute({
+            path: '/product',
+            name: 'Product',
+            component: {
+                template: '<div><h2>产品信息管理</h2><p>产品信息管理页面</p></div>'
+            },
+            meta: { title: '产品信息', icon: 'el-icon-goods' }
+        });
+        console.log('✅ 产品管理路由注册完成');
+    } catch (error) {
+        console.error('❌ 产品管理路由注册失败:', error);
+    }
+    
+    console.log('✅ 动态路由注册完成');
+    
+    // 触发路由更新
+    if (router.currentRoute) {
+        router.currentRoute._value = router.currentRoute._value || {};
+    }
+}
+EOF
+echo '✅ dynamic-router.js已重新创建' && echo '' && echo '2. 验证文件内容:' && head -30 /opt/med-gsp-system/frontend/js/dynamic-router.js
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 重新创建正确的dynamic-router.js ===' && echo '' && echo '时间: Sat Apr 11 23:46:13 CST 2026' && echo '' && echo '1. 创建正确的等待Vue Router版本:' && cat > /opt/med-gsp-system/frontend/js/dynamic-router.js << 'EOF'
+console.log('🔧 动态路由注册系统启动（等待Vue Router版）');
+
+// 等待 Vue Router 初始化完成
+(function waitForRouter() {
+    // 检查各种可能的 Vue Router 实例
+    if (window.$vueRouter || window.__VUE_ROUTER__) {
+        console.log('✅ Vue Router 已检测到，开始注册动态路由');
+        registerDynamicRoutes();
+    } else if (window.vueApp && window.vueApp.$router) {
+        console.log('✅ Vue Router 已检测到（通过 vueApp），开始注册动态路由');
+        registerDynamicRoutes(window.vueApp.$router);
+    } else if (window.Vue && window.Vue.prototype.$router) {
+        console.log('✅ Vue Router 已检测到（通过 Vue 全局），开始注册动态路由');
+        registerDynamicRoutes(window.Vue.prototype.$router);
+    } else {
+        console.log('⏳ 等待 Vue Router 初始化...');
+        setTimeout(waitForRouter, 100);
+    }
+})();
+
+function registerDynamicRoutes(routerInstance) {
+    const router = routerInstance || window.$vueRouter || window.__VUE_ROUTER__;
+    if (!router) {
+        console.error('❌ 无法获取 Vue Router 实例');
+        return;
+    }
+    
+    console.log('🔧 开始注册动态路由...');
+    
+    // 添加客户管理路由
+    try {
+        router.addRoute({
+            path: '/customer',
+            name: 'Customer',
+            component: {
+                template: '<div><h2>客户信息管理</h2><p>客户信息管理页面</p></div>'
+            },
+            meta: { title: '客户信息', icon: 'el-icon-user' }
+        });
+        console.log('✅ 客户管理路由注册完成');
+    } catch (error) {
+        console.error('❌ 客户管理路由注册失败:', error);
+    }
+    
+    // 添加产品管理路由
+    try {
+        router.addRoute({
+            path: '/product',
+            name: 'Product',
+            component: {
+                template: '<div><h2>产品信息管理</h2><p>产品信息管理页面</p></div>'
+            },
+            meta: { title: '产品信息', icon: 'el-icon-goods' }
+        });
+        console.log('✅ 产品管理路由注册完成');
+    } catch (error) {
+        console.error('❌ 产品管理路由注册失败:', error);
+    }
+    
+    console.log('✅ 动态路由注册完成');
+    
+    // 触发路由更新
+    if (router.currentRoute) {
+        router.currentRoute._value = router.currentRoute._value || {};
+    }
+}
+EOF
+echo '✅ dynamic-router.js已重新创建' && echo '' && echo '2. 验证文件内容:' && head -30 /opt/med-gsp-system/frontend/js/dynamic-router.js
+=== 重新创建正确的dynamic-router.js ===
+
+时间: Sat Apr 11 23:46:13 CST 2026
+
+1. 创建正确的等待Vue Router版本:
+✅ dynamic-router.js已重新创建
+
+2. 验证文件内容:
+console.log('🔧 动态路由注册系统启动（等待Vue Router版）');
+
+// 等待 Vue Router 初始化完成
+(function waitForRouter() {
+    // 检查各种可能的 Vue Router 实例
+    if (window.$vueRouter || window.__VUE_ROUTER__) {
+        console.log('✅ Vue Router 已检测到，开始注册动态路由');
+        registerDynamicRoutes();
+    } else if (window.vueApp && window.vueApp.$router) {
+        console.log('✅ Vue Router 已检测到（通过 vueApp），开始注册动态路由');
+        registerDynamicRoutes(window.vueApp.$router);
+    } else if (window.Vue && window.Vue.prototype.$router) {
+        console.log('✅ Vue Router 已检测到（通过 Vue 全局），开始注册动态路由');
+        registerDynamicRoutes(window.Vue.prototype.$router);
+    } else {
+        console.log('⏳ 等待 Vue Router 初始化...');
+        setTimeout(waitForRouter, 100);
+    }
+})();
+
+function registerDynamicRoutes(routerInstance) {
+    const router = routerInstance || window.$vueRouter || window.__VUE_ROUTER__;
+    if (!router) {
+        console.error('❌ 无法获取 Vue Router 实例');
+        return;
+    }
+    
+    console.log('🔧 开始注册动态路由...');
+    
+    // 添加客户管理路由
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 23:46:16 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_234613.log

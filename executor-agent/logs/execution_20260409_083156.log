@@ -1,0 +1,161 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 08:31:56 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 创建JavaScript诊断页 ===' && echo '' && echo '1. 创建诊断页面:' && cat > /opt/med-gsp-system/frontend/debug.html << 'HTML'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript诊断页面</title>
+    <script>
+        window.onload = function() {
+            var status = document.getElementById('status');
+            var consoleOutput = document.getElementById('console');
+            
+            // 测试JavaScript执行
+            status.innerHTML = '✅ JavaScript引擎正常';
+            
+            // 测试控制台
+            console.log('诊断页面: JavaScript测试');
+            
+            // 显示控制台模拟
+            consoleOutput.innerHTML = '控制台输出: JavaScript测试日志';
+            
+            // 测试Vue资源加载
+            var vueLoaded = false;
+            var script = document.createElement('script');
+            script.src = '/js/app.ae2715d5.js';
+            script.onload = function() {
+                document.getElementById('vue-status').innerHTML = '✅ Vue.js资源加载成功';
+                vueLoaded = true;
+            };
+            script.onerror = function() {
+                document.getElementById('vue-status').innerHTML = '❌ Vue.js资源加载失败';
+            };
+            document.head.appendChild(script);
+        };
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .test { background: #f0f0f0; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>JavaScript诊断页面</h1>
+    
+    <div class="test">
+        <h3>1. JavaScript引擎测试</h3>
+        <p id="status">测试中...</p>
+    </div>
+    
+    <div class="test">
+        <h3>2. Vue.js资源加载测试</h3>
+        <p id="vue-status">测试中...</p>
+    </div>
+    
+    <div class="test">
+        <h3>3. 控制台输出</h3>
+        <div id="console">等待输出...</div>
+    </div>
+    
+    <div class="test">
+        <h3>4. 浏览器信息</h3>
+        <p id="browser-info"></p>
+        <script>
+            document.getElementById('browser-info').innerHTML = 
+                '用户代理: ' + navigator.userAgent;
+        </script>
+    </div>
+    
+    <p><a href="/">返回主应用</a> | <a href="/test.html">测试页面</a></p>
+</body>
+</html>
+HTML
+echo '2. 诊断页面创建完成，请访问: http://8.217.249.184/debug.html'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 创建JavaScript诊断页 ===' && echo '' && echo '1. 创建诊断页面:' && cat > /opt/med-gsp-system/frontend/debug.html << 'HTML'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript诊断页面</title>
+    <script>
+        window.onload = function() {
+            var status = document.getElementById('status');
+            var consoleOutput = document.getElementById('console');
+            
+            // 测试JavaScript执行
+            status.innerHTML = '✅ JavaScript引擎正常';
+            
+            // 测试控制台
+            console.log('诊断页面: JavaScript测试');
+            
+            // 显示控制台模拟
+            consoleOutput.innerHTML = '控制台输出: JavaScript测试日志';
+            
+            // 测试Vue资源加载
+            var vueLoaded = false;
+            var script = document.createElement('script');
+            script.src = '/js/app.ae2715d5.js';
+            script.onload = function() {
+                document.getElementById('vue-status').innerHTML = '✅ Vue.js资源加载成功';
+                vueLoaded = true;
+            };
+            script.onerror = function() {
+                document.getElementById('vue-status').innerHTML = '❌ Vue.js资源加载失败';
+            };
+            document.head.appendChild(script);
+        };
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .test { background: #f0f0f0; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>JavaScript诊断页面</h1>
+    
+    <div class="test">
+        <h3>1. JavaScript引擎测试</h3>
+        <p id="status">测试中...</p>
+    </div>
+    
+    <div class="test">
+        <h3>2. Vue.js资源加载测试</h3>
+        <p id="vue-status">测试中...</p>
+    </div>
+    
+    <div class="test">
+        <h3>3. 控制台输出</h3>
+        <div id="console">等待输出...</div>
+    </div>
+    
+    <div class="test">
+        <h3>4. 浏览器信息</h3>
+        <p id="browser-info"></p>
+        <script>
+            document.getElementById('browser-info').innerHTML = 
+                '用户代理: ' + navigator.userAgent;
+        </script>
+    </div>
+    
+    <p><a href="/">返回主应用</a> | <a href="/test.html">测试页面</a></p>
+</body>
+</html>
+HTML
+echo '2. 诊断页面创建完成，请访问: http://8.217.249.184/debug.html'
+=== 创建JavaScript诊断页 ===
+
+1. 创建诊断页面:
+2. 诊断页面创建完成，请访问: http://8.217.249.184/debug.html
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 08:31:57 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_083156.log

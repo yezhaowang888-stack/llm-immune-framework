@@ -1,0 +1,17 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:44:02 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 搜索前端文件 ===' && find / -name 'index.html' -type f 2>/dev/null | grep -E 'medgsp|medical' | head -10
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 搜索前端文件 ===' && find / -name 'index.html' -type f 2>/dev/null | grep -E 'medgsp|medical' | head -10
+=== 搜索前端文件 ===
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/index.html
+/root/medgsp_backup_20260403_1300/web/index.html
+/root/huimai-openclaw/workspace/code_repository/medical_system/current/index.html
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:44:11 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214402.log

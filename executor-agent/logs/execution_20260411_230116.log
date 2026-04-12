@@ -1,0 +1,523 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 23:01:16 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 创建统一菜单数据源 ===' && echo '' && echo '1. 创建菜单配置中心:' && cat > /opt/med-gsp-system/frontend/js/menu-config.js << 'EOF'
+// 统一菜单数据源配置中心
+// 解决菜单系统各自为政问题
+
+// 菜单项数据结构
+const menuItems = [
+    // 首页看板
+    {
+        path: '/dashboard',
+        name: 'dashboard',
+        title: '首页看板',
+        icon: 'el-icon-odometer',
+        meta: { title: '首页看板' },
+        roles: ['ADMIN', 'USER', 'OPERATOR']
+    },
+    
+    // 设备档案
+    {
+        path: '/device',
+        name: 'device',
+        title: '设备档案',
+        icon: 'el-icon-monitor',
+        children: [
+            {
+                path: '/device/list',
+                name: 'deviceList',
+                title: '设备列表',
+                meta: { title: '设备列表' },
+                roles: ['ADMIN', 'USER', 'OPERATOR']
+            },
+            {
+                path: '/device/instock',
+                name: 'deviceInstock',
+                title: '设备入库',
+                meta: { title: '设备入库' },
+                roles: ['ADMIN', 'USER']
+            },
+            {
+                path: '/device/outstock',
+                name: 'deviceOutstock',
+                title: '设备出库',
+                meta: { title: '设备出库' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 销售订单
+    {
+        path: '/sales',
+        name: 'sales',
+        title: '销售订单',
+        icon: 'el-icon-shopping-cart',
+        children: [
+            {
+                path: '/sales/list',
+                name: 'salesList',
+                title: '订单列表',
+                meta: { title: '销售订单' },
+                roles: ['ADMIN', 'USER']
+            },
+            {
+                path: '/sales/add',
+                name: 'salesAdd',
+                title: '新建订单',
+                meta: { title: '新建订单' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 采购入库
+    {
+        path: '/purchase',
+        name: 'purchase',
+        title: '采购入库',
+        icon: 'el-icon-box',
+        children: [
+            {
+                path: '/purchase/list',
+                name: 'purchaseList',
+                title: '采购单列表',
+                meta: { title: '采购列表' },
+                roles: ['ADMIN', 'USER']
+            },
+            {
+                path: '/purchase/add',
+                name: 'purchaseAdd',
+                title: '新建采购',
+                meta: { title: '新建采购' },
+                roles: ['ADMIN', 'USER']
+            },
+            {
+                path: '/purchase/scan',
+                name: 'purchaseScan',
+                title: '扫码入库',
+                meta: { title: '扫码入库' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 售后维修
+    {
+        path: '/after-sales',
+        name: 'afterSales',
+        title: '售后维修',
+        icon: 'el-icon-tools',
+        children: [
+            {
+                path: '/after-sales/list',
+                name: 'afterSalesList',
+                title: '工单列表',
+                meta: { title: '售后工单' },
+                roles: ['ADMIN', 'USER', 'OPERATOR']
+            },
+            {
+                path: '/after-sales/add',
+                name: 'afterSalesAdd',
+                title: '新建工单',
+                meta: { title: '新建工单' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 库存管理
+    {
+        path: '/inventory',
+        name: 'inventory',
+        title: '库存管理',
+        icon: 'el-icon-files',
+        children: [
+            {
+                path: '/inventory/list',
+                name: 'inventoryList',
+                title: '库存列表',
+                meta: { title: '库存列表' },
+                roles: ['ADMIN', 'USER']
+            },
+            {
+                path: '/inventory/check',
+                name: 'inventoryCheck',
+                title: '库存盘点',
+                meta: { title: '库存盘点' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 客户信息管理 - 新增
+    {
+        path: '/customer',
+        name: 'customer',
+        title: '客户管理',
+        icon: 'el-icon-user',
+        children: [
+            {
+                path: '/customer',
+                name: 'customerList',
+                title: '客户信息',
+                meta: { title: '客户信息', icon: 'el-icon-user' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 产品信息管理 - 新增
+    {
+        path: '/product',
+        name: 'product',
+        title: '产品管理',
+        icon: 'el-icon-goods',
+        children: [
+            {
+                path: '/product',
+                name: 'productList',
+                title: '产品信息',
+                meta: { title: '产品信息', icon: 'el-icon-goods' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 报表分析
+    {
+        path: '/report',
+        name: 'report',
+        title: '报表分析',
+        icon: 'el-icon-data-line',
+        meta: { title: '报表分析' },
+        roles: ['ADMIN', 'USER']
+    },
+    
+    // 系统设置
+    {
+        path: '/system',
+        name: 'system',
+        title: '系统设置',
+        icon: 'el-icon-setting',
+        meta: { title: '系统设置' },
+        roles: ['ADMIN']
+    }
+];
+
+// 导出菜单配置
+export default menuItems;
+
+// 权限过滤函数
+export function filterMenuByRole(menuItems, userRole) {
+    return menuItems.filter(item => {
+        // 检查当前菜单项是否有权限要求
+        if (item.roles && !item.roles.includes(userRole)) {
+            return false;
+        }
+        
+        // 递归过滤子菜单
+        if (item.children) {
+            item.children = filterMenuByRole(item.children, userRole);
+            // 如果过滤后子菜单为空，则移除父菜单
+            if (item.children.length === 0) {
+                return false;
+            }
+        }
+        
+        return true;
+    });
+}
+
+// 获取用户角色（模拟）
+export function getUserRole() {
+    try {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            return user.role || 'USER'; // 默认USER角色
+        }
+    } catch (error) {
+        console.error('获取用户角色失败:', error);
+    }
+    return 'USER'; // 默认角色
+}
+
+// 初始化菜单
+export function initMenu() {
+    const userRole = getUserRole();
+    const filteredMenu = filterMenuByRole(menuItems, userRole);
+    console.log('🔧 统一菜单数据源初始化完成');
+    console.log('👤 用户角色:', userRole);
+    console.log('📋 过滤后菜单项:', filteredMenu.length);
+    return filteredMenu;
+}
+EOF
+echo '✅ 统一菜单数据源已创建: /opt/med-gsp-system/frontend/js/menu-config.js'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 创建统一菜单数据源 ===' && echo '' && echo '1. 创建菜单配置中心:' && cat > /opt/med-gsp-system/frontend/js/menu-config.js << 'EOF'
+// 统一菜单数据源配置中心
+// 解决菜单系统各自为政问题
+
+// 菜单项数据结构
+const menuItems = [
+    // 首页看板
+    {
+        path: '/dashboard',
+        name: 'dashboard',
+        title: '首页看板',
+        icon: 'el-icon-odometer',
+        meta: { title: '首页看板' },
+        roles: ['ADMIN', 'USER', 'OPERATOR']
+    },
+    
+    // 设备档案
+    {
+        path: '/device',
+        name: 'device',
+        title: '设备档案',
+        icon: 'el-icon-monitor',
+        children: [
+            {
+                path: '/device/list',
+                name: 'deviceList',
+                title: '设备列表',
+                meta: { title: '设备列表' },
+                roles: ['ADMIN', 'USER', 'OPERATOR']
+            },
+            {
+                path: '/device/instock',
+                name: 'deviceInstock',
+                title: '设备入库',
+                meta: { title: '设备入库' },
+                roles: ['ADMIN', 'USER']
+            },
+            {
+                path: '/device/outstock',
+                name: 'deviceOutstock',
+                title: '设备出库',
+                meta: { title: '设备出库' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 销售订单
+    {
+        path: '/sales',
+        name: 'sales',
+        title: '销售订单',
+        icon: 'el-icon-shopping-cart',
+        children: [
+            {
+                path: '/sales/list',
+                name: 'salesList',
+                title: '订单列表',
+                meta: { title: '销售订单' },
+                roles: ['ADMIN', 'USER']
+            },
+            {
+                path: '/sales/add',
+                name: 'salesAdd',
+                title: '新建订单',
+                meta: { title: '新建订单' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 采购入库
+    {
+        path: '/purchase',
+        name: 'purchase',
+        title: '采购入库',
+        icon: 'el-icon-box',
+        children: [
+            {
+                path: '/purchase/list',
+                name: 'purchaseList',
+                title: '采购单列表',
+                meta: { title: '采购列表' },
+                roles: ['ADMIN', 'USER']
+            },
+            {
+                path: '/purchase/add',
+                name: 'purchaseAdd',
+                title: '新建采购',
+                meta: { title: '新建采购' },
+                roles: ['ADMIN', 'USER']
+            },
+            {
+                path: '/purchase/scan',
+                name: 'purchaseScan',
+                title: '扫码入库',
+                meta: { title: '扫码入库' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 售后维修
+    {
+        path: '/after-sales',
+        name: 'afterSales',
+        title: '售后维修',
+        icon: 'el-icon-tools',
+        children: [
+            {
+                path: '/after-sales/list',
+                name: 'afterSalesList',
+                title: '工单列表',
+                meta: { title: '售后工单' },
+                roles: ['ADMIN', 'USER', 'OPERATOR']
+            },
+            {
+                path: '/after-sales/add',
+                name: 'afterSalesAdd',
+                title: '新建工单',
+                meta: { title: '新建工单' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 库存管理
+    {
+        path: '/inventory',
+        name: 'inventory',
+        title: '库存管理',
+        icon: 'el-icon-files',
+        children: [
+            {
+                path: '/inventory/list',
+                name: 'inventoryList',
+                title: '库存列表',
+                meta: { title: '库存列表' },
+                roles: ['ADMIN', 'USER']
+            },
+            {
+                path: '/inventory/check',
+                name: 'inventoryCheck',
+                title: '库存盘点',
+                meta: { title: '库存盘点' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 客户信息管理 - 新增
+    {
+        path: '/customer',
+        name: 'customer',
+        title: '客户管理',
+        icon: 'el-icon-user',
+        children: [
+            {
+                path: '/customer',
+                name: 'customerList',
+                title: '客户信息',
+                meta: { title: '客户信息', icon: 'el-icon-user' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 产品信息管理 - 新增
+    {
+        path: '/product',
+        name: 'product',
+        title: '产品管理',
+        icon: 'el-icon-goods',
+        children: [
+            {
+                path: '/product',
+                name: 'productList',
+                title: '产品信息',
+                meta: { title: '产品信息', icon: 'el-icon-goods' },
+                roles: ['ADMIN', 'USER']
+            }
+        ]
+    },
+    
+    // 报表分析
+    {
+        path: '/report',
+        name: 'report',
+        title: '报表分析',
+        icon: 'el-icon-data-line',
+        meta: { title: '报表分析' },
+        roles: ['ADMIN', 'USER']
+    },
+    
+    // 系统设置
+    {
+        path: '/system',
+        name: 'system',
+        title: '系统设置',
+        icon: 'el-icon-setting',
+        meta: { title: '系统设置' },
+        roles: ['ADMIN']
+    }
+];
+
+// 导出菜单配置
+export default menuItems;
+
+// 权限过滤函数
+export function filterMenuByRole(menuItems, userRole) {
+    return menuItems.filter(item => {
+        // 检查当前菜单项是否有权限要求
+        if (item.roles && !item.roles.includes(userRole)) {
+            return false;
+        }
+        
+        // 递归过滤子菜单
+        if (item.children) {
+            item.children = filterMenuByRole(item.children, userRole);
+            // 如果过滤后子菜单为空，则移除父菜单
+            if (item.children.length === 0) {
+                return false;
+            }
+        }
+        
+        return true;
+    });
+}
+
+// 获取用户角色（模拟）
+export function getUserRole() {
+    try {
+        const userStr = localStorage.getItem('user');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            return user.role || 'USER'; // 默认USER角色
+        }
+    } catch (error) {
+        console.error('获取用户角色失败:', error);
+    }
+    return 'USER'; // 默认角色
+}
+
+// 初始化菜单
+export function initMenu() {
+    const userRole = getUserRole();
+    const filteredMenu = filterMenuByRole(menuItems, userRole);
+    console.log('🔧 统一菜单数据源初始化完成');
+    console.log('👤 用户角色:', userRole);
+    console.log('📋 过滤后菜单项:', filteredMenu.length);
+    return filteredMenu;
+}
+EOF
+echo '✅ 统一菜单数据源已创建: /opt/med-gsp-system/frontend/js/menu-config.js'
+=== 创建统一菜单数据源 ===
+
+1. 创建菜单配置中心:
+✅ 统一菜单数据源已创建: /opt/med-gsp-system/frontend/js/menu-config.js
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 23:01:19 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_230116.log

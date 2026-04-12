@@ -1,0 +1,125 @@
+=== 执行者智能体启动 ===
+时间: Sun Apr 12 09:04:44 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 修复文件编码 ===' && echo '' && echo '时间: Sun Apr 12 09:04:44 CST 2026' && echo '' && echo '1. 备份当前文件:' && cp /opt/med-gsp-system/frontend/js/app.3b24beff.js /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup.20260412_0904 && echo '✅ 备份完成' && echo '' && echo '2. 检查文件编码类型:' && file -i /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '3. 尝试修复编码问题:' && echo '' && echo '创建修复脚本:' && cat > /opt/med-gsp-system/frontend/fix-encoding.sh << 'EOF'
+#!/bin/bash
+echo '🔧 修复文件编码脚本'
+echo '时间: Sun Apr 12 09:04:44 CST 2026'
+echo ''
+
+# 备份文件
+backup_file="/opt/med-gsp-system/frontend/js/app.3b24beff.js.backup.$(date +%Y%m%d_%H%M%S)"
+cp /opt/med-gsp-system/frontend/js/app.3b24beff.js "$backup_file"
+echo "✅ 备份到: $backup_file"
+
+# 检查文件内容
+echo '📋 检查文件内容:'
+head -5 /opt/med-gsp-system/frontend/js/app.3b24beff.js | cat -A
+echo ''
+
+# 尝试修复常见编码问题
+echo '🔧 尝试修复编码:'
+# 1. 移除可能的BOM标记
+sed -i '1s/^\xEF\xBB\xBF//' /opt/med-gsp-system/frontend/js/app.3b24beff.js 2>/dev/null
+# 2. 修复常见的乱码模式
+sed -i 's/M-eM-^LM-;M-gM-^VM-^WM-eM-^YM-(M-fM-"M-0M-gM-.M-!M-gM-^PM-^FM-gM-3M-;M-gM-;M-^_/医疗器械管理系统/g' /opt/med-gsp-system/frontend/js/app.3b24beff.js 2>/dev/null
+sed -i 's/M-fM-^CM- M-hM-?M-^HM-gM-^TM-^_M-gM-^IM-)/惠迈医疗/g' /opt/med-gsp-system/frontend/js/app.3b24beff.js 2>/dev/null
+
+echo '✅ 编码修复尝试完成'
+echo ''
+
+# 验证修复
+echo '📋 验证修复结果:'
+head -5 /opt/med-gsp-system/frontend/js/app.3b24beff.js | cat -A
+echo ''
+
+# 语法检查
+echo '🔍 语法检查:'
+node -c /opt/med-gsp-system/frontend/js/app.3b24beff.js 2>&1 | head -5
+EOF
+chmod +x /opt/med-gsp-system/frontend/fix-encoding.sh && /opt/med-gsp-system/frontend/fix-encoding.sh
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 修复文件编码 ===' && echo '' && echo '时间: Sun Apr 12 09:04:44 CST 2026' && echo '' && echo '1. 备份当前文件:' && cp /opt/med-gsp-system/frontend/js/app.3b24beff.js /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup.20260412_0904 && echo '✅ 备份完成' && echo '' && echo '2. 检查文件编码类型:' && file -i /opt/med-gsp-system/frontend/js/app.3b24beff.js && echo '' && echo '3. 尝试修复编码问题:' && echo '' && echo '创建修复脚本:' && cat > /opt/med-gsp-system/frontend/fix-encoding.sh << 'EOF'
+#!/bin/bash
+echo '🔧 修复文件编码脚本'
+echo '时间: Sun Apr 12 09:04:44 CST 2026'
+echo ''
+
+# 备份文件
+backup_file="/opt/med-gsp-system/frontend/js/app.3b24beff.js.backup.$(date +%Y%m%d_%H%M%S)"
+cp /opt/med-gsp-system/frontend/js/app.3b24beff.js "$backup_file"
+echo "✅ 备份到: $backup_file"
+
+# 检查文件内容
+echo '📋 检查文件内容:'
+head -5 /opt/med-gsp-system/frontend/js/app.3b24beff.js | cat -A
+echo ''
+
+# 尝试修复常见编码问题
+echo '🔧 尝试修复编码:'
+# 1. 移除可能的BOM标记
+sed -i '1s/^\xEF\xBB\xBF//' /opt/med-gsp-system/frontend/js/app.3b24beff.js 2>/dev/null
+# 2. 修复常见的乱码模式
+sed -i 's/M-eM-^LM-;M-gM-^VM-^WM-eM-^YM-(M-fM-"M-0M-gM-.M-!M-gM-^PM-^FM-gM-3M-;M-gM-;M-^_/医疗器械管理系统/g' /opt/med-gsp-system/frontend/js/app.3b24beff.js 2>/dev/null
+sed -i 's/M-fM-^CM- M-hM-?M-^HM-gM-^TM-^_M-gM-^IM-)/惠迈医疗/g' /opt/med-gsp-system/frontend/js/app.3b24beff.js 2>/dev/null
+
+echo '✅ 编码修复尝试完成'
+echo ''
+
+# 验证修复
+echo '📋 验证修复结果:'
+head -5 /opt/med-gsp-system/frontend/js/app.3b24beff.js | cat -A
+echo ''
+
+# 语法检查
+echo '🔍 语法检查:'
+node -c /opt/med-gsp-system/frontend/js/app.3b24beff.js 2>&1 | head -5
+EOF
+chmod +x /opt/med-gsp-system/frontend/fix-encoding.sh && /opt/med-gsp-system/frontend/fix-encoding.sh
+=== 修复文件编码 ===
+
+时间: Sun Apr 12 09:04:44 CST 2026
+
+1. 备份当前文件:
+✅ 备份完成
+
+2. 检查文件编码类型:
+/opt/med-gsp-system/frontend/js/app.3b24beff.js: text/plain; charset=utf-8
+
+3. 尝试修复编码问题:
+
+创建修复脚本:
+🔧 修复文件编码脚本
+时间: Sun Apr 12 09:04:44 CST 2026
+
+✅ 备份到: /opt/med-gsp-system/frontend/js/app.3b24beff.js.backup.20260412_090446
+📋 检查文件内容:
+// M-fM-^\M-^@M-gM-.M-^@M-eM-^MM-^UM-gM-^ZM-^DVue 3M-eM-:M-^TM-gM-^TM-( - M-dM-?M-.M-eM-$M-^MM-gM-<M-^VM-gM- M-^AM-iM-^WM-.M-iM-"M-^X$
+console.log('M-bM-^\M-^E M-eM-^LM-;M-gM-^VM-^WM-eM-^YM-(M-fM-"M-0M-gM-.M-!M-gM-^PM-^FM-gM-3M-;M-gM-;M-^_M-eM-^PM-/M-eM-^JM-(...');$
+$
+// M-fM-#M-^@M-fM-^_M-%VueM-fM-^XM-/M-eM-^PM-&M-eM-7M-2M-eM-^JM- M-hM-=M-=$
+if (typeof Vue === 'undefined') {$
+
+🔧 尝试修复编码:
+✅ 编码修复尝试完成
+
+📋 验证修复结果:
+// M-fM-^\M-^@M-gM-.M-^@M-eM-^MM-^UM-gM-^ZM-^DVue 3M-eM-:M-^TM-gM-^TM-( - M-dM-?M-.M-eM-$M-^MM-gM-<M-^VM-gM- M-^AM-iM-^WM-.M-iM-"M-^X$
+console.log('M-bM-^\M-^E M-eM-^LM-;M-gM-^VM-^WM-eM-^YM-(M-fM-"M-0M-gM-.M-!M-gM-^PM-^FM-gM-3M-;M-gM-;M-^_M-eM-^PM-/M-eM-^JM-(...');$
+$
+// M-fM-#M-^@M-fM-^_M-%VueM-fM-^XM-/M-eM-^PM-&M-eM-7M-2M-eM-^JM- M-hM-=M-=$
+if (typeof Vue === 'undefined') {$
+
+🔍 语法检查:
+/opt/med-gsp-system/frontend/js/app.3b24beff.js:23
+            if (this.) {
+                     ^
+
+SyntaxError: Unexpected token ')'
+
+=== 执行完成 ===
+完成时间: Sun Apr 12 09:04:46 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260412_090444.log

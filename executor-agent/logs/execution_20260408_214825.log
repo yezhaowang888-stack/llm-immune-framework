@@ -1,0 +1,18 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:48:25 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 发现API端点 ===' && echo '' && echo '1. 测试常见端点:' && for endpoint in / /api /actuator/health /health /api/v1/health; do echo -n "$endpoint: "; curl -s -o /dev/null -w '%{http_code}' http://localhost:8080$endpoint 2>/dev/null || echo '失败'; done && echo '' && echo '2. 检查应用配置中的上下文路径:' && grep -r 'server.servlet.context-path\|contextPath' /opt/med-gsp-system/ 2>/dev/null | head -5
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 发现API端点 ===' && echo '' && echo '1. 测试常见端点:' && for endpoint in / /api /actuator/health /health /api/v1/health; do echo -n "$endpoint: "; curl -s -o /dev/null -w '%{http_code}' http://localhost:8080$endpoint 2>/dev/null || echo '失败'; done && echo '' && echo '2. 检查应用配置中的上下文路径:' && grep -r 'server.servlet.context-path\|contextPath' /opt/med-gsp-system/ 2>/dev/null | head -5
+=== 发现API端点 ===
+
+1. 测试常见端点:
+/: 404/api: 404/actuator/health: 404/health: 404/api/v1/health: 404
+2. 检查应用配置中的上下文路径:
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:48:31 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214825.log

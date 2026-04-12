@@ -1,0 +1,72 @@
+=== 执行者智能体启动 ===
+时间: Sun Apr 12 09:10:25 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 检查现有源码和构建环境 ===' && echo '' && echo '时间: Sun Apr 12 09:10:25 CST 2026' && echo '' && echo '1. 检查现有源码目录:' && find /opt/med-gsp-system -name '*.vue' -o -name '*.js' -o -name 'package.json' -o -name 'vite.config.*' -o -name 'webpack.config.*' 2>/dev/null | head -20 && echo '' && echo '2. 检查可能的备份目录:' && ls -la /root/medgsp_backup_20260403_1300/ 2>/dev/null | head -10 && echo '' && echo '3. 检查Gitea容器状态:' && docker ps | grep gitea && echo '' && echo '4. 检查现有Git仓库:' && find /opt/med-gsp-system -name '.git' -type d 2>/dev/null && echo '' && echo '5. 检查构建工具:' && which node && node --version && which npm && npm --version && echo '' && echo '6. 检查Nginx目录结构:' && ls -la /usr/share/nginx/html/ 2>/dev/null | head -10
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 检查现有源码和构建环境 ===' && echo '' && echo '时间: Sun Apr 12 09:10:25 CST 2026' && echo '' && echo '1. 检查现有源码目录:' && find /opt/med-gsp-system -name '*.vue' -o -name '*.js' -o -name 'package.json' -o -name 'vite.config.*' -o -name 'webpack.config.*' 2>/dev/null | head -20 && echo '' && echo '2. 检查可能的备份目录:' && ls -la /root/medgsp_backup_20260403_1300/ 2>/dev/null | head -10 && echo '' && echo '3. 检查Gitea容器状态:' && docker ps | grep gitea && echo '' && echo '4. 检查现有Git仓库:' && find /opt/med-gsp-system -name '.git' -type d 2>/dev/null && echo '' && echo '5. 检查构建工具:' && which node && node --version && which npm && npm --version && echo '' && echo '6. 检查Nginx目录结构:' && ls -la /usr/share/nginx/html/ 2>/dev/null | head -10
+=== 检查现有源码和构建环境 ===
+
+时间: Sun Apr 12 09:10:25 CST 2026
+
+1. 检查现有源码目录:
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/353.7532f735.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/245.71c6db01.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/339.927d6209.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/app.2e5c3cf9.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/325.133f248f.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/74.70af28ab.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/chunk-vendors.a12959d7.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/736.f0193e9c.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/app.b4001eb8.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/45.88a760ad.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/429.4b451e8c.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/13.97df38df.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/210.ad8b450f.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/960.0e4689e1.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/app.36447950.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/551.728ffada.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/app.23ef544a.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/chunk-vendors.7016a643.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/app.dcbf8925.js
+/opt/med-gsp-system/medgsp_backup_20260403_1300/web/js/551.ea15064c.js
+
+2. 检查可能的备份目录:
+total 32
+drwxr-xr-x   4 root root 4096 Apr  3 13:08 .
+dr-xr-x---. 14 root root 4096 Apr  9 08:38 ..
+-rw-r--r--   1 root root  793 Apr  3 13:07 database_correct.sql
+-rw-r--r--   1 root root 7204 Apr  3 13:08 database_final.sql
+-rw-r--r--   1 root root  779 Apr  3 13:06 database_real.sql
+-rw-r--r--   1 root root    0 Apr  3 13:03 database.sql
+drwxr-xr-x   7 root root 4096 Apr  3 13:03 source
+drwxr-xr-x   4 root root 4096 Apr  3 13:00 web
+
+3. 检查Gitea容器状态:
+8da69dc4161e   gitea/gitea:latest   "/usr/bin/entrypoint…"   12 days ago   Up 12 days   127.0.0.1:3000->3000/tcp, 127.0.0.1:2222->22/tcp       gitea
+
+4. 检查现有Git仓库:
+/opt/med-gsp-system/.git
+/opt/med-gsp-system/medgsp_backup_20260403_1300/source/.git
+
+5. 检查构建工具:
+/usr/local/bin/node
+v22.14.0
+/usr/local/bin/npm
+10.9.2
+
+6. 检查Nginx目录结构:
+total 22616
+drwxr-xr-x 3 root  root      4096 Apr  3 13:08 .
+drwxr-xr-x 3 root  root      4096 Mar 13 11:37 ..
+-rw-r--r-- 1 root  root       497 Feb  5 03:28 50x.html
+drwxr-xr-x 4 nginx nginx     4096 Apr  3 11:10 bio
+-rw-r--r-- 1 root  root       615 Feb  5 03:28 index.html
+-rw-r--r-- 1 root  root  11570292 Apr  3 13:08 medgsp_final_20260403_1308.tar.gz
+-rw-r--r-- 1 root  root  11566384 Apr  3 13:06 medgsp_with_db_20260403_1306.tar.gz
+
+=== 执行完成 ===
+完成时间: Sun Apr 12 09:10:28 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260412_091025.log

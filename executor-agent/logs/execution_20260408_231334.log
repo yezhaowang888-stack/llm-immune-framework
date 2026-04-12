@@ -1,0 +1,21 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 23:13:34 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 实际访问账页诊断 ===' && echo '' && echo '1. 访问账页首页并检查内容:' && curl -s http://localhost/account | grep -o '<title>[^<]*</title>' && echo '' && echo '2. 检查账页HTML结构:' && curl -s http://localhost/account | grep -o '<div[^>]*class="[^"]*"[^>]*>' | head -10 && echo '' && echo '3. 检查账页JavaScript错误:' && curl -s http://localhost/account | grep -o 'console.error\|Error\|404\|500' | head -5
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 实际访问账页诊断 ===' && echo '' && echo '1. 访问账页首页并检查内容:' && curl -s http://localhost/account | grep -o '<title>[^<]*</title>' && echo '' && echo '2. 检查账页HTML结构:' && curl -s http://localhost/account | grep -o '<div[^>]*class="[^"]*"[^>]*>' | head -10 && echo '' && echo '3. 检查账页JavaScript错误:' && curl -s http://localhost/account | grep -o 'console.error\|Error\|404\|500' | head -5
+=== 实际访问账页诊断 ===
+
+1. 访问账页首页并检查内容:
+<title></title>
+
+2. 检查账页HTML结构:
+
+3. 检查账页JavaScript错误:
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 23:13:37 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_231334.log

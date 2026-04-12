@@ -1,0 +1,43 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:41:39 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 医疗器械应用详细检查 ===' && echo '' && echo '1. 应用目录结构:' && ls -la /opt/med-gsp-system/ && echo '' && echo '2. 后端应用状态:' && ls -la /opt/med-gsp-system/backend/ 2>/dev/null | head -10 && echo '' && echo '3. 前端应用状态:' && ls -la /opt/med-gsp-system/frontend/ 2>/dev/null | head -10 && echo '' && echo '4. 检查运行进程:' && ps aux | grep -i medgsp && echo '' && echo '5. 检查应用日志:' && find /opt/med-gsp-system -name '*.log' -type f 2>/dev/null | head -5
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 医疗器械应用详细检查 ===' && echo '' && echo '1. 应用目录结构:' && ls -la /opt/med-gsp-system/ && echo '' && echo '2. 后端应用状态:' && ls -la /opt/med-gsp-system/backend/ 2>/dev/null | head -10 && echo '' && echo '3. 前端应用状态:' && ls -la /opt/med-gsp-system/frontend/ 2>/dev/null | head -10 && echo '' && echo '4. 检查运行进程:' && ps aux | grep -i medgsp && echo '' && echo '5. 检查应用日志:' && find /opt/med-gsp-system -name '*.log' -type f 2>/dev/null | head -5
+=== 医疗器械应用详细检查 ===
+
+1. 应用目录结构:
+total 32
+drwxr-xr-x  7 root root 4096 Mar 30 23:35 .
+drwxr-xr-x. 5 root root 4096 Mar 30 23:29 ..
+drwxr-xr-x  3 root root 4096 Mar 30 23:39 backend
+drwxr-xr-x  3 root root 4096 Mar 30 23:33 database
+drwxr-xr-x  2 root root 4096 Mar 30 23:25 frontend
+drwxr-xr-x  8 root root 4096 Mar 30 23:39 .git
+-rw-r--r--  1 root root  688 Mar 30 23:35 PROJECT_STATUS.md
+drwxr-xr-x  2 root root 4096 Mar 30 23:25 scripts
+
+2. 后端应用状态:
+total 16
+drwxr-xr-x 3 root root 4096 Mar 30 23:39 .
+drwxr-xr-x 7 root root 4096 Mar 30 23:35 ..
+-rw-r--r-- 1 root root 3528 Mar 30 23:39 pom.xml
+drwxr-xr-x 4 root root 4096 Mar 30 23:35 src
+
+3. 前端应用状态:
+total 8
+drwxr-xr-x 2 root root 4096 Mar 30 23:25 .
+drwxr-xr-x 7 root root 4096 Mar 30 23:35 ..
+
+4. 检查运行进程:
+root      229322  0.0  0.0 222388  3500 ?        Ss   21:41   0:00 bash -c echo '=== 医疗器械应用详细检查 ===' && echo '' && echo '1. 应用?录结构:' && ls -la /opt/med-gsp-system/ && echo '' && echo '2. 后端应用状态:' && ls -la /opt/med-gsp-system/backend/ 2>/dev/null | head -10 && echo '' && echo '3. 前端应用状态:' && ls -la /opt/med-gsp-system/frontend/ 2>/dev/null | head -10 && echo '' && echo '4. 检查运行?程:' && ps aux | grep -i medgsp && echo '' && echo '5. 检查应用日志:' && find /opt/med-gsp-system -name '*.log' -type f 2>/dev/null | head -5
+root      229347  0.0  0.0 221528   960 ?        R    21:41   0:00 grep -i medgsp
+
+5. 检查应用日志:
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:41:54 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214139.log

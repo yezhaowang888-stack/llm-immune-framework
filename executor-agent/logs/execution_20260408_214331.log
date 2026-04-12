@@ -1,0 +1,22 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:43:31 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 提取前端文件 ===' && echo '' && echo '1. 提取前端文件到正确位置:' && tar -xzf /root/medgsp_final_20260403_1308.tar.gz --strip-components=3 -C /opt/med-gsp-system/frontend/ 'root/medgsp_backup_20260403_1300/source/frontend/' 2>&1 | tail -5 && echo '' && echo '2. 检查前端文件:' && ls -la /opt/med-gsp-system/frontend/ | head -20
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 提取前端文件 ===' && echo '' && echo '1. 提取前端文件到正确位置:' && tar -xzf /root/medgsp_final_20260403_1308.tar.gz --strip-components=3 -C /opt/med-gsp-system/frontend/ 'root/medgsp_backup_20260403_1300/source/frontend/' 2>&1 | tail -5 && echo '' && echo '2. 检查前端文件:' && ls -la /opt/med-gsp-system/frontend/ | head -20
+=== 提取前端文件 ===
+
+1. 提取前端文件到正确位置:
+
+2. 检查前端文件:
+total 12
+drwxr-xr-x 3 root root 4096 Apr  8 21:43 .
+drwxr-xr-x 8 root root 4096 Apr  8 21:43 ..
+drwxr-xr-x 2 root root 4096 Apr  3 13:03 frontend
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:43:37 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214331.log

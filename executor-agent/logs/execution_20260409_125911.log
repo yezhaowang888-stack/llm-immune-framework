@@ -1,0 +1,21 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 12:59:12 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 测试客户API返回 ===' && echo '' && echo '1. 测试API响应:' && curl -s http://localhost/api/customers && echo '' && echo '2. 测试API状态:' && curl -s -o /dev/null -w '状态码: %{http_code}' http://localhost/api/customers && echo '' && echo '3. 检查后端日志:' && ps aux | grep '[j]ava' | head -1
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 测试客户API返回 ===' && echo '' && echo '1. 测试API响应:' && curl -s http://localhost/api/customers && echo '' && echo '2. 测试API状态:' && curl -s -o /dev/null -w '状态码: %{http_code}' http://localhost/api/customers && echo '' && echo '3. 检查后端日志:' && ps aux | grep '[j]ava' | head -1
+=== 测试客户API返回 ===
+
+1. 测试API响应:
+{"timestamp":"2026-04-09T04:59:14.591+00:00","status":404,"error":"Not Found","path":"/api/customers"}
+2. 测试API状态:
+状态码: 404
+3. 检查后端日志:
+root       32437  0.0  2.6 7913340 411212 ?      Sl   Mar31   8:18 java -cp med-gsp-final-0.0.1-SNAPSHOT.jar:mysql-connector-java-8.0.33.jar org.springframework.boot.loader.JarLauncher
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 12:59:14 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_125911.log

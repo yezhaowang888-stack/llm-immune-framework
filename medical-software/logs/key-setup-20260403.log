@@ -1,0 +1,98 @@
+=== 服务器密钥配置开始: Fri Apr  3 13:27:50 CST 2026 ===
+[Fri Apr  3 13:27:50 CST 2026] 保存服务器公钥...
+✅ 公钥已保存: /Users/mac/.ssh/cloud_sync_server.pub
+[Fri Apr  3 13:27:50 CST 2026] 创建本地密钥对...
+✅ 本地密钥对已生成
+[Fri Apr  3 13:27:52 CST 2026] 配置SSH...
+✅ SSH配置已更新
+[Fri Apr  3 13:27:52 CST 2026] 测试配置...
+Pseudo-terminal will not be allocated because stdin is not a terminal.
+host cloud-medgsp-sync
+user root
+hostname 47.242.48.154
+port 22
+addressfamily any
+batchmode no
+canonicalizefallbacklocal yes
+canonicalizehostname false
+checkhostip no
+compression no
+controlmaster false
+enablesshkeysign no
+clearallforwardings no
+exitonforwardfailure no
+fingerprinthash SHA256
+forwardx11 no
+forwardx11trusted no
+gatewayports no
+gssapiauthentication no
+gssapidelegatecredentials no
+hashknownhosts no
+hostbasedauthentication no
+identitiesonly no
+kbdinteractiveauthentication yes
+nohostauthenticationforlocalhost no
+nohostauthenticationforproxycommand no
+passwordauthentication no
+permitlocalcommand no
+proxyusefdpass no
+pubkeyauthentication true
+requesttty auto
+sessiontype default
+stdinnull no
+forkafterauthentication no
+streamlocalbindunlink no
+stricthostkeychecking false
+tcpkeepalive yes
+tunnel false
+verifyhostkeydns false
+visualhostkey no
+updatehostkeys true
+enableescapecommandline no
+warnweakcrypto yes
+applemultipath no
+canonicalizemaxdots 1
+connectionattempts 1
+forwardx11timeout 1200
+numberofpasswordprompts 3
+serveralivecountmax 3
+serveraliveinterval 0
+requiredrsasize 1024
+obscurekeystroketiming yes
+ciphers aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes128-ctr,aes192-ctr,aes256-ctr
+hostkeyalgorithms ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+hostbasedacceptedalgorithms ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+kexalgorithms ecdh-sha2-nistp256,mlkem768x25519-sha256,sntrup761x25519-sha512,sntrup761x25519-sha512@openssh.com,curve25519-sha256,curve25519-sha256@libssh.org,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group-exchange-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group14-sha256
+casignaturealgorithms ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+loglevel INFO
+macs hmac-sha2-256-etm@openssh.com,hmac-sha2-256,umac-64-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512-etm@openssh.com,hmac-sha1-etm@openssh.com,umac-64@openssh.com,umac-128@openssh.com,hmac-sha2-512,hmac-sha1
+securitykeyprovider $SSH_SK_PROVIDER
+pubkeyacceptedalgorithms ssh-ed25519-cert-v01@openssh.com,ecdsa-sha2-nistp256-cert-v01@openssh.com,ecdsa-sha2-nistp384-cert-v01@openssh.com,ecdsa-sha2-nistp521-cert-v01@openssh.com,sk-ssh-ed25519-cert-v01@openssh.com,sk-ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com,rsa-sha2-256-cert-v01@openssh.com,ssh-ed25519,ecdsa-sha2-nistp256,ecdsa-sha2-nistp384,ecdsa-sha2-nistp521,sk-ssh-ed25519@openssh.com,sk-ecdsa-sha2-nistp256@openssh.com,rsa-sha2-512,rsa-sha2-256
+xauthlocation /usr/X11R6/bin/xauth
+identityfile /Users/mac/.ssh/cloud_sync_server
+canonicaldomains none
+globalknownhostsfile /etc/ssh/ssh_known_hosts /etc/ssh/ssh_known_hosts2
+userknownhostsfile /Users/mac/.ssh/known_hosts /Users/mac/.ssh/known_hosts2
+sendenv LANG
+sendenv LC_*
+logverbose none
+channeltimeout none
+permitremoteopen any
+addkeystoagent false
+forwardagent no
+connecttimeout 10
+tunneldevice any:any
+canonicalizePermittedcnames none
+controlpersist no
+escapechar ~
+ipqos ef cs0
+rekeylimit 0 0
+streamlocalbindmask 0177
+syslogfacility USER
+✅ SSH配置测试通过
+
+=== 使用说明 ===
+1. 连接测试: ssh cloud-medgsp-sync 'echo 测试成功'
+2. 同步脚本已更新使用新配置
+3. 密钥文件: /Users/mac/.ssh/cloud_sync_server
+=== 配置完成: Fri Apr  3 13:27:52 CST 2026 ===

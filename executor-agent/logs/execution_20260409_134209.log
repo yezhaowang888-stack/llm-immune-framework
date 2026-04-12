@@ -1,0 +1,23 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 13:42:09 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 查看Vue.js应用核心文件 ===' && echo '' && echo '1. 查看主index.html内容:' && head -50 /opt/med-gsp-system/frontend/index.html && echo '' && echo '2. 查看Vue.js应用目录:' && ls -la /opt/med-gsp-system/frontend/frontend/ && echo '' && echo '3. 查看JavaScript文件:' && find /opt/med-gsp-system/frontend/frontend/ -name '*.js' | head -10
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 查看Vue.js应用核心文件 ===' && echo '' && echo '1. 查看主index.html内容:' && head -50 /opt/med-gsp-system/frontend/index.html && echo '' && echo '2. 查看Vue.js应用目录:' && ls -la /opt/med-gsp-system/frontend/frontend/ && echo '' && echo '3. 查看JavaScript文件:' && find /opt/med-gsp-system/frontend/frontend/ -name '*.js' | head -10
+=== 查看Vue.js应用核心文件 ===
+
+1. 查看主index.html内容:
+<!doctype html><html lang=""><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><title></title><script defer="defer" src="/js/chunk-vendors.a12959d7.js"></script><script defer="defer" src="/js/app.ae2715d5.js"></script><link href="/css/chunk-vendors.e1ad2d5f.css" rel="stylesheet"><link href="/css/app.6905bf06.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div></body></html>
+2. 查看Vue.js应用目录:
+total 8
+drwxr-xr-x 2 nginx nginx 4096 Apr  3 13:03 .
+drwxr-xr-x 5 nginx nginx 4096 Apr  9 13:38 ..
+
+3. 查看JavaScript文件:
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 13:42:11 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_134209.log

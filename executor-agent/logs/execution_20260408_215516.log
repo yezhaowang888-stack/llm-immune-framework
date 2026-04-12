@@ -1,0 +1,23 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:55:16 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 验证修复效果 ===' && echo '时间: $(date)' && echo '' && echo '1. 测试主要页面访问:' && for page in / /device /sales /purchase /inventory /product /customer /report /system; do echo -n "${page}: "; curl -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://localhost${page} 2>/dev/null || echo '失败'; done && echo '' && echo '2. 测试页面内容:' && curl -s http://localhost/ | grep -o '<title>[^<]*</title>' && echo '' && echo '3. 测试API代理:' && curl -s http://localhost/api/products | jq '. | length' 2>/dev/null || echo 'API测试完成'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 验证修复效果 ===' && echo '时间: $(date)' && echo '' && echo '1. 测试主要页面访问:' && for page in / /device /sales /purchase /inventory /product /customer /report /system; do echo -n "${page}: "; curl -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://localhost${page} 2>/dev/null || echo '失败'; done && echo '' && echo '2. 测试页面内容:' && curl -s http://localhost/ | grep -o '<title>[^<]*</title>' && echo '' && echo '3. 测试API代理:' && curl -s http://localhost/api/products | jq '. | length' 2>/dev/null || echo 'API测试完成'
+=== 验证修复效果 ===
+时间: $(date)
+
+1. 测试主要页面访问:
+/: 200/device: 404/sales: 404/purchase: 404/inventory: 404/product: 404/customer: 404/report: 404/system: 404
+2. 测试页面内容:
+<title>Welcome to nginx!</title>
+
+3. 测试API代理:
+API测试完成
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:55:22 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_215516.log

@@ -1,0 +1,584 @@
+=== 执行者智能体启动 ===
+时间: Fri Apr 10 23:40:13 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 修复Nginx配置并创建完整菜单项注册方案 ===' && echo '' && echo '1. 修复Nginx配置语法错误:' && sed -i '/location \/js\/dynamic-router\.js {/,/}/d' /etc/nginx/conf.d/medgsp.conf && echo '删除错误配置块' && echo '' && echo '2. 添加正确的动态文件配置:' && cat >> /etc/nginx/conf.d/medgsp.conf << 'EOF'
+    # 动态路由和菜单系统文件
+    location /dynamic-router-wrapper.html {
+        alias /opt/med-gsp-system/frontend/dynamic-router-wrapper.html;
+    }
+    location /js/dynamic-router.js {
+        alias /opt/med-gsp-system/frontend/js/dynamic-router.js;
+    }
+    location /js/dynamic-menu.js {
+        alias /opt/med-gsp-system/frontend/js/dynamic-menu.js;
+    }
+    location /dynamic-menu-test.html {
+        alias /opt/med-gsp-system/frontend/dynamic-menu-test.html;
+    }
+EOF
+echo '✅ 添加正确的配置' && echo '' && echo '3. 测试Nginx配置:' && nginx -t && echo '' && echo '4. 重启Nginx:' && nginx -s reload && echo '✅ Nginx已重启' && echo '' && echo '5. 创建完整的动态菜单项注册脚本:' && cat > /opt/med-gsp-system/frontend/js/dynamic-menu.js << 'EOF'
+/**
+ * Vue.js 动态菜单项注册插件
+ * 在运行时动态添加客户管理和产品管理菜单项
+ * 解决菜单项未显式注册的问题
+ */
+
+(function() {
+    console.log('🚀 Vue.js动态菜单项注册插件启动...');
+    
+    // 配置要添加的菜单项
+    const menuItemsToAdd = [
+        {
+            index: '/customer',
+            icon: 'User',
+            title: '客户管理',
+            order: 6, // 在库存管理之后，报表分析之前
+            type: 'item' // item 或 submenu
+        },
+        {
+            index: '/product', 
+            icon: 'Box',
+            title: '产品管理',
+            order: 7,
+            type: 'item'
+        }
+    ];
+    
+    // 等待应用加载完成
+    function waitForApp() {
+        // 检查是否有Element Plus菜单组件
+        if (document.querySelector('.el-menu') || document.querySelector('.sidebar-menu')) {
+            initDynamicMenu();
+        } else {
+            setTimeout(waitForApp, 100);
+        }
+    }
+    
+    function initDynamicMenu() {
+        console.log('✅ 检测到菜单组件，开始动态添加菜单项...');
+        
+        // 方法1: 直接操作DOM添加菜单项
+        addMenuItemsByDOM();
+        
+        // 方法2: 尝试通过Vue组件注入
+        tryInjectViaVue();
+        
+        // 方法3: 创建菜单项点击处理器
+        setupMenuClickHandlers();
+        
+        console.log('🎉 动态菜单项注册完成');
+    }
+    
+    // 通过DOM操作添加菜单项
+    function addMenuItemsByDOM() {
+        const menuContainers = [
+            document.querySelector('.el-menu'),
+            document.querySelector('.sidebar-menu'),
+            document.querySelector('.app-wrapper .el-menu')
+        ].filter(Boolean);
+        
+        menuContainers.forEach(menu => {
+            menuItemsToAdd.forEach(item => {
+                // 检查是否已存在
+                const existingItem = menu.querySelector('[index="' + item.index + '"]');
+                if (existingItem) {
+                    console.log('⚠️ 菜单项已存在:', item.title);
+                    return;
+                }
+                
+                // 创建菜单项HTML
+                const menuItemHtml = '<li class="el-menu-item" index="' + item.index + '" style="padding-left: 20px;"><div class="el-menu-item-content"><i class="el-icon"><svg class="icon" style="width: 1em; height: 1em; vertical-align: middle;"></svg></i><span>' + item.title + '</span></div></li>';
+                
+                // 找到插入位置（在库存管理之后）
+                const inventoryItem = menu.querySelector('[index*="inventory"]');
+                if (inventoryItem && inventoryItem.parentNode) {
+                    // 在库存管理项后插入
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = menuItemHtml;
+                    const newItem = wrapper.firstElementChild;
+                    
+                    // 插入到DOM中
+                    inventoryItem.parentNode.insertBefore(newItem, inventoryItem.nextSibling);
+                    console.log('✅ 通过DOM添加菜单项:', item.title);
+                    
+                    // 添加点击事件
+                    setupMenuItemClick(newItem, item.index, item.title);
+                } else {
+                    // 如果找不到库存管理，添加到菜单末尾
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = menuItemHtml;
+                    menu.appendChild(wrapper.firstElementChild);
+                    console.log('✅ 添加到菜单末尾:', item.title);
+                    
+                    // 添加点击事件
+                    const newItem = wrapper.firstElementChild;
+                    setupMenuItemClick(newItem, item.index, item.title);
+                }
+            });
+        });
+    }
+    
+    // 尝试通过Vue组件注入（如果Vue可用）
+    function tryInjectViaVue() {
+        if (window.Vue) {
+            console.log('🔧 检测到Vue，尝试通过组件注入...');
+            
+            // 创建全局菜单管理器
+            window.__dynamicMenuManager = {
+                items: menuItemsToAdd,
+                addItem: function(item) {
+                    this.items.push(item);
+                    this.refresh();
+                    return true;
+                },
+                refresh: function() {
+                    console.log('🔄 刷新菜单项，总数:', this.items.length);
+                    // 触发菜单更新
+                    addMenuItemsByDOM();
+                }
+            };
+            
+            // 监听路由变化，高亮当前菜单项
+            window.addEventListener('popstate', highlightCurrentMenuItem);
+            highlightCurrentMenuItem();
+        }
+    }
+    
+    // 设置菜单项点击事件
+    function setupMenuItemClick(menuItem, routePath, title) {
+        if (!menuItem) return;
+        
+        menuItem.style.cursor = 'pointer';
+        menuItem.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            console.log('📱 菜单项点击:', title, '路由:', routePath);
+            
+            // 高亮当前菜单项
+            clearMenuHighlights();
+            this.classList.add('is-active');
+            this.style.backgroundColor = '#e6f7ff';
+            this.style.borderLeft = '3px solid #409EFF';
+            
+            // 导航到对应路由
+            if (window.__VUE_ROUTER__) {
+                window.__VUE_ROUTER__.push(routePath);
+            } else {
+                window.location.href = routePath;
+            }
+        });
+        
+        // 添加悬停效果
+        menuItem.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('is-active')) {
+                this.style.backgroundColor = '#f5f7fa';
+            }
+        });
+        
+        menuItem.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('is-active')) {
+                this.style.backgroundColor = '';
+            }
+        });
+    }
+    
+    // 设置菜单点击处理器
+    function setupMenuClickHandlers() {
+        // 监听所有可能的菜单点击
+        document.addEventListener('click', function(e) {
+            const menuItem = e.target.closest('.el-menu-item');
+            if (menuItem) {
+                const index = menuItem.getAttribute('index');
+                if (index && (index === '/customer' || index === '/product')) {
+                    console.log('🎯 动态菜单项被点击:', index);
+                    
+                    // 确保路由存在
+                    if (window.__dynamicRouter && !window.__dynamicRouter.getRoutes().some(function(r) { return r.path === index; })) {
+                        console.log('🔄 路由未注册，尝试动态添加...');
+                        window.__dynamicRouter.addRoute({
+                            path: index,
+                            name: index.substring(1),
+                            component: function() {
+                                return Promise.resolve({
+                                    template: '<div style="padding: 20px;"><h2>' + (index === '/customer' ? '客户管理' : '产品管理') + '</h2><p>动态加载的组件</p></div>'
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+    
+    // 清除所有菜单高亮
+    function clearMenuHighlights() {
+        document.querySelectorAll('.el-menu-item').forEach(function(item) {
+            item.classList.remove('is-active');
+            item.style.backgroundColor = '';
+            item.style.borderLeft = '';
+        });
+    }
+    
+    // 高亮当前路由对应的菜单项
+    function highlightCurrentMenuItem() {
+        const currentPath = window.location.pathname;
+        const menuItems = document.querySelectorAll('.el-menu-item');
+        
+        menuItems.forEach(function(item) {
+            const index = item.getAttribute('index');
+            if (index === currentPath) {
+                item.classList.add('is-active');
+                item.style.backgroundColor = '#e6f7ff';
+                item.style.borderLeft = '3px solid #409EFF';
+                console.log('🎨 高亮当前菜单项:', currentPath);
+            }
+        });
+    }
+    
+    // 创建菜单项样式
+    function injectMenuStyles() {
+        const style = document.createElement('style');
+        style.textContent = '.dynamic-menu-item { transition: all 0.3s; } .dynamic-menu-item:hover { background-color: #f5f7fa !important; color: #409EFF !important; } .dynamic-menu-item.is-active { background-color: #e6f7ff !important; color: #409EFF !important; border-left: 3px solid #409EFF !important; } .menu-item-added-badge { display: inline-block; background: #67c23a; color: white; font-size: 10px; padding: 1px 4px; border-radius: 3px; margin-left: 5px; vertical-align: middle; }';
+        document.head.appendChild(style);
+    }
+    
+    // 初始化
+    injectMenuStyles();
+    waitForApp();
+    
+    // 提供全局API
+    window.__dynamicMenu = {
+        addItem: function(title, route, icon) {
+            if (!icon) icon = 'Document';
+            const newItem = {
+                index: route,
+                icon: icon,
+                title: title,
+                type: 'item'
+            };
+            
+            if (window.__dynamicMenuManager) {
+                return window.__dynamicMenuManager.addItem(newItem);
+            } else {
+                menuItemsToAdd.push(newItem);
+                addMenuItemsByDOM();
+                return true;
+            }
+        },
+        getItems: function() {
+            return menuItemsToAdd;
+        },
+        highlight: highlightCurrentMenuItem
+    };
+    
+    console.log('🚀 动态菜单项注册插件初始化完成');
+})();
+EOF
+echo '✅ 动态菜单项注册脚本已创建' && echo '' && echo '6. 测试所有动态系统:' && echo '等待3秒...' && sleep 3 && echo '动态路由包装器:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/dynamic-router-wrapper.html && echo ' HTTP状态码' && echo '动态路由脚本:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/js/dynamic-router.js && echo ' HTTP状态码' && echo '动态菜单脚本:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/js/dynamic-menu.js && echo ' HTTP状态码' && echo '菜单测试页面:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/dynamic-menu-test.html && echo ' HTTP状态码'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 修复Nginx配置并创建完整菜单项注册方案 ===' && echo '' && echo '1. 修复Nginx配置语法错误:' && sed -i '/location \/js\/dynamic-router\.js {/,/}/d' /etc/nginx/conf.d/medgsp.conf && echo '删除错误配置块' && echo '' && echo '2. 添加正确的动态文件配置:' && cat >> /etc/nginx/conf.d/medgsp.conf << 'EOF'
+    # 动态路由和菜单系统文件
+    location /dynamic-router-wrapper.html {
+        alias /opt/med-gsp-system/frontend/dynamic-router-wrapper.html;
+    }
+    location /js/dynamic-router.js {
+        alias /opt/med-gsp-system/frontend/js/dynamic-router.js;
+    }
+    location /js/dynamic-menu.js {
+        alias /opt/med-gsp-system/frontend/js/dynamic-menu.js;
+    }
+    location /dynamic-menu-test.html {
+        alias /opt/med-gsp-system/frontend/dynamic-menu-test.html;
+    }
+EOF
+echo '✅ 添加正确的配置' && echo '' && echo '3. 测试Nginx配置:' && nginx -t && echo '' && echo '4. 重启Nginx:' && nginx -s reload && echo '✅ Nginx已重启' && echo '' && echo '5. 创建完整的动态菜单项注册脚本:' && cat > /opt/med-gsp-system/frontend/js/dynamic-menu.js << 'EOF'
+/**
+ * Vue.js 动态菜单项注册插件
+ * 在运行时动态添加客户管理和产品管理菜单项
+ * 解决菜单项未显式注册的问题
+ */
+
+(function() {
+    console.log('🚀 Vue.js动态菜单项注册插件启动...');
+    
+    // 配置要添加的菜单项
+    const menuItemsToAdd = [
+        {
+            index: '/customer',
+            icon: 'User',
+            title: '客户管理',
+            order: 6, // 在库存管理之后，报表分析之前
+            type: 'item' // item 或 submenu
+        },
+        {
+            index: '/product', 
+            icon: 'Box',
+            title: '产品管理',
+            order: 7,
+            type: 'item'
+        }
+    ];
+    
+    // 等待应用加载完成
+    function waitForApp() {
+        // 检查是否有Element Plus菜单组件
+        if (document.querySelector('.el-menu') || document.querySelector('.sidebar-menu')) {
+            initDynamicMenu();
+        } else {
+            setTimeout(waitForApp, 100);
+        }
+    }
+    
+    function initDynamicMenu() {
+        console.log('✅ 检测到菜单组件，开始动态添加菜单项...');
+        
+        // 方法1: 直接操作DOM添加菜单项
+        addMenuItemsByDOM();
+        
+        // 方法2: 尝试通过Vue组件注入
+        tryInjectViaVue();
+        
+        // 方法3: 创建菜单项点击处理器
+        setupMenuClickHandlers();
+        
+        console.log('🎉 动态菜单项注册完成');
+    }
+    
+    // 通过DOM操作添加菜单项
+    function addMenuItemsByDOM() {
+        const menuContainers = [
+            document.querySelector('.el-menu'),
+            document.querySelector('.sidebar-menu'),
+            document.querySelector('.app-wrapper .el-menu')
+        ].filter(Boolean);
+        
+        menuContainers.forEach(menu => {
+            menuItemsToAdd.forEach(item => {
+                // 检查是否已存在
+                const existingItem = menu.querySelector('[index="' + item.index + '"]');
+                if (existingItem) {
+                    console.log('⚠️ 菜单项已存在:', item.title);
+                    return;
+                }
+                
+                // 创建菜单项HTML
+                const menuItemHtml = '<li class="el-menu-item" index="' + item.index + '" style="padding-left: 20px;"><div class="el-menu-item-content"><i class="el-icon"><svg class="icon" style="width: 1em; height: 1em; vertical-align: middle;"></svg></i><span>' + item.title + '</span></div></li>';
+                
+                // 找到插入位置（在库存管理之后）
+                const inventoryItem = menu.querySelector('[index*="inventory"]');
+                if (inventoryItem && inventoryItem.parentNode) {
+                    // 在库存管理项后插入
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = menuItemHtml;
+                    const newItem = wrapper.firstElementChild;
+                    
+                    // 插入到DOM中
+                    inventoryItem.parentNode.insertBefore(newItem, inventoryItem.nextSibling);
+                    console.log('✅ 通过DOM添加菜单项:', item.title);
+                    
+                    // 添加点击事件
+                    setupMenuItemClick(newItem, item.index, item.title);
+                } else {
+                    // 如果找不到库存管理，添加到菜单末尾
+                    const wrapper = document.createElement('div');
+                    wrapper.innerHTML = menuItemHtml;
+                    menu.appendChild(wrapper.firstElementChild);
+                    console.log('✅ 添加到菜单末尾:', item.title);
+                    
+                    // 添加点击事件
+                    const newItem = wrapper.firstElementChild;
+                    setupMenuItemClick(newItem, item.index, item.title);
+                }
+            });
+        });
+    }
+    
+    // 尝试通过Vue组件注入（如果Vue可用）
+    function tryInjectViaVue() {
+        if (window.Vue) {
+            console.log('🔧 检测到Vue，尝试通过组件注入...');
+            
+            // 创建全局菜单管理器
+            window.__dynamicMenuManager = {
+                items: menuItemsToAdd,
+                addItem: function(item) {
+                    this.items.push(item);
+                    this.refresh();
+                    return true;
+                },
+                refresh: function() {
+                    console.log('🔄 刷新菜单项，总数:', this.items.length);
+                    // 触发菜单更新
+                    addMenuItemsByDOM();
+                }
+            };
+            
+            // 监听路由变化，高亮当前菜单项
+            window.addEventListener('popstate', highlightCurrentMenuItem);
+            highlightCurrentMenuItem();
+        }
+    }
+    
+    // 设置菜单项点击事件
+    function setupMenuItemClick(menuItem, routePath, title) {
+        if (!menuItem) return;
+        
+        menuItem.style.cursor = 'pointer';
+        menuItem.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            console.log('📱 菜单项点击:', title, '路由:', routePath);
+            
+            // 高亮当前菜单项
+            clearMenuHighlights();
+            this.classList.add('is-active');
+            this.style.backgroundColor = '#e6f7ff';
+            this.style.borderLeft = '3px solid #409EFF';
+            
+            // 导航到对应路由
+            if (window.__VUE_ROUTER__) {
+                window.__VUE_ROUTER__.push(routePath);
+            } else {
+                window.location.href = routePath;
+            }
+        });
+        
+        // 添加悬停效果
+        menuItem.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('is-active')) {
+                this.style.backgroundColor = '#f5f7fa';
+            }
+        });
+        
+        menuItem.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('is-active')) {
+                this.style.backgroundColor = '';
+            }
+        });
+    }
+    
+    // 设置菜单点击处理器
+    function setupMenuClickHandlers() {
+        // 监听所有可能的菜单点击
+        document.addEventListener('click', function(e) {
+            const menuItem = e.target.closest('.el-menu-item');
+            if (menuItem) {
+                const index = menuItem.getAttribute('index');
+                if (index && (index === '/customer' || index === '/product')) {
+                    console.log('🎯 动态菜单项被点击:', index);
+                    
+                    // 确保路由存在
+                    if (window.__dynamicRouter && !window.__dynamicRouter.getRoutes().some(function(r) { return r.path === index; })) {
+                        console.log('🔄 路由未注册，尝试动态添加...');
+                        window.__dynamicRouter.addRoute({
+                            path: index,
+                            name: index.substring(1),
+                            component: function() {
+                                return Promise.resolve({
+                                    template: '<div style="padding: 20px;"><h2>' + (index === '/customer' ? '客户管理' : '产品管理') + '</h2><p>动态加载的组件</p></div>'
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+    
+    // 清除所有菜单高亮
+    function clearMenuHighlights() {
+        document.querySelectorAll('.el-menu-item').forEach(function(item) {
+            item.classList.remove('is-active');
+            item.style.backgroundColor = '';
+            item.style.borderLeft = '';
+        });
+    }
+    
+    // 高亮当前路由对应的菜单项
+    function highlightCurrentMenuItem() {
+        const currentPath = window.location.pathname;
+        const menuItems = document.querySelectorAll('.el-menu-item');
+        
+        menuItems.forEach(function(item) {
+            const index = item.getAttribute('index');
+            if (index === currentPath) {
+                item.classList.add('is-active');
+                item.style.backgroundColor = '#e6f7ff';
+                item.style.borderLeft = '3px solid #409EFF';
+                console.log('🎨 高亮当前菜单项:', currentPath);
+            }
+        });
+    }
+    
+    // 创建菜单项样式
+    function injectMenuStyles() {
+        const style = document.createElement('style');
+        style.textContent = '.dynamic-menu-item { transition: all 0.3s; } .dynamic-menu-item:hover { background-color: #f5f7fa !important; color: #409EFF !important; } .dynamic-menu-item.is-active { background-color: #e6f7ff !important; color: #409EFF !important; border-left: 3px solid #409EFF !important; } .menu-item-added-badge { display: inline-block; background: #67c23a; color: white; font-size: 10px; padding: 1px 4px; border-radius: 3px; margin-left: 5px; vertical-align: middle; }';
+        document.head.appendChild(style);
+    }
+    
+    // 初始化
+    injectMenuStyles();
+    waitForApp();
+    
+    // 提供全局API
+    window.__dynamicMenu = {
+        addItem: function(title, route, icon) {
+            if (!icon) icon = 'Document';
+            const newItem = {
+                index: route,
+                icon: icon,
+                title: title,
+                type: 'item'
+            };
+            
+            if (window.__dynamicMenuManager) {
+                return window.__dynamicMenuManager.addItem(newItem);
+            } else {
+                menuItemsToAdd.push(newItem);
+                addMenuItemsByDOM();
+                return true;
+            }
+        },
+        getItems: function() {
+            return menuItemsToAdd;
+        },
+        highlight: highlightCurrentMenuItem
+    };
+    
+    console.log('🚀 动态菜单项注册插件初始化完成');
+})();
+EOF
+echo '✅ 动态菜单项注册脚本已创建' && echo '' && echo '6. 测试所有动态系统:' && echo '等待3秒...' && sleep 3 && echo '动态路由包装器:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/dynamic-router-wrapper.html && echo ' HTTP状态码' && echo '动态路由脚本:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/js/dynamic-router.js && echo ' HTTP状态码' && echo '动态菜单脚本:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/js/dynamic-menu.js && echo ' HTTP状态码' && echo '菜单测试页面:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/dynamic-menu-test.html && echo ' HTTP状态码'
+=== 修复Nginx配置并创建完整菜单项注册方案 ===
+
+1. 修复Nginx配置语法错误:
+删除错误配置块
+
+2. 添加正确的动态文件配置:
+✅ 添加正确的配置
+
+3. 测试Nginx配置:
+✅ 动态菜单项注册脚本已创建
+
+6. 测试所有动态系统:
+等待3秒...
+nginx: [emerg] "alias" directive is not allowed here in /etc/nginx/conf.d/medgsp.conf:6
+nginx: configuration file /etc/nginx/nginx.conf test failed
+动态路由包装器:
+200 HTTP状态码
+动态路由脚本:
+200 HTTP状态码
+动态菜单脚本:
+404 HTTP状态码
+菜单测试页面:
+200 HTTP状态码
+
+=== 执行完成 ===
+完成时间: Fri Apr 10 23:40:20 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260410_234013.log

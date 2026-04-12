@@ -1,0 +1,249 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 13:55:26 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 分析主医疗器械应用结构 ===' && echo '' && echo '1. 查看主应用JavaScript文件:' && ls -la /opt/med-gsp-system/frontend/js/ 2>/dev/null || echo 'JS目录不存在' && echo '' && echo '2. 查看Nginx配置中的路由:' && grep -r 'location' /etc/nginx/conf.d/ 2>/dev/null | head -10 && echo '' && echo '3. 查看现有应用是否可访问:' && curl -s -I http://localhost/ | head -5
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 分析主医疗器械应用结构 ===' && echo '' && echo '1. 查看主应用JavaScript文件:' && ls -la /opt/med-gsp-system/frontend/js/ 2>/dev/null || echo 'JS目录不存在' && echo '' && echo '2. 查看Nginx配置中的路由:' && grep -r 'location' /etc/nginx/conf.d/ 2>/dev/null | head -10 && echo '' && echo '3. 查看现有应用是否可访问:' && curl -s -I http://localhost/ | head -5
+=== 分析主医疗器械应用结构 ===
+
+1. 查看主应用JavaScript文件:
+total 42576
+drwx------ 2 nginx nginx   12288 Apr  8 21:44 .
+drwxr-xr-x 6 nginx nginx    4096 Apr  9 13:47 ..
+-rwxr-xr-x 1 nginx nginx   14882 Apr  8 21:44 10.fce680b7.js
+-rwxr-xr-x 1 nginx nginx   33987 Apr  8 21:44 10.fce680b7.js.map
+-rw-r--r-- 1 nginx nginx    2407 Apr  8 21:44 129.3fe00bdd.js
+-rw-r--r-- 1 nginx nginx    5340 Apr  8 21:44 129.3fe00bdd.js.map
+-rwxr-xr-x 1 nginx nginx   10507 Apr  8 21:44 13.97df38df.js
+-rwxr-xr-x 1 nginx nginx   26119 Apr  8 21:44 13.97df38df.js.map
+-rw-r--r-- 1 nginx nginx   10507 Apr  8 21:44 13.fcbe7e58.js
+-rw-r--r-- 1 nginx nginx   26119 Apr  8 21:44 13.fcbe7e58.js.map
+-rw-r--r-- 1 nginx nginx   13585 Apr  8 21:44 161.460e2677.js
+-rw-r--r-- 1 nginx nginx   31296 Apr  8 21:44 161.460e2677.js.map
+-rwxr-xr-x 1 nginx nginx   13585 Apr  8 21:44 161.876925b7.js
+-rwxr-xr-x 1 nginx nginx   31296 Apr  8 21:44 161.876925b7.js.map
+-rw-r--r-- 1 nginx nginx    9694 Apr  8 21:44 179.6e9667fb.js
+-rw-r--r-- 1 nginx nginx   22717 Apr  8 21:44 179.6e9667fb.js.map
+-rw-r--r-- 1 nginx nginx    9694 Apr  8 21:44 179.6ed45305.js
+-rw-r--r-- 1 nginx nginx   22717 Apr  8 21:44 179.6ed45305.js.map
+-rwxr-xr-x 1 nginx nginx    9694 Apr  8 21:44 179.e5be1163.js
+-rwxr-xr-x 1 nginx nginx   22717 Apr  8 21:44 179.e5be1163.js.map
+-rw-r--r-- 1 nginx nginx    9388 Apr  8 21:44 204.22bcdf45.js
+-rw-r--r-- 1 nginx nginx   19530 Apr  8 21:44 204.22bcdf45.js.map
+-rwxr-xr-x 1 nginx nginx    9388 Apr  8 21:44 204.8ccfe9f7.js
+-rwxr-xr-x 1 nginx nginx   19530 Apr  8 21:44 204.8ccfe9f7.js.map
+-rw-r--r-- 1 nginx nginx    9595 Apr  8 21:44 210.ad8b450f.js
+-rw-r--r-- 1 nginx nginx   23970 Apr  8 21:44 210.ad8b450f.js.map
+-rwxr-xr-x 1 nginx nginx    9595 Apr  8 21:44 210.d86d8780.js
+-rwxr-xr-x 1 nginx nginx   23970 Apr  8 21:44 210.d86d8780.js.map
+-rw-r--r-- 1 nginx nginx    8097 Apr  8 21:44 245.71c6db01.js
+-rw-r--r-- 1 nginx nginx   18208 Apr  8 21:44 245.71c6db01.js.map
+-rwxr-xr-x 1 nginx nginx    8097 Apr  8 21:44 245.de37a088.js
+-rwxr-xr-x 1 nginx nginx   18208 Apr  8 21:44 245.de37a088.js.map
+-rwxr-xr-x 1 nginx nginx    8018 Apr  8 21:44 265.3ba815d7.js
+-rwxr-xr-x 1 nginx nginx   16973 Apr  8 21:44 265.3ba815d7.js.map
+-rw-r--r-- 1 nginx nginx    8018 Apr  8 21:44 265.9fb46c87.js
+-rw-r--r-- 1 nginx nginx   16973 Apr  8 21:44 265.9fb46c87.js.map
+-rw-r--r-- 1 nginx nginx   55328 Apr  8 21:44 271.91e5b19f.js
+-rw-r--r-- 1 nginx nginx  227655 Apr  8 21:44 271.91e5b19f.js.map
+-rwxr-xr-x 1 nginx nginx   10139 Apr  8 21:44 285.79c458e0.js
+-rwxr-xr-x 1 nginx nginx   25871 Apr  8 21:44 285.79c458e0.js.map
+-rw-r--r-- 1 nginx nginx   10139 Apr  8 21:44 285.e98fec38.js
+-rw-r--r-- 1 nginx nginx   25871 Apr  8 21:44 285.e98fec38.js.map
+-rw-r--r-- 1 nginx nginx    7656 Apr  8 21:44 290.1577a8a7.js
+-rw-r--r-- 1 nginx nginx   18118 Apr  8 21:44 290.1577a8a7.js.map
+-rwxr-xr-x 1 nginx nginx    7656 Apr  8 21:44 290.a95a1c80.js
+-rwxr-xr-x 1 nginx nginx   18118 Apr  8 21:44 290.a95a1c80.js.map
+-rwxr-xr-x 1 nginx nginx   10577 Apr  8 21:44 293.488604cd.js
+-rwxr-xr-x 1 nginx nginx   29364 Apr  8 21:44 293.488604cd.js.map
+-rw-r--r-- 1 nginx nginx   10577 Apr  8 21:44 293.c8bc217e.js
+-rw-r--r-- 1 nginx nginx   29364 Apr  8 21:44 293.c8bc217e.js.map
+-rw-r--r-- 1 nginx nginx    8605 Apr  8 21:44 296.49c6972d.js
+-rw-r--r-- 1 nginx nginx   21618 Apr  8 21:44 296.49c6972d.js.map
+-rwxr-xr-x 1 nginx nginx   11005 Apr  8 21:44 29.654f5de9.js
+-rwxr-xr-x 1 nginx nginx   26824 Apr  8 21:44 29.654f5de9.js.map
+-rw-r--r-- 1 nginx nginx   11005 Apr  8 21:44 29.65596574.js
+-rw-r--r-- 1 nginx nginx   26824 Apr  8 21:44 29.65596574.js.map
+-rwxr-xr-x 1 nginx nginx    8605 Apr  8 21:44 296.641ddb0d.js
+-rwxr-xr-x 1 nginx nginx   21618 Apr  8 21:44 296.641ddb0d.js.map
+-rwxr-xr-x 1 nginx nginx   12796 Apr  8 21:44 297.8584a868.js
+-rwxr-xr-x 1 nginx nginx   28952 Apr  8 21:44 297.8584a868.js.map
+-rw-r--r-- 1 nginx nginx   12796 Apr  8 21:44 297.98a1e772.js
+-rw-r--r-- 1 nginx nginx   28952 Apr  8 21:44 297.98a1e772.js.map
+-rw-r--r-- 1 nginx nginx    9307 Apr  8 21:44 301.88d57ac0.js
+-rw-r--r-- 1 nginx nginx   24824 Apr  8 21:44 301.88d57ac0.js.map
+-rwxr-xr-x 1 nginx nginx    9307 Apr  8 21:44 301.ebe440cd.js
+-rwxr-xr-x 1 nginx nginx   24824 Apr  8 21:44 301.ebe440cd.js.map
+-rwxr-xr-x 1 nginx nginx    7829 Apr  8 21:44 322.29bd04b4.js
+-rwxr-xr-x 1 nginx nginx   16553 Apr  8 21:44 322.29bd04b4.js.map
+-rw-r--r-- 1 nginx nginx    7829 Apr  8 21:44 322.51d4a9a8.js
+-rw-r--r-- 1 nginx nginx   16553 Apr  8 21:44 322.51d4a9a8.js.map
+-rwxr-xr-x 1 nginx nginx   48379 Apr  8 21:44 325.133f248f.js
+-rwxr-xr-x 1 nginx nginx  211035 Apr  8 21:44 325.133f248f.js.map
+-rw-r--r-- 1 nginx nginx    6914 Apr  8 21:44 339.67ee8f2c.js
+-rw-r--r-- 1 nginx nginx   17193 Apr  8 21:44 339.67ee8f2c.js.map
+-rw-r--r-- 1 nginx nginx    6914 Apr  8 21:44 339.927d6209.js
+-rw-r--r-- 1 nginx nginx   17193 Apr  8 21:44 339.927d6209.js.map
+-rwxr-xr-x 1 nginx nginx    6914 Apr  8 21:44 339.cb6905c0.js
+-rwxr-xr-x 1 nginx nginx   17193 Apr  8 21:44 339.cb6905c0.js.map
+-rw-r--r-- 1 nginx nginx    9547 Apr  8 21:44 353.7532f735.js
+-rw-r--r-- 1 nginx nginx   19764 Apr  8 21:44 353.7532f735.js.map
+-rwxr-xr-x 1 nginx nginx    9547 Apr  8 21:44 353.8e536589.js
+-rwxr-xr-x 1 nginx nginx   19764 Apr  8 21:44 353.8e536589.js.map
+-rw-r--r-- 1 nginx nginx    8736 Apr  8 21:44 371.2d4f8a8a.js
+-rw-r--r-- 1 nginx nginx   21813 Apr  8 21:44 371.2d4f8a8a.js.map
+-rwxr-xr-x 1 nginx nginx    8736 Apr  8 21:44 371.cf5a6d93.js
+-rwxr-xr-x 1 nginx nginx   21813 Apr  8 21:44 371.cf5a6d93.js.map
+-rw-r--r-- 1 nginx nginx   55063 Apr  8 21:44 37.29e71eec.js
+-rw-r--r-- 1 nginx nginx  226664 Apr  8 21:44 37.29e71eec.js.map
+-rw-r--r-- 1 nginx nginx   11977 Apr  8 21:44 377.7c3515bd.js
+-rw-r--r-- 1 nginx nginx   31043 Apr  8 21:44 377.7c3515bd.js.map
+-rwxr-xr-x 1 nginx nginx   11977 Apr  8 21:44 377.8d1b0917.js
+-rwxr-xr-x 1 nginx nginx   31043 Apr  8 21:44 377.8d1b0917.js.map
+-rw-r--r-- 1 nginx nginx   54972 Apr  8 21:44 395.e8b6819a.js
+-rw-r--r-- 1 nginx nginx  226224 Apr  8 21:44 395.e8b6819a.js.map
+-rw-r--r-- 1 nginx nginx    9405 Apr  8 21:44 402.741aaf59.js
+-rw-r--r-- 1 nginx nginx   23630 Apr  8 21:44 402.741aaf59.js.map
+-rwxr-xr-x 1 nginx nginx    9405 Apr  8 21:44 402.ee1d98bd.js
+-rwxr-xr-x 1 nginx nginx   23630 Apr  8 21:44 402.ee1d98bd.js.map
+-rw-r--r-- 1 nginx nginx   13181 Apr  8 21:44 429.4b451e8c.js
+-rw-r--r-- 1 nginx nginx   28483 Apr  8 21:44 429.4b451e8c.js.map
+-rwxr-xr-x 1 nginx nginx   13181 Apr  8 21:44 429.7e022f30.js
+-rwxr-xr-x 1 nginx nginx   28483 Apr  8 21:44 429.7e022f30.js.map
+-rwxr-xr-x 1 nginx nginx    9573 Apr  8 21:44 45.1352963d.js
+-rwxr-xr-x 1 nginx nginx   23049 Apr  8 21:44 45.1352963d.js.map
+-rw-r--r-- 1 nginx nginx    9573 Apr  8 21:44 45.71062d3b.js
+-rw-r--r-- 1 nginx nginx   23049 Apr  8 21:44 45.71062d3b.js.map
+-rw-r--r-- 1 nginx nginx    9573 Apr  8 21:44 45.88a760ad.js
+-rw-r--r-- 1 nginx nginx   23047 Apr  8 21:44 45.88a760ad.js.map
+-rw-r--r-- 1 nginx nginx 1121301 Apr  8 21:44 497.c23ddf34.js
+-rw-r--r-- 1 nginx nginx 6361128 Apr  8 21:44 497.c23ddf34.js.map
+-rwxr-xr-x 1 nginx nginx 1121514 Apr  8 21:44 497.f36e7d50.js
+-rwxr-xr-x 1 nginx nginx 6362444 Apr  8 21:44 497.f36e7d50.js.map
+-rw-r--r-- 1 nginx nginx   14307 Apr  8 21:44 500.377294fe.js
+-rw-r--r-- 1 nginx nginx   32487 Apr  8 21:44 500.377294fe.js.map
+-rwxr-xr-x 1 nginx nginx   14307 Apr  8 21:44 500.451924b0.js
+-rwxr-xr-x 1 nginx nginx   32487 Apr  8 21:44 500.451924b0.js.map
+-rw-r--r-- 1 nginx nginx   14307 Apr  8 21:44 500.45ac8c98.js
+-rw-r--r-- 1 nginx nginx   32487 Apr  8 21:44 500.45ac8c98.js.map
+-rw-r--r-- 1 nginx nginx   54969 Apr  8 21:44 538.0f5188db.js
+-rw-r--r-- 1 nginx nginx  226220 Apr  8 21:44 538.0f5188db.js.map
+-rwxr-xr-x 1 nginx nginx   11732 Apr  8 21:44 551.0a713b03.js
+-rwxr-xr-x 1 nginx nginx   28993 Apr  8 21:44 551.0a713b03.js.map
+-rw-r--r-- 1 nginx nginx   11732 Apr  8 21:44 551.728ffada.js
+-rw-r--r-- 1 nginx nginx   28993 Apr  8 21:44 551.728ffada.js.map
+-rw-r--r-- 1 nginx nginx   11732 Apr  8 21:44 551.ea15064c.js
+-rw-r--r-- 1 nginx nginx   28993 Apr  8 21:44 551.ea15064c.js.map
+-rw-r--r-- 1 nginx nginx   55018 Apr  8 21:44 576.4f615d9a.js
+-rw-r--r-- 1 nginx nginx  226374 Apr  8 21:44 576.4f615d9a.js.map
+-rw-r--r-- 1 nginx nginx    5605 Apr  8 21:44 5.f1bd4cae.js
+-rw-r--r-- 1 nginx nginx   13843 Apr  8 21:44 5.f1bd4cae.js.map
+-rwxr-xr-x 1 nginx nginx    5605 Apr  8 21:44 5.f4f2e3f1.js
+-rwxr-xr-x 1 nginx nginx   13843 Apr  8 21:44 5.f4f2e3f1.js.map
+-rw-r--r-- 1 nginx nginx   55322 Apr  8 21:44 605.ab8ab590.js
+-rw-r--r-- 1 nginx nginx  227657 Apr  8 21:44 605.ab8ab590.js.map
+-rw-r--r-- 1 nginx nginx   13184 Apr  8 21:44 629.1ca60669.js
+-rw-r--r-- 1 nginx nginx   28498 Apr  8 21:44 629.1ca60669.js.map
+-rwxr-xr-x 1 nginx nginx   13184 Apr  8 21:44 629.9c4f2468.js
+-rwxr-xr-x 1 nginx nginx   28498 Apr  8 21:44 629.9c4f2468.js.map
+-rwxr-xr-x 1 nginx nginx   12218 Apr  8 21:44 63.a3ae43be.js
+-rwxr-xr-x 1 nginx nginx   28200 Apr  8 21:44 63.a3ae43be.js.map
+-rw-r--r-- 1 nginx nginx   12218 Apr  8 21:44 63.b40c84c7.js
+-rw-r--r-- 1 nginx nginx   28200 Apr  8 21:44 63.b40c84c7.js.map
+-rw-r--r-- 1 nginx nginx   54948 Apr  8 21:44 736.f0193e9c.js
+-rw-r--r-- 1 nginx nginx  226198 Apr  8 21:44 736.f0193e9c.js.map
+-rw-r--r-- 1 nginx nginx   15437 Apr  8 21:44 74.0e459f24.js
+-rw-r--r-- 1 nginx nginx   36343 Apr  8 21:44 74.0e459f24.js.map
+-rw-r--r-- 1 nginx nginx   15437 Apr  8 21:44 74.70af28ab.js
+-rw-r--r-- 1 nginx nginx   36345 Apr  8 21:44 74.70af28ab.js.map
+-rw-r--r-- 1 nginx nginx   15437 Apr  8 21:44 74.b83c5bf4.js
+-rw-r--r-- 1 nginx nginx   36343 Apr  8 21:44 74.b83c5bf4.js.map
+-rw-r--r-- 1 nginx nginx    2703 Apr  8 21:44 752.6447fcff.js
+-rw-r--r-- 1 nginx nginx    5824 Apr  8 21:44 752.6447fcff.js.map
+-rw-r--r-- 1 nginx nginx   14174 Apr  8 21:44 838.a71c646c.js
+-rw-r--r-- 1 nginx nginx   34168 Apr  8 21:44 838.a71c646c.js.map
+-rwxr-xr-x 1 nginx nginx   14174 Apr  8 21:44 838.afb967ee.js
+-rwxr-xr-x 1 nginx nginx   34168 Apr  8 21:44 838.afb967ee.js.map
+-rw-r--r-- 1 nginx nginx   10110 Apr  8 21:44 907.72ac0fe0.js
+-rw-r--r-- 1 nginx nginx   24198 Apr  8 21:44 907.72ac0fe0.js.map
+-rwxr-xr-x 1 nginx nginx   10110 Apr  8 21:44 907.87d1583c.js
+-rwxr-xr-x 1 nginx nginx   24198 Apr  8 21:44 907.87d1583c.js.map
+-rw-r--r-- 1 nginx nginx    3154 Apr  8 21:44 923.6d440ae1.js
+-rw-r--r-- 1 nginx nginx    7601 Apr  8 21:44 923.6d440ae1.js.map
+-rw-r--r-- 1 nginx nginx   11021 Apr  8 21:44 960.0e4689e1.js
+-rw-r--r-- 1 nginx nginx   27706 Apr  8 21:44 960.0e4689e1.js.map
+-rwxr-xr-x 1 nginx nginx   11021 Apr  8 21:44 960.84c7879c.js
+-rwxr-xr-x 1 nginx nginx   27706 Apr  8 21:44 960.84c7879c.js.map
+-rw-r--r-- 1 nginx nginx   27282 Apr  8 21:44 app.02922045.js
+-rw-r--r-- 1 nginx nginx   58331 Apr  8 21:44 app.02922045.js.map
+-rw-r--r-- 1 nginx nginx   28636 Apr  8 21:44 app.15aecfa6.js
+-rw-r--r-- 1 nginx nginx   62441 Apr  8 21:44 app.15aecfa6.js.map
+-rw-r--r-- 1 nginx nginx   27282 Apr  8 21:44 app.23ef544a.js
+-rw-r--r-- 1 nginx nginx   58331 Apr  8 21:44 app.23ef544a.js.map
+-rw-r--r-- 1 nginx nginx   28306 Apr  8 21:44 app.2b1b4d5b.js
+-rw-r--r-- 1 nginx nginx   61714 Apr  8 21:44 app.2b1b4d5b.js.map
+-rw-r--r-- 1 nginx nginx   28176 Apr  8 21:44 app.2e5c3cf9.js
+-rw-r--r-- 1 nginx nginx   61494 Apr  8 21:44 app.2e5c3cf9.js.map
+-rw-r--r-- 1 nginx nginx   28351 Apr  8 21:44 app.36447950.js
+-rw-r--r-- 1 nginx nginx   61779 Apr  8 21:44 app.36447950.js.map
+-rw-r--r-- 1 nginx nginx   27692 Apr  8 21:44 app.3b24beff.js
+-rw-r--r-- 1 nginx nginx   27692 Apr  8 21:44 app.3b24beff.js.backup
+-rw-r--r-- 1 nginx nginx   27692 Apr  8 21:44 app.3b24beff.js.backup_1774931686
+-rw-r--r-- 1 nginx nginx   27692 Apr  8 21:44 app.3b24beff.js.backup_1774934188
+-rw-r--r-- 1 nginx nginx   27692 Apr  8 21:44 app.3b24beff.js.backup.20260401070400
+-rw-r--r-- 1 nginx nginx   27692 Apr  8 21:44 app.3b24beff.js.backup.20260402_123930
+-rw-r--r-- 1 nginx nginx   27692 Apr  8 21:44 app.3b24beff.js.backup.20260402_124201
+-rw-r--r-- 1 nginx nginx   27692 Apr  8 21:44 app.3b24beff.js.backup.20260403_091522
+-rw-r--r-- 1 nginx nginx   59834 Apr  8 21:44 app.3b24beff.js.map
+-rwxr-xr-x 1 nginx nginx   27282 Apr  8 21:44 app.556b38e3.js
+-rwxr-xr-x 1 nginx nginx   58331 Apr  8 21:44 app.556b38e3.js.map
+-rw-r--r-- 1 nginx nginx   27281 Apr  8 21:44 app.59c9aea3.js
+-rw-r--r-- 1 nginx nginx   58331 Apr  8 21:44 app.59c9aea3.js.map
+-rw-r--r-- 1 nginx nginx   27281 Apr  8 21:44 app.5e3efdae.js
+-rw-r--r-- 1 nginx nginx   58331 Apr  8 21:44 app.5e3efdae.js.map
+-rw-r--r-- 1 nginx nginx   27282 Apr  8 21:44 app.79e0ce37.js
+-rw-r--r-- 1 nginx nginx   58331 Apr  8 21:44 app.79e0ce37.js.map
+-rwxr-xr-x 1 nginx nginx   27278 Apr  8 21:44 app.ae2715d5.js
+-rwxr-xr-x 1 nginx nginx   58328 Apr  8 21:44 app.ae2715d5.js.map
+-rw-r--r-- 1 nginx nginx   27278 Apr  8 21:44 app.b4001eb8.js
+-rw-r--r-- 1 nginx nginx   58328 Apr  8 21:44 app.b4001eb8.js.map
+-rwxr-xr-x 1 nginx nginx   27278 Apr  8 21:44 app.ba954fa8.js
+-rwxr-xr-x 1 nginx nginx   58328 Apr  8 21:44 app.ba954fa8.js.map
+-rw-r--r-- 1 nginx nginx   28299 Apr  8 21:44 app.d6ed4b55.js
+-rw-r--r-- 1 nginx nginx   61677 Apr  8 21:44 app.d6ed4b55.js.map
+-rw-r--r-- 1 nginx nginx   27722 Apr  8 21:44 app.dcbf8925.js
+-rw-r--r-- 1 nginx nginx   56694 Apr  8 21:44 app.dcbf8925.js.map
+-rw-r--r-- 1 nginx nginx   27282 Apr  8 21:44 app.fa378270.js
+-rw-r--r-- 1 nginx nginx   58331 Apr  8 21:44 app.fa378270.js.map
+-rw-r--r-- 1 nginx nginx 1346747 Apr  8 21:44 chunk-vendors.7016a643.js
+-rw-r--r-- 1 nginx nginx 5998595 Apr  8 21:44 chunk-vendors.7016a643.js.map
+-rwxr-xr-x 1 nginx nginx 1306692 Apr  8 21:44 chunk-vendors.a12959d7.js
+-rwxr-xr-x 1 nginx nginx 5807120 Apr  8 21:44 chunk-vendors.a12959d7.js.map
+-rw-r--r-- 1 nginx nginx 1346747 Apr  8 21:44 chunk-vendors.f8088f49.js
+-rw-r--r-- 1 nginx nginx 5998595 Apr  8 21:44 chunk-vendors.f8088f49.js.map
+
+2. 查看Nginx配置中的路由:
+/etc/nginx/conf.d/bio-shandonghuiumai.conf.backup:    location / {
+/etc/nginx/conf.d/bio-shandonghuiumai.conf.backup:    location /api {
+/etc/nginx/conf.d/gitea-internal.conf:    location / {
+/etc/nginx/conf.d/bio-shandonghuiumai.conf.backup.1775656506:    location / {
+/etc/nginx/conf.d/bio-shandonghuiumai.conf.backup.1775656506:    location /api {
+Binary file /etc/nginx/conf.d/.bio-shandonghuiumai.conf.swp matches
+/etc/nginx/conf.d/medgsp.conf:    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|html)$ {
+/etc/nginx/conf.d/medgsp.conf:    location /api/customers {
+/etc/nginx/conf.d/medgsp.conf:    location /api/ {
+/etc/nginx/conf.d/medgsp.conf:    location / {
+
+3. 查看现有应用是否可访问:
+HTTP/1.1 200 OK
+Server: nginx/1.28.2
+Date: Thu, 09 Apr 2026 05:55:27 GMT
+Content-Type: text/html
+Content-Length: 647
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 13:55:27 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_135526.log

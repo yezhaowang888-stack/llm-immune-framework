@@ -1,0 +1,33 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:47:27 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 医疗器械应用状态检查 ===' && echo '' && echo '1. 前端文件检查:' && ls -la /opt/med-gsp-system/frontend/ | head -10 && echo '' && echo '2. 检查index.html:' && head -5 /opt/med-gsp-system/frontend/index.html 2>/dev/null || echo '无index.html文件' && echo '' && echo '3. 检查Nginx配置:' && grep -r 'medgsp\|medical' /etc/nginx/ 2>/dev/null | head -5 && echo '' && echo '4. 测试Web访问:' && curl -s -o /dev/null -w 'HTTP状态: %{http_code}' http://localhost/ && echo ''
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 医疗器械应用状态检查 ===' && echo '' && echo '1. 前端文件检查:' && ls -la /opt/med-gsp-system/frontend/ | head -10 && echo '' && echo '2. 检查index.html:' && head -5 /opt/med-gsp-system/frontend/index.html 2>/dev/null || echo '无index.html文件' && echo '' && echo '3. 检查Nginx配置:' && grep -r 'medgsp\|medical' /etc/nginx/ 2>/dev/null | head -5 && echo '' && echo '4. 测试Web访问:' && curl -s -o /dev/null -w 'HTTP状态: %{http_code}' http://localhost/ && echo ''
+=== 医疗器械应用状态检查 ===
+
+1. 前端文件检查:
+total 196
+drwxr-xr-x 5 root root  4096 Apr  8 21:44 .
+drwxr-xr-x 8 root root  4096 Apr  8 21:43 ..
+drwx------ 2 root root  4096 Apr  8 21:44 css
+-rw-r--r-- 1 root root  6734 Apr  8 21:44 export.html
+-rwxr-xr-x 1 root root  4286 Apr  8 21:44 favicon.ico
+-rw-r--r-- 1 root root   464 Apr  8 21:44 final-test.html
+-rw-r--r-- 1 root root   461 Apr  8 21:44 force-refresh.html
+drwxr-xr-x 2 root root  4096 Apr  3 13:03 frontend
+-rwxr-xr-x 1 root root   647 Apr  8 21:44 index.html
+
+2. 检查index.html:
+<!doctype html><html lang=""><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><title></title><script defer="defer" src="/js/chunk-vendors.a12959d7.js"></script><script defer="defer" src="/js/app.ae2715d5.js"></script><link href="/css/chunk-vendors.e1ad2d5f.css" rel="stylesheet"><link href="/css/app.6905bf06.css" rel="stylesheet"></head><body><noscript><strong>We're sorry but doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id="app"></div></body></html>
+3. 检查Nginx配置:
+
+4. 测试Web访问:
+HTTP状态: 200
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:47:34 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214727.log

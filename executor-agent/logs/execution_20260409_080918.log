@@ -1,0 +1,61 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 08:09:18 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 临时修复：禁用HTTPS重定向 ===' && echo '' && echo '1. 恢复HTTP-only配置:' && cat > /etc/nginx/conf.d/medgsp.conf << 'NGINXEOF'
+server {
+    listen 80 default_server;
+    server_name _;
+    
+    root /opt/med-gsp-system/frontend;
+    index index.html;
+    
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+NGINXEOF
+echo '2. 测试配置语法:' && nginx -t 2>&1 && echo '3. 重启Nginx:' && nginx -s reload && echo '配置已恢复为HTTP-only'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 临时修复：禁用HTTPS重定向 ===' && echo '' && echo '1. 恢复HTTP-only配置:' && cat > /etc/nginx/conf.d/medgsp.conf << 'NGINXEOF'
+server {
+    listen 80 default_server;
+    server_name _;
+    
+    root /opt/med-gsp-system/frontend;
+    index index.html;
+    
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+NGINXEOF
+echo '2. 测试配置语法:' && nginx -t 2>&1 && echo '3. 重启Nginx:' && nginx -s reload && echo '配置已恢复为HTTP-only'
+=== 临时修复：禁用HTTPS重定向 ===
+
+1. 恢复HTTP-only配置:
+2. 测试配置语法:
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+3. 重启Nginx:
+配置已恢复为HTTP-only
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 08:09:19 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_080918.log

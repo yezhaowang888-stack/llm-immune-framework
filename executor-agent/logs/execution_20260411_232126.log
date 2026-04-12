@@ -1,0 +1,158 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 23:21:26 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 修复菜单数据源 ===' && echo '' && echo '时间: Sat Apr 11 23:21:26 CST 2026' && echo '' && echo '1. 检查当前menu-config.js内容:' && grep -n 'customer\|product' /opt/med-gsp-system/frontend/js/menu-config.js && echo '' && echo '2. 修复数据源，确保包含客户和产品菜单:' && echo '' && echo '备份原文件:' && cp /opt/med-gsp-system/frontend/js/menu-config.js /opt/med-gsp-system/frontend/js/menu-config.js.backup.20260411_2321 && echo '✅ 备份完成' && echo '' && echo '3. 创建修复脚本:' && cat > /opt/med-gsp-system/frontend/fix-menu-config.sh << 'EOF'
+#!/bin/bash
+echo '🔧 修复菜单数据源，添加客户和产品菜单'
+echo '时间: Sat Apr 11 23:21:26 CST 2026'
+
+# 检查是否已包含客户和产品菜单
+if grep -q '"/customer"' /opt/med-gsp-system/frontend/js/menu-config.js && grep -q '"/product"' /opt/med-gsp-system/frontend/js/menu-config.js; then
+    echo '✅ 客户和产品菜单已存在'
+    exit 0
+fi
+
+echo '🔧 添加客户和产品菜单到数据源...'
+
+# 在文件末尾添加客户和产品菜单配置
+cat >> /opt/med-gsp-system/frontend/js/menu-config.js << 'MENU_EOF'
+
+// 客户信息管理 - 确保存在
+{
+    path: '/customer',
+    name: 'customer',
+    title: '客户管理',
+    icon: 'el-icon-user',
+    children: [
+        {
+            path: '/customer',
+            name: 'customerList',
+            title: '客户信息',
+            meta: { title: '客户信息', icon: 'el-icon-user' },
+            roles: ['ADMIN', 'USER']
+        }
+    ]
+},
+
+// 产品信息管理 - 确保存在
+{
+    path: '/product',
+    name: 'product',
+    title: '产品管理',
+    icon: 'el-icon-goods',
+    children: [
+        {
+            path: '/product',
+            name: 'productList',
+            title: '产品信息',
+            meta: { title: '产品信息', icon: 'el-icon-goods' },
+            roles: ['ADMIN', 'USER']
+        }
+    ]
+},
+MENU_EOF
+
+echo '✅ 客户和产品菜单已添加到数据源'
+echo '📋 验证添加结果:'
+grep -n 'customer\|product' /opt/med-gsp-system/frontend/js/menu-config.js | tail -10
+EOF
+chmod +x /opt/med-gsp-system/frontend/fix-menu-config.sh && /opt/med-gsp-system/frontend/fix-menu-config.sh
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 修复菜单数据源 ===' && echo '' && echo '时间: Sat Apr 11 23:21:26 CST 2026' && echo '' && echo '1. 检查当前menu-config.js内容:' && grep -n 'customer\|product' /opt/med-gsp-system/frontend/js/menu-config.js && echo '' && echo '2. 修复数据源，确保包含客户和产品菜单:' && echo '' && echo '备份原文件:' && cp /opt/med-gsp-system/frontend/js/menu-config.js /opt/med-gsp-system/frontend/js/menu-config.js.backup.20260411_2321 && echo '✅ 备份完成' && echo '' && echo '3. 创建修复脚本:' && cat > /opt/med-gsp-system/frontend/fix-menu-config.sh << 'EOF'
+#!/bin/bash
+echo '🔧 修复菜单数据源，添加客户和产品菜单'
+echo '时间: Sat Apr 11 23:21:26 CST 2026'
+
+# 检查是否已包含客户和产品菜单
+if grep -q '"/customer"' /opt/med-gsp-system/frontend/js/menu-config.js && grep -q '"/product"' /opt/med-gsp-system/frontend/js/menu-config.js; then
+    echo '✅ 客户和产品菜单已存在'
+    exit 0
+fi
+
+echo '🔧 添加客户和产品菜单到数据源...'
+
+# 在文件末尾添加客户和产品菜单配置
+cat >> /opt/med-gsp-system/frontend/js/menu-config.js << 'MENU_EOF'
+
+// 客户信息管理 - 确保存在
+{
+    path: '/customer',
+    name: 'customer',
+    title: '客户管理',
+    icon: 'el-icon-user',
+    children: [
+        {
+            path: '/customer',
+            name: 'customerList',
+            title: '客户信息',
+            meta: { title: '客户信息', icon: 'el-icon-user' },
+            roles: ['ADMIN', 'USER']
+        }
+    ]
+},
+
+// 产品信息管理 - 确保存在
+{
+    path: '/product',
+    name: 'product',
+    title: '产品管理',
+    icon: 'el-icon-goods',
+    children: [
+        {
+            path: '/product',
+            name: 'productList',
+            title: '产品信息',
+            meta: { title: '产品信息', icon: 'el-icon-goods' },
+            roles: ['ADMIN', 'USER']
+        }
+    ]
+},
+MENU_EOF
+
+echo '✅ 客户和产品菜单已添加到数据源'
+echo '📋 验证添加结果:'
+grep -n 'customer\|product' /opt/med-gsp-system/frontend/js/menu-config.js | tail -10
+EOF
+chmod +x /opt/med-gsp-system/frontend/fix-menu-config.sh && /opt/med-gsp-system/frontend/fix-menu-config.sh
+=== 修复菜单数据源 ===
+
+时间: Sat Apr 11 23:21:26 CST 2026
+
+1. 检查当前menu-config.js内容:
+152:        path: '/customer',
+153:        name: 'customer',
+158:                path: '/customer',
+159:                name: 'customerList',
+169:        path: '/product',
+170:        name: 'product',
+175:                path: '/product',
+176:                name: 'productList',
+
+2. 修复数据源，确保包含客户和产品菜单:
+
+备份原文件:
+✅ 备份完成
+
+3. 创建修复脚本:
+🔧 修复菜单数据源，添加客户和产品菜单
+时间: Sat Apr 11 23:21:26 CST 2026
+🔧 添加客户和产品菜单到数据源...
+✅ 客户和产品菜单已添加到数据源
+📋 验证添加结果:
+175:                path: '/product',
+176:                name: 'productList',
+255:    path: '/customer',
+256:    name: 'customer',
+261:            path: '/customer',
+262:            name: 'customerList',
+272:    path: '/product',
+273:    name: 'product',
+278:            path: '/product',
+279:            name: 'productList',
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 23:21:29 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_232126.log

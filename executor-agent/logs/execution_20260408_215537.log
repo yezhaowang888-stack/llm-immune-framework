@@ -1,0 +1,62 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:55:37 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 修复默认配置 ===' && echo '' && echo '1. 禁用默认配置:' && mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.disabled && echo '2. 确保medgsp配置正确:' && cat > /etc/nginx/conf.d/medgsp.conf << 'NGINXEOF'
+server {
+    listen 80 default_server;
+    server_name _;
+    
+    root /opt/med-gsp-system/frontend;
+    index index.html;
+    
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+NGINXEOF
+echo '3. 测试配置语法:' && nginx -t 2>&1 && echo '4. 重启Nginx:' && nginx -s reload && echo 'Nginx重启完成'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 修复默认配置 ===' && echo '' && echo '1. 禁用默认配置:' && mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf.disabled && echo '2. 确保medgsp配置正确:' && cat > /etc/nginx/conf.d/medgsp.conf << 'NGINXEOF'
+server {
+    listen 80 default_server;
+    server_name _;
+    
+    root /opt/med-gsp-system/frontend;
+    index index.html;
+    
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+NGINXEOF
+echo '3. 测试配置语法:' && nginx -t 2>&1 && echo '4. 重启Nginx:' && nginx -s reload && echo 'Nginx重启完成'
+=== 修复默认配置 ===
+
+1. 禁用默认配置:
+2. 确保medgsp配置正确:
+3. 测试配置语法:
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+4. 重启Nginx:
+Nginx重启完成
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:55:41 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_215537.log

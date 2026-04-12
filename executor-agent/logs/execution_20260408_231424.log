@@ -1,0 +1,40 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 23:14:24 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 检查实际加载的app.js ===' && echo '' && echo '1. 从HTML中提取实际加载的JS:' && curl -s http://localhost/account | grep -o 'app\.[a-f0-9]*\.js' | head -1 && echo '' && echo '2. 检查该文件的路由配置:' && APP_JS=$(curl -s http://localhost/account | grep -o 'app\.[a-f0-9]*\.js' | head -1) && echo '应用JS文件: ' $APP_JS && grep -o 'path:[^,]*' /opt/med-gsp-system/frontend/js/$APP_JS 2>/dev/null | head -20
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 检查实际加载的app.js ===' && echo '' && echo '1. 从HTML中提取实际加载的JS:' && curl -s http://localhost/account | grep -o 'app\.[a-f0-9]*\.js' | head -1 && echo '' && echo '2. 检查该文件的路由配置:' && APP_JS=$(curl -s http://localhost/account | grep -o 'app\.[a-f0-9]*\.js' | head -1) && echo '应用JS文件: ' $APP_JS && grep -o 'path:[^,]*' /opt/med-gsp-system/frontend/js/$APP_JS 2>/dev/null | head -20
+=== 检查实际加载的app.js ===
+
+1. 从HTML中提取实际加载的JS:
+app.ae2715d5.js
+
+2. 检查该文件的路由配置:
+应用JS文件:  app.ae2715d5.js
+path:"/dashboard"}}
+path:"/"
+path:"/dashboard"
+path:""
+path:"/device"
+path:""
+path:"instock"
+path:"/sales"
+path:""
+path:"detail/:id"
+path:"/purchase"
+path:""
+path:"add"
+path:"scan"
+path:"/after-sales"
+path:""
+path:"add"
+path:"detail/:id"
+path:"/inventory"
+path:""
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 23:14:29 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_231424.log

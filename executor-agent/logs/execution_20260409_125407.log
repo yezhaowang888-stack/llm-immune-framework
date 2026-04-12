@@ -1,0 +1,76 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 12:54:07 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 紧急创建客户信息表 ===' && echo '' && echo '1. 连接到MySQL创建客户表:' && docker exec mysql-medgsp mysql -u root -p -e '
+USE medgsp;
+
+CREATE TABLE IF NOT EXISTS customers (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    customer_code VARCHAR(50) UNIQUE NOT NULL COMMENT "客户编码",
+    customer_name VARCHAR(200) NOT NULL COMMENT "客户名称",
+    contact_person VARCHAR(100) COMMENT "联系人",
+    phone VARCHAR(50) COMMENT "联系电话",
+    email VARCHAR(100) COMMENT "邮箱",
+    address TEXT COMMENT "地址",
+    
+    -- 资质信息
+    qualification_type VARCHAR(100) COMMENT "资质类型",
+    qualification_number VARCHAR(100) COMMENT "资质编号",
+    qualification_issue_date DATE COMMENT "发证日期",
+    qualification_expiry_date DATE COMMENT "到期日期",
+    qualification_status VARCHAR(50) DEFAULT "有效" COMMENT "资质状态",
+    
+    -- 预警设置
+    warning_days INT DEFAULT 30 COMMENT "预警天数",
+    
+    -- 系统字段
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    is_deleted TINYINT DEFAULT 0 COMMENT "软删除标记",
+    notes TEXT COMMENT "备注"
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT="客户信息表";
+
+SHOW TABLES;
+' 2>&1 | grep -v "Enter password" && echo '客户表创建完成'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 紧急创建客户信息表 ===' && echo '' && echo '1. 连接到MySQL创建客户表:' && docker exec mysql-medgsp mysql -u root -p -e '
+USE medgsp;
+
+CREATE TABLE IF NOT EXISTS customers (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    customer_code VARCHAR(50) UNIQUE NOT NULL COMMENT "客户编码",
+    customer_name VARCHAR(200) NOT NULL COMMENT "客户名称",
+    contact_person VARCHAR(100) COMMENT "联系人",
+    phone VARCHAR(50) COMMENT "联系电话",
+    email VARCHAR(100) COMMENT "邮箱",
+    address TEXT COMMENT "地址",
+    
+    -- 资质信息
+    qualification_type VARCHAR(100) COMMENT "资质类型",
+    qualification_number VARCHAR(100) COMMENT "资质编号",
+    qualification_issue_date DATE COMMENT "发证日期",
+    qualification_expiry_date DATE COMMENT "到期日期",
+    qualification_status VARCHAR(50) DEFAULT "有效" COMMENT "资质状态",
+    
+    -- 预警设置
+    warning_days INT DEFAULT 30 COMMENT "预警天数",
+    
+    -- 系统字段
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    is_deleted TINYINT DEFAULT 0 COMMENT "软删除标记",
+    notes TEXT COMMENT "备注"
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT="客户信息表";
+
+SHOW TABLES;
+' 2>&1 | grep -v "Enter password" && echo '客户表创建完成'
+=== 紧急创建客户信息表 ===
+
+1. 连接到MySQL创建客户表:
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 12:54:09 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_125407.log

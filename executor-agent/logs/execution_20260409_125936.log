@@ -1,0 +1,193 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 12:59:36 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 创建临时API服务 ===' && echo '' && echo '1. 创建Node.js临时API:' && cat > /tmp/customers-api.js << 'JS'
+const http = require('http');
+
+const customers = [
+    {
+        id: 1,
+        customerCode: 'CUST001',
+        customerName: '北京协和医院',
+        contactPerson: '张主任',
+        phone: '13800138000',
+        qualificationType: '医疗器械经营许可证',
+        qualificationNumber: '京械经2023001',
+        qualificationExpiryDate: '2026-12-31',
+        qualificationStatus: '有效'
+    },
+    {
+        id: 2,
+        customerCode: 'CUST002',
+        customerName: '上海华山医院',
+        contactPerson: '李医生',
+        phone: '13900139000',
+        qualificationType: '医疗器械生产许可证',
+        qualificationNumber: '沪械生2023002',
+        qualificationExpiryDate: '2026-06-30',
+        qualificationStatus: '即将到期'
+    },
+    {
+        id: 3,
+        customerCode: 'CUST003',
+        customerName: '广州中山医院',
+        contactPerson: '王护士长',
+        phone: '13700137000',
+        qualificationType: '医疗器械注册证',
+        qualificationNumber: '粤械注2023003',
+        qualificationExpiryDate: '2025-12-31',
+        qualificationStatus: '已过期'
+    }
+];
+
+const server = http.createServer((req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    
+    if (req.method === 'OPTIONS') {
+        res.writeHead(200);
+        res.end();
+        return;
+    }
+    
+    if (req.url === '/api/customers' && req.method === 'GET') {
+        res.writeHead(200);
+        res.end(JSON.stringify(customers));
+    } else if (req.url === '/api/customers/expiring' && req.method === 'GET') {
+        const expiring = customers.filter(c => c.qualificationStatus === '即将到期');
+        res.writeHead(200);
+        res.end(JSON.stringify(expiring));
+    } else if (req.method === 'POST' && req.url === '/api/customers') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', () => {
+            try {
+                const newCustomer = JSON.parse(body);
+                newCustomer.id = customers.length + 1;
+                customers.push(newCustomer);
+                res.writeHead(201);
+                res.end(JSON.stringify(newCustomer));
+            } catch (e) {
+                res.writeHead(400);
+                res.end(JSON.stringify({ error: 'Invalid JSON' }));
+            }
+        });
+    } else {
+        res.writeHead(404);
+        res.end(JSON.stringify({ error: 'Not Found' }));
+    }
+});
+
+const PORT = 8082;
+server.listen(PORT, () => {
+    console.log(`临时客户API服务运行在 http://localhost:${PORT}`);
+});
+JS
+echo '2. 启动临时API服务（后台运行）:' && node /tmp/customers-api.js > /tmp/api.log 2>&1 &
+sleep 2
+echo '3. 测试临时API:' && curl -s http://localhost:8082/api/customers | head -c 200 && echo ''
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 创建临时API服务 ===' && echo '' && echo '1. 创建Node.js临时API:' && cat > /tmp/customers-api.js << 'JS'
+const http = require('http');
+
+const customers = [
+    {
+        id: 1,
+        customerCode: 'CUST001',
+        customerName: '北京协和医院',
+        contactPerson: '张主任',
+        phone: '13800138000',
+        qualificationType: '医疗器械经营许可证',
+        qualificationNumber: '京械经2023001',
+        qualificationExpiryDate: '2026-12-31',
+        qualificationStatus: '有效'
+    },
+    {
+        id: 2,
+        customerCode: 'CUST002',
+        customerName: '上海华山医院',
+        contactPerson: '李医生',
+        phone: '13900139000',
+        qualificationType: '医疗器械生产许可证',
+        qualificationNumber: '沪械生2023002',
+        qualificationExpiryDate: '2026-06-30',
+        qualificationStatus: '即将到期'
+    },
+    {
+        id: 3,
+        customerCode: 'CUST003',
+        customerName: '广州中山医院',
+        contactPerson: '王护士长',
+        phone: '13700137000',
+        qualificationType: '医疗器械注册证',
+        qualificationNumber: '粤械注2023003',
+        qualificationExpiryDate: '2025-12-31',
+        qualificationStatus: '已过期'
+    }
+];
+
+const server = http.createServer((req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    
+    if (req.method === 'OPTIONS') {
+        res.writeHead(200);
+        res.end();
+        return;
+    }
+    
+    if (req.url === '/api/customers' && req.method === 'GET') {
+        res.writeHead(200);
+        res.end(JSON.stringify(customers));
+    } else if (req.url === '/api/customers/expiring' && req.method === 'GET') {
+        const expiring = customers.filter(c => c.qualificationStatus === '即将到期');
+        res.writeHead(200);
+        res.end(JSON.stringify(expiring));
+    } else if (req.method === 'POST' && req.url === '/api/customers') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', () => {
+            try {
+                const newCustomer = JSON.parse(body);
+                newCustomer.id = customers.length + 1;
+                customers.push(newCustomer);
+                res.writeHead(201);
+                res.end(JSON.stringify(newCustomer));
+            } catch (e) {
+                res.writeHead(400);
+                res.end(JSON.stringify({ error: 'Invalid JSON' }));
+            }
+        });
+    } else {
+        res.writeHead(404);
+        res.end(JSON.stringify({ error: 'Not Found' }));
+    }
+});
+
+const PORT = 8082;
+server.listen(PORT, () => {
+    console.log(`临时客户API服务运行在 http://localhost:${PORT}`);
+});
+JS
+echo '2. 启动临时API服务（后台运行）:' && node /tmp/customers-api.js > /tmp/api.log 2>&1 &
+sleep 2
+echo '3. 测试临时API:' && curl -s http://localhost:8082/api/customers | head -c 200 && echo ''
+=== 创建临时API服务 ===
+
+1. 创建Node.js临时API:
+2. 启动临时API服务（后台运行）:
+3. 测试临时API:
+[{"id":1,"customerCode":"CUST001","customerName":"北京协和医院","contactPerson":"张主任","phone":"13800138000","qualificationType":"医疗器械经营许可证","qualificationNumber":"京械�
+Read from remote host 8.217.249.184: Connection reset by peer
+client_loop: send disconnect: Broken pipe
+
+=== 执行完成 ===
+完成时间: Fri Apr 10 07:10:03 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_125936.log

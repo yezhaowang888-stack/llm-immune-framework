@@ -1,0 +1,26 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 23:13:49 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 完整账页分析 ===' && echo '' && echo '1. 获取账页前500字符:' && curl -s http://localhost/account | head -c 500 && echo '' && echo '' && echo '2. 检查SPA应用加载:' && curl -s http://localhost/account | grep -o 'app\|mount\|vue\|react' | head -5 && echo '' && echo '3. 检查资源加载:' && curl -s http://localhost/account | grep -o 'src="[^"]*\.js"' | head -5
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 完整账页分析 ===' && echo '' && echo '1. 获取账页前500字符:' && curl -s http://localhost/account | head -c 500 && echo '' && echo '' && echo '2. 检查SPA应用加载:' && curl -s http://localhost/account | grep -o 'app\|mount\|vue\|react' | head -5 && echo '' && echo '3. 检查资源加载:' && curl -s http://localhost/account | grep -o 'src="[^"]*\.js"' | head -5
+=== 完整账页分析 ===
+
+1. 获取账页前500字符:
+<!doctype html><html lang=""><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><title></title><script defer="defer" src="/js/chunk-vendors.a12959d7.js"></script><script defer="defer" src="/js/app.ae2715d5.js"></script><link href="/css/chunk-vendors.e1ad2d5f.css" rel="stylesheet"><link href="/css/app.6905bf06.css" rel="stylesheet"></head><body><noscript><strong>We
+
+2. 检查SPA应用加载:
+app
+app
+app
+
+3. 检查资源加载:
+src="/js/chunk-vendors.a12959d7.js"
+src="/js/app.ae2715d5.js"
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 23:13:52 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_231349.log

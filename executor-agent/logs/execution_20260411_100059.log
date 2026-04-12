@@ -1,0 +1,32 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 10:00:59 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 周末系统状态检查 ===' && echo '' && echo '1. 检查医疗软件系统状态:' && curl -s -o /dev/null -w "主应用程序: %{http_code}" http://localhost/ && echo ' HTTP状态码' && echo '' && echo '2. 检查动态注册系统:' && curl -s -o /dev/null -w "动态路由脚本: %{http_code}" http://localhost/js/dynamic-router.js && echo ' HTTP状态码' && curl -s -o /dev/null -w "动态菜单脚本: %{http_code}" http://localhost/js/dynamic-menu.js && echo ' HTTP状态码' && echo '' && echo '3. 检查验证报告:' && curl -s -o /dev/null -w "验证报告: %{http_code}" http://localhost/menu-registration-report.html && echo ' HTTP状态码' && echo '' && echo '4. 检查MySQL容器状态:' && docker ps | grep mysql && echo '' && echo '5. 检查Nginx服务状态:' && systemctl status nginx --no-pager | grep -E "Active|Status" && echo '' && echo '✅ 系统状态检查完成'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 周末系统状态检查 ===' && echo '' && echo '1. 检查医疗软件系统状态:' && curl -s -o /dev/null -w "主应用程序: %{http_code}" http://localhost/ && echo ' HTTP状态码' && echo '' && echo '2. 检查动态注册系统:' && curl -s -o /dev/null -w "动态路由脚本: %{http_code}" http://localhost/js/dynamic-router.js && echo ' HTTP状态码' && curl -s -o /dev/null -w "动态菜单脚本: %{http_code}" http://localhost/js/dynamic-menu.js && echo ' HTTP状态码' && echo '' && echo '3. 检查验证报告:' && curl -s -o /dev/null -w "验证报告: %{http_code}" http://localhost/menu-registration-report.html && echo ' HTTP状态码' && echo '' && echo '4. 检查MySQL容器状态:' && docker ps | grep mysql && echo '' && echo '5. 检查Nginx服务状态:' && systemctl status nginx --no-pager | grep -E "Active|Status" && echo '' && echo '✅ 系统状态检查完成'
+=== 周末系统状态检查 ===
+
+1. 检查医疗软件系统状态:
+主应用程序: 200 HTTP状态码
+
+2. 检查动态注册系统:
+动态路由脚本: 200 HTTP状态码
+动态菜单脚本: 200 HTTP状态码
+
+3. 检查验证报告:
+验证报告: 200 HTTP状态码
+
+4. 检查MySQL容器状态:
+6d4361523e1f   mysql:8.0            "docker-entrypoint.s…"   10 days ago   Up 10 days   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   mysql-medgsp
+
+5. 检查Nginx服务状态:
+   Active: active (running) since Fri 2026-04-10 20:30:24 CST; 13h ago
+
+✅ 系统状态检查完成
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 10:01:01 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_100059.log

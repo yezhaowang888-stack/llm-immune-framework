@@ -1,0 +1,24 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:55:52 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 最终系统验证 ===' && echo '时间: $(date)' && echo '' && echo '1. 测试首页:' && curl -s http://localhost/ | grep -o '<title>[^<]*</title>' && echo '' && echo '2. 测试SPA路由(带Accept头):' && for page in /device /sales /purchase /inventory /product /customer /report /system; do echo -n "${page}: "; curl -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://localhost${page} 2>/dev/null || echo '失败'; done && echo '' && echo '3. 测试API代理:' && curl -s http://localhost/api/products 2>&1 | head -2 && echo '' && echo '4. 测试直接后端API:' && curl -s http://localhost:8080/api/products 2>&1 | head -2
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 最终系统验证 ===' && echo '时间: $(date)' && echo '' && echo '1. 测试首页:' && curl -s http://localhost/ | grep -o '<title>[^<]*</title>' && echo '' && echo '2. 测试SPA路由(带Accept头):' && for page in /device /sales /purchase /inventory /product /customer /report /system; do echo -n "${page}: "; curl -s -o /dev/null -w '%{http_code}' -H 'Accept: text/html' http://localhost${page} 2>/dev/null || echo '失败'; done && echo '' && echo '3. 测试API代理:' && curl -s http://localhost/api/products 2>&1 | head -2 && echo '' && echo '4. 测试直接后端API:' && curl -s http://localhost:8080/api/products 2>&1 | head -2
+=== 最终系统验证 ===
+时间: $(date)
+
+1. 测试首页:
+<title></title>
+
+2. 测试SPA路由(带Accept头):
+/device: 200/sales: 200/purchase: 200/inventory: 200/product: 200/customer: 200/report: 200/system: 200
+3. 测试API代理:
+[{"id":1,"productCode":"PM001","medicalDeviceNo":"国械注准20203123456","productName":"一次性使用注射器","specification":"5ml","productionEnterprise":"山东惠迈生物科技有限公司","categoryLevel":"二类","storageCondition":"常温避光","registrationExpiryDate":null,"status":"正常"},{"id":2,"productCode":"PM002","medicalDeviceNo":"国械注准20203123457","productName":"医用外科口罩","specification":"无菌型","productionEnterprise":"山东惠迈生物科技有限公司","categoryLevel":"二类","storageCondition":"干燥通风","registrationExpiryDate":null,"status":"正常"},{"id":3,"productCode":"PM003","medicalDeviceNo":"国械注准20203123458","productName":"医用防护服","specification":"连体式","productionEnterprise":"山东惠迈生物科技有限公司","categoryLevel":"二类","storageCondition":"干燥避光","registrationExpiryDate":null,"status":"正常"}]
+4. 测试直接后端API:
+[{"id":1,"productCode":"PM001","medicalDeviceNo":"国械注准20203123456","productName":"一次性使用注射器","specification":"5ml","productionEnterprise":"山东惠迈生物科技有限公司","categoryLevel":"二类","storageCondition":"常温避光","registrationExpiryDate":null,"status":"正常"},{"id":2,"productCode":"PM002","medicalDeviceNo":"国械注准20203123457","productName":"医用外科口罩","specification":"无菌型","productionEnterprise":"山东惠迈生物科技有限公司","categoryLevel":"二类","storageCondition":"干燥通风","registrationExpiryDate":null,"status":"正常"},{"id":3,"productCode":"PM003","medicalDeviceNo":"国械注准20203123458","productName":"医用防护服","specification":"连体式","productionEnterprise":"山东惠迈生物科技有限公司","categoryLevel":"二类","storageCondition":"干燥避光","registrationExpiryDate":null,"status":"正常"}]
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:55:58 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_215552.log

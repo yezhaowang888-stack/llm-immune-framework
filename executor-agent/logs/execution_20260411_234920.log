@@ -1,0 +1,120 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 23:49:20 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 解决浏览器缓存问题 ===' && echo '' && echo '时间: Sat Apr 11 23:49:20 CST 2026' && echo '' && echo '1. 给index.html中的JS文件添加版本号:' && echo '' && echo '备份当前index.html:' && cp /opt/med-gsp-system/frontend/index.html /opt/med-gsp-system/frontend/index.html.backup.20260411_2349 && echo '✅ 备份完成' && echo '' && echo '2. 创建带版本号的index.html:' && cat > /opt/med-gsp-system/frontend/index.html << 'EOF'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗器械管理系统</title>
+    <link rel="stylesheet" href="/css/medical-management.css">
+</head>
+<body>
+    <div id="app"></div>
+    
+    <!-- 第一步：确保脚本加载顺序正确 -->
+    <!-- 先加载应用主文件 -->
+    <script src="/js/app.3b24beff.js?v=20260411_2349"></script>
+    
+    <!-- 最后加载动态路由配置 -->
+    <script src="/js/dynamic-router.js?v=20260411_2349"></script>
+    <script src="/js/dynamic-menu.js?v=20260411_2349"></script>
+    
+    <!-- 动态菜单系统（ES模块） -->
+    <script type="module" src="/js/dynamic-menu-integration.js?v=20260411_2349"></script>
+    
+    <!-- 强制清除缓存脚本 -->
+    <script>
+        // 强制清除可能的缓存问题
+        console.log('🔄 强制清除缓存，版本: 20260411_2349');
+        if (window.performance && window.performance.navigation && window.performance.navigation.type === 1) {
+            console.log('🔄 页面被刷新，强制重新加载资源');
+        }
+        
+        // 检查关键文件是否加载正确
+        window.addEventListener('load', function() {
+            console.log('✅ 页面加载完成，版本: 20260411_2349');
+            console.log('📋 加载的JS文件:');
+            console.log('  - app.3b24beff.js?v=20260411_2349');
+            console.log('  - dynamic-router.js?v=20260411_2349');
+            console.log('  - dynamic-menu.js?v=20260411_2349');
+            console.log('  - dynamic-menu-integration.js?v=20260411_2349');
+        });
+    </script>
+</body>
+</html>
+EOF
+echo '✅ index.html已更新（带版本号）' && echo '' && echo '3. 验证更新:' && grep -n 'script' /opt/med-gsp-system/frontend/index.html
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 解决浏览器缓存问题 ===' && echo '' && echo '时间: Sat Apr 11 23:49:20 CST 2026' && echo '' && echo '1. 给index.html中的JS文件添加版本号:' && echo '' && echo '备份当前index.html:' && cp /opt/med-gsp-system/frontend/index.html /opt/med-gsp-system/frontend/index.html.backup.20260411_2349 && echo '✅ 备份完成' && echo '' && echo '2. 创建带版本号的index.html:' && cat > /opt/med-gsp-system/frontend/index.html << 'EOF'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗器械管理系统</title>
+    <link rel="stylesheet" href="/css/medical-management.css">
+</head>
+<body>
+    <div id="app"></div>
+    
+    <!-- 第一步：确保脚本加载顺序正确 -->
+    <!-- 先加载应用主文件 -->
+    <script src="/js/app.3b24beff.js?v=20260411_2349"></script>
+    
+    <!-- 最后加载动态路由配置 -->
+    <script src="/js/dynamic-router.js?v=20260411_2349"></script>
+    <script src="/js/dynamic-menu.js?v=20260411_2349"></script>
+    
+    <!-- 动态菜单系统（ES模块） -->
+    <script type="module" src="/js/dynamic-menu-integration.js?v=20260411_2349"></script>
+    
+    <!-- 强制清除缓存脚本 -->
+    <script>
+        // 强制清除可能的缓存问题
+        console.log('🔄 强制清除缓存，版本: 20260411_2349');
+        if (window.performance && window.performance.navigation && window.performance.navigation.type === 1) {
+            console.log('🔄 页面被刷新，强制重新加载资源');
+        }
+        
+        // 检查关键文件是否加载正确
+        window.addEventListener('load', function() {
+            console.log('✅ 页面加载完成，版本: 20260411_2349');
+            console.log('📋 加载的JS文件:');
+            console.log('  - app.3b24beff.js?v=20260411_2349');
+            console.log('  - dynamic-router.js?v=20260411_2349');
+            console.log('  - dynamic-menu.js?v=20260411_2349');
+            console.log('  - dynamic-menu-integration.js?v=20260411_2349');
+        });
+    </script>
+</body>
+</html>
+EOF
+echo '✅ index.html已更新（带版本号）' && echo '' && echo '3. 验证更新:' && grep -n 'script' /opt/med-gsp-system/frontend/index.html
+=== 解决浏览器缓存问题 ===
+
+时间: Sat Apr 11 23:49:20 CST 2026
+
+1. 给index.html中的JS文件添加版本号:
+
+备份当前index.html:
+✅ 备份完成
+
+2. 创建带版本号的index.html:
+✅ index.html已更新（带版本号）
+
+3. 验证更新:
+14:    <script src="/js/app.3b24beff.js?v=20260411_2349"></script>
+17:    <script src="/js/dynamic-router.js?v=20260411_2349"></script>
+18:    <script src="/js/dynamic-menu.js?v=20260411_2349"></script>
+21:    <script type="module" src="/js/dynamic-menu-integration.js?v=20260411_2349"></script>
+24:    <script>
+40:    </script>
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 23:49:24 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_234920.log

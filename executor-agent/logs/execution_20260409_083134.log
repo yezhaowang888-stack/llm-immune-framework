@@ -1,0 +1,26 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 08:31:34 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 诊断主应用加载问题 ===' && echo '' && echo '1. 检查主页面HTML:' && curl -s http://localhost/ | head -c 300 && echo '' && echo '' && echo '2. 检查资源文件加载:' && for file in /js/chunk-vendors.a12959d7.js /js/app.ae2715d5.js /css/chunk-vendors.e1ad2d5f.css /css/app.6905bf06.css; do echo -n "${file}: "; curl -s -o /dev/null -w '%{http_code}' http://localhost${file} 2>/dev/null || echo '失败'; done && echo '' && echo '3. 检查Nginx错误日志:' && tail -10 /var/log/nginx/error.log 2>/dev/null | grep -v 'worker process'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 诊断主应用加载问题 ===' && echo '' && echo '1. 检查主页面HTML:' && curl -s http://localhost/ | head -c 300 && echo '' && echo '' && echo '2. 检查资源文件加载:' && for file in /js/chunk-vendors.a12959d7.js /js/app.ae2715d5.js /css/chunk-vendors.e1ad2d5f.css /css/app.6905bf06.css; do echo -n "${file}: "; curl -s -o /dev/null -w '%{http_code}' http://localhost${file} 2>/dev/null || echo '失败'; done && echo '' && echo '3. 检查Nginx错误日志:' && tail -10 /var/log/nginx/error.log 2>/dev/null | grep -v 'worker process'
+=== 诊断主应用加载问题 ===
+
+1. 检查主页面HTML:
+<!doctype html><html lang=""><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="/favicon.ico"><title></title><script defer="defer" src="/js/chunk-vendors.a12959d7.js"></script><scr
+
+2. 检查资源文件加载:
+/js/chunk-vendors.a12959d7.js: 200/js/app.ae2715d5.js: 200/css/chunk-vendors.e1ad2d5f.css: 200/css/app.6905bf06.css: 200
+3. 检查Nginx错误日志:
+2026/04/09 08:12:24 [notice] 254805#254805: using the "epoll" event method
+2026/04/09 08:12:24 [notice] 254805#254805: nginx/1.28.2
+2026/04/09 08:12:24 [notice] 254805#254805: built by gcc 8.5.0 20210514 (Red Hat 8.5.0-28) (GCC) 
+2026/04/09 08:12:24 [notice] 254805#254805: OS: Linux 5.10.134-17.2.al8.x86_64
+2026/04/09 08:12:24 [notice] 254805#254805: getrlimit(RLIMIT_NOFILE): 65535:65535
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 08:31:36 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_083134.log

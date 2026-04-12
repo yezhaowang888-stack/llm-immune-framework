@@ -1,0 +1,53 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 08:07:03 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== Nginx服务紧急诊断 ===' && echo '时间: $(date)' && echo '' && echo '1. Nginx进程状态:' && systemctl status nginx 2>/dev/null | head -10 || echo '使用进程检查:' && ps aux | grep '[n]ginx' | head -5 && echo '' && echo '2. Nginx错误日志:' && tail -20 /var/log/nginx/error.log 2>/dev/null | head -10 || echo '无错误日志权限' && echo '' && echo '3. 端口监听状态:' && netstat -tln | grep ':80\|:443' && echo '' && echo '4. 测试本地访问:' && curl -s -o /dev/null -w '本地80端口: %{http_code}' http://localhost && echo '' && curl -s -o /dev/null -w '本地443端口: %{http_code}' https://localhost 2>/dev/null || echo 'HTTPS测试失败'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== Nginx服务紧急诊断 ===' && echo '时间: $(date)' && echo '' && echo '1. Nginx进程状态:' && systemctl status nginx 2>/dev/null | head -10 || echo '使用进程检查:' && ps aux | grep '[n]ginx' | head -5 && echo '' && echo '2. Nginx错误日志:' && tail -20 /var/log/nginx/error.log 2>/dev/null | head -10 || echo '无错误日志权限' && echo '' && echo '3. 端口监听状态:' && netstat -tln | grep ':80\|:443' && echo '' && echo '4. 测试本地访问:' && curl -s -o /dev/null -w '本地80端口: %{http_code}' http://localhost && echo '' && curl -s -o /dev/null -w '本地443端口: %{http_code}' https://localhost 2>/dev/null || echo 'HTTPS测试失败'
+=== Nginx服务紧急诊断 ===
+时间: $(date)
+
+1. Nginx进程状态:
+● nginx.service - nginx - high performance web server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled; vendor preset: disabled)
+   Active: active (running) since Fri 2026-04-03 11:10:17 CST; 5 days ago
+     Docs: http://nginx.org/en/docs/
+ Main PID: 106722 (nginx)
+    Tasks: 5 (limit: 97014)
+   Memory: 6.2M
+   CGroup: /system.slice/nginx.service
+           ├─106722 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx.conf
+           ├─231335 nginx: worker process
+root      106722  0.0  0.0  10672  5776 ?        Ss   Apr03   0:00 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx.conf
+nginx     231335  0.0  0.0  12768  5280 ?        S    Apr08   0:00 nginx: worker process
+nginx     231336  0.0  0.0  12768  5280 ?        S    Apr08   0:00 nginx: worker process
+nginx     231337  0.0  0.0  12768  5280 ?        S    Apr08   0:00 nginx: worker process
+nginx     231338  0.0  0.0  12768  5280 ?        S    Apr08   0:00 nginx: worker process
+
+2. Nginx错误日志:
+2026/04/09 07:43:24 [crit] 231336#231336: *9144 stat() "/opt/med-gsp-system/frontend/css/app.6905bf06.css" failed (13: Permission denied), client: 66.249.79.6, server: _, request: "GET /css/app.6905bf06.css HTTP/1.1", host: "www.bio-shandonghuiumai.com", referrer: "http://www.bio-shandonghuiumai.com/"
+2026/04/09 07:43:24 [crit] 231336#231336: *9144 stat() "/opt/med-gsp-system/frontend/css/app.6905bf06.css" failed (13: Permission denied), client: 66.249.79.6, server: _, request: "GET /css/app.6905bf06.css HTTP/1.1", host: "www.bio-shandonghuiumai.com", referrer: "http://www.bio-shandonghuiumai.com/"
+2026/04/09 07:43:24 [crit] 231336#231336: *9146 stat() "/opt/med-gsp-system/frontend/js/app.ae2715d5.js" failed (13: Permission denied), client: 66.249.79.7, server: _, request: "GET /js/app.ae2715d5.js HTTP/1.1", host: "www.bio-shandonghuiumai.com", referrer: "http://www.bio-shandonghuiumai.com/"
+2026/04/09 07:43:24 [crit] 231336#231336: *9146 stat() "/opt/med-gsp-system/frontend/js/app.ae2715d5.js" failed (13: Permission denied), client: 66.249.79.7, server: _, request: "GET /js/app.ae2715d5.js HTTP/1.1", host: "www.bio-shandonghuiumai.com", referrer: "http://www.bio-shandonghuiumai.com/"
+2026/04/09 08:01:58 [crit] 231337#231337: *9152 stat() "/opt/med-gsp-system/frontend/css/chunk-vendors.e1ad2d5f.css" failed (13: Permission denied), client: 123.133.249.102, server: _, request: "GET /css/chunk-vendors.e1ad2d5f.css HTTP/1.1", host: "www.bio-shandonghuiumai.com", referrer: "http://www.bio-shandonghuiumai.com/"
+2026/04/09 08:01:58 [crit] 231337#231337: *9152 stat() "/opt/med-gsp-system/frontend/css/chunk-vendors.e1ad2d5f.css" failed (13: Permission denied), client: 123.133.249.102, server: _, request: "GET /css/chunk-vendors.e1ad2d5f.css HTTP/1.1", host: "www.bio-shandonghuiumai.com", referrer: "http://www.bio-shandonghuiumai.com/"
+2026/04/09 08:01:58 [crit] 231337#231337: *9153 stat() "/opt/med-gsp-system/frontend/js/app.ae2715d5.js" failed (13: Permission denied), client: 123.133.249.102, server: _, request: "GET /js/app.ae2715d5.js HTTP/1.1", host: "www.bio-shandonghuiumai.com", referrer: "http://www.bio-shandonghuiumai.com/"
+2026/04/09 08:01:58 [crit] 231337#231337: *9153 stat() "/opt/med-gsp-system/frontend/js/app.ae2715d5.js" failed (13: Permission denied), client: 123.133.249.102, server: _, request: "GET /js/app.ae2715d5.js HTTP/1.1", host: "www.bio-shandonghuiumai.com", referrer: "http://www.bio-shandonghuiumai.com/"
+2026/04/09 08:01:58 [crit] 231337#231337: *9154 stat() "/opt/med-gsp-system/frontend/css/app.6905bf06.css" failed (13: Permission denied), client: 123.133.249.102, server: _, request: "GET /css/app.6905bf06.css HTTP/1.1", host: "www.bio-shandonghuiumai.com", referrer: "http://www.bio-shandonghuiumai.com/"
+2026/04/09 08:01:58 [crit] 231337#231337: *9154 stat() "/opt/med-gsp-system/frontend/css/app.6905bf06.css" failed (13: Permission denied), client: 123.133.249.102, server: _, request: "GET /css/app.6905bf06.css HTTP/1.1", host: "www.bio-shandonghuiumai.com", referrer: "http://www.bio-shandonghuiumai.com/"
+
+3. 端口监听状态:
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN     
+tcp        0      0 172.19.51.227:8081      0.0.0.0:*               LISTEN     
+tcp6       0      0 :::8080                 :::*                    LISTEN     
+
+4. 测试本地访问:
+本地80端口: 200
+本地443端口: 000HTTPS测试失败
+
+=== 执行完成 ===
+完成时间: Thu Apr  9 08:07:04 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_080703.log

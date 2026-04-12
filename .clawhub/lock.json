@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "skills": {
+    "summarize-pro": {
+      "version": "1.0.0",
+      "installedAt": 1775566268041
+    },
+    "session-logs": {
+      "version": "1.0.0",
+      "installedAt": 1775566324260
+    },
+    "tavily-web": {
+      "version": "0.0.3",
+      "installedAt": 1775566443067
+    },
+    "openclaw-tavily-search": {
+      "version": "0.1.0",
+      "installedAt": 1775568481803
+    },
+    "self-improving-agent": {
+      "version": "3.0.13",
+      "installedAt": 1775568662598
+    }
+  }
+}

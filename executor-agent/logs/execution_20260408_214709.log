@@ -1,0 +1,20 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:47:09 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 数据库验证 ===' && echo '' && echo '1. MySQL数据库状态:' && docker exec mysql-medgsp mysql -uroot -p$(cat /root/.mysql_root_password 2>/dev/null || echo '') -e 'SHOW DATABASES; SELECT "---"; SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema="medgsp_db" LIMIT 5;' 2>&1 | grep -v 'Warning' && echo '' && echo '2. PostgreSQL数据库状态:' && docker exec postgres-medgsp psql -U postgres -c '\l' 2>&1 | head -10
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 数据库验证 ===' && echo '' && echo '1. MySQL数据库状态:' && docker exec mysql-medgsp mysql -uroot -p$(cat /root/.mysql_root_password 2>/dev/null || echo '') -e 'SHOW DATABASES; SELECT "---"; SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema="medgsp_db" LIMIT 5;' 2>&1 | grep -v 'Warning' && echo '' && echo '2. PostgreSQL数据库状态:' && docker exec postgres-medgsp psql -U postgres -c '\l' 2>&1 | head -10
+=== 数据库验证 ===
+
+1. MySQL数据库状态:
+Enter password: ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+
+2. PostgreSQL数据库状态:
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  role "postgres" does not exist
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:47:15 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214709.log

@@ -1,0 +1,44 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:43:16 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 检查备份完整内容 ===' && tar -tzf /root/medgsp_final_20260403_1308.tar.gz | head -30
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 检查备份完整内容 ===' && tar -tzf /root/medgsp_final_20260403_1308.tar.gz | head -30
+=== 检查备份完整内容 ===
+root/medgsp_backup_20260403_1300/
+root/medgsp_backup_20260403_1300/database_final.sql
+root/medgsp_backup_20260403_1300/source/
+root/medgsp_backup_20260403_1300/source/.git/
+root/medgsp_backup_20260403_1300/source/.git/config
+root/medgsp_backup_20260403_1300/source/.git/branches/
+root/medgsp_backup_20260403_1300/source/.git/HEAD
+root/medgsp_backup_20260403_1300/source/.git/description
+root/medgsp_backup_20260403_1300/source/.git/objects/
+root/medgsp_backup_20260403_1300/source/.git/objects/ab/
+root/medgsp_backup_20260403_1300/source/.git/objects/ab/31f365c4f60730c64caced9cdb4792cb2794cf
+root/medgsp_backup_20260403_1300/source/.git/objects/6f/
+root/medgsp_backup_20260403_1300/source/.git/objects/6f/d7a5bca84b815e98977b5d5632d58ee1df18c8
+root/medgsp_backup_20260403_1300/source/.git/objects/pack/
+root/medgsp_backup_20260403_1300/source/.git/objects/fe/
+root/medgsp_backup_20260403_1300/source/.git/objects/fe/d9df737bd686b4fe98bb0a33220134c70fa77f
+root/medgsp_backup_20260403_1300/source/.git/objects/25/
+root/medgsp_backup_20260403_1300/source/.git/objects/25/8d9ccd4ac45c72921b9f6d9dfb02758e7f75f2
+root/medgsp_backup_20260403_1300/source/.git/objects/0c/
+root/medgsp_backup_20260403_1300/source/.git/objects/0c/864f16c5d7958c312947b69d7772bbc51de040
+root/medgsp_backup_20260403_1300/source/.git/objects/55/
+root/medgsp_backup_20260403_1300/source/.git/objects/55/c29bbe197f9787602ca6459ca6141f28bf0f60
+root/medgsp_backup_20260403_1300/source/.git/objects/98/
+root/medgsp_backup_20260403_1300/source/.git/objects/98/d3bea527eecdc0be95aa6a05d140ef89634f3b
+root/medgsp_backup_20260403_1300/source/.git/objects/84/
+root/medgsp_backup_20260403_1300/source/.git/objects/84/78ca101e09e74a59d76d7d66a766b6aa925970
+root/medgsp_backup_20260403_1300/source/.git/objects/info/
+root/medgsp_backup_20260403_1300/source/.git/objects/99/
+root/medgsp_backup_20260403_1300/source/.git/objects/99/c9e791c88b257b2aef3d028206e64cc624a9c8
+root/medgsp_backup_20260403_1300/source/.git/refs/
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:43:22 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214316.log

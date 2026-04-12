@@ -1,0 +1,31 @@
+=== 执行者智能体启动 ===
+时间: Thu Apr  9 08:09:07 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 检查静态资源文件 ===' && echo '' && echo '1. 检查文件实际存在:' && ls -la /opt/med-gsp-system/frontend/js/app.*.js 2>/dev/null | head -3 && ls -la /opt/med-gsp-system/frontend/css/app.*.css 2>/dev/null | head -3 && echo '' && echo '2. 检查文件权限:' && ls -la /opt/med-gsp-system/frontend/js/ | head -5 && echo '' && echo '3. 测试HTTP访问（绕过HTTPS）:' && for file in /js/app.ae2715d5.js /css/app.6905bf06.css; do echo -n "HTTP访问${file}: "; curl -s -o /dev/null -w '%{http_code}' http://localhost${file} 2>/dev/null || echo '失败'; done
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 检查静态资源文件 ===' && echo '' && echo '1. 检查文件实际存在:' && ls -la /opt/med-gsp-system/frontend/js/app.*.js 2>/dev/null | head -3 && ls -la /opt/med-gsp-system/frontend/css/app.*.css 2>/dev/null | head -3 && echo '' && echo '2. 检查文件权限:' && ls -la /opt/med-gsp-system/frontend/js/ | head -5 && echo '' && echo '3. 测试HTTP访问（绕过HTTPS）:' && for file in /js/app.ae2715d5.js /css/app.6905bf06.css; do echo -n "HTTP访问${file}: "; curl -s -o /dev/null -w '%{http_code}' http://localhost${file} 2>/dev/null || echo '失败'; done
+=== 检查静态资源文件 ===
+
+1. 检查文件实际存在:
+-rw-r--r-- 1 nginx nginx 27282 Apr  8 21:44 /opt/med-gsp-system/frontend/js/app.02922045.js
+-rw-r--r-- 1 nginx nginx 28636 Apr  8 21:44 /opt/med-gsp-system/frontend/js/app.15aecfa6.js
+-rw-r--r-- 1 nginx nginx 27282 Apr  8 21:44 /opt/med-gsp-system/frontend/js/app.23ef544a.js
+-rw-r--r-- 1 nginx nginx 3388 Apr  8 21:44 /opt/med-gsp-system/frontend/css/app.11276e17.css
+-rw-r--r-- 1 nginx nginx 1321 Apr  8 21:44 /opt/med-gsp-system/frontend/css/app.38f2026b.css
+-rw-r--r-- 1 nginx nginx 3388 Apr  8 21:44 /opt/med-gsp-system/frontend/css/app.61d534a6.css
+
+2. 检查文件权限:
+total 42576
+drwx------ 2 nginx nginx   12288 Apr  8 21:44 .
+drwxr-xr-x 5 nginx nginx    4096 Apr  8 23:16 ..
+-rwxr-xr-x 1 nginx nginx   14882 Apr  8 21:44 10.fce680b7.js
+-rwxr-xr-x 1 nginx nginx   33987 Apr  8 21:44 10.fce680b7.js.map
+
+3. 测试HTTP访问（绕过HTTPS）:
+HTTP访问/js/app.ae2715d5.js: 301HTTP访问/css/app.6905bf06.css: 301
+=== 执行完成 ===
+完成时间: Thu Apr  9 08:09:08 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260409_080907.log

@@ -1,0 +1,29 @@
+=== 执行者智能体启动 ===
+时间: Fri Apr 10 23:40:50 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 直接测试主应用程序菜单项 ===' && echo '' && echo '1. 访问主应用程序并检查菜单:' && curl -s http://localhost/ | grep -i '客户管理\|产品管理\|customer\|product' | head -10 && echo '' && echo '2. 检查控制台是否有动态菜单插件加载:' && echo '打开浏览器开发者工具，查看控制台输出' && echo '' && echo '3. 手动测试动态菜单系统:' && echo '访问: http://8.217.249.184/dynamic-menu-test.html' && echo '' && echo '4. 直接测试路由访问:' && echo '客户管理: http://8.217.249.184/customer' && echo '产品管理: http://8.217.249.184/product' && echo '' && echo '5. 检查动态路由系统:' && echo '访问: http://8.217.249.184/dynamic-router-wrapper.html'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 直接测试主应用程序菜单项 ===' && echo '' && echo '1. 访问主应用程序并检查菜单:' && curl -s http://localhost/ | grep -i '客户管理\|产品管理\|customer\|product' | head -10 && echo '' && echo '2. 检查控制台是否有动态菜单插件加载:' && echo '打开浏览器开发者工具，查看控制台输出' && echo '' && echo '3. 手动测试动态菜单系统:' && echo '访问: http://8.217.249.184/dynamic-menu-test.html' && echo '' && echo '4. 直接测试路由访问:' && echo '客户管理: http://8.217.249.184/customer' && echo '产品管理: http://8.217.249.184/product' && echo '' && echo '5. 检查动态路由系统:' && echo '访问: http://8.217.249.184/dynamic-router-wrapper.html'
+=== 直接测试主应用程序菜单项 ===
+
+1. 访问主应用程序并检查菜单:
+
+2. 检查控制台是否有动态菜单插件加载:
+打开浏览器开发者工具，查看控制台输出
+
+3. 手动测试动态菜单系统:
+访问: http://8.217.249.184/dynamic-menu-test.html
+
+4. 直接测试路由访问:
+客户管理: http://8.217.249.184/customer
+产品管理: http://8.217.249.184/product
+
+5. 检查动态路由系统:
+访问: http://8.217.249.184/dynamic-router-wrapper.html
+
+=== 执行完成 ===
+完成时间: Fri Apr 10 23:40:55 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260410_234050.log

@@ -1,0 +1,30 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:41:02 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== Web应用诊断 ===' && echo '' && echo '1. 检查Web服务器:' && netstat -tln 2>/dev/null | grep -E ':80|:443|:8080|:3000' && echo '' && echo '2. 检查Nginx/Apache:' && ps aux | grep -E '[n]ginx|[a]pache|[h]ttpd' && echo '' && echo '3. 检查Node.js应用:' && ps aux | grep -E '[n]ode|[p]m2' | grep -v grep && echo '' && echo '4. 检查应用日志:' && find /var/log -name '*medgsp*' -o -name '*medical*' 2>/dev/null | head -5
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== Web应用诊断 ===' && echo '' && echo '1. 检查Web服务器:' && netstat -tln 2>/dev/null | grep -E ':80|:443|:8080|:3000' && echo '' && echo '2. 检查Nginx/Apache:' && ps aux | grep -E '[n]ginx|[a]pache|[h]ttpd' && echo '' && echo '3. 检查Node.js应用:' && ps aux | grep -E '[n]ode|[p]m2' | grep -v grep && echo '' && echo '4. 检查应用日志:' && find /var/log -name '*medgsp*' -o -name '*medical*' 2>/dev/null | head -5
+=== Web应用诊断 ===
+
+1. 检查Web服务器:
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN     
+tcp        0      0 172.19.51.227:8081      0.0.0.0:*               LISTEN     
+tcp        0      0 127.0.0.1:3000          0.0.0.0:*               LISTEN     
+tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN     
+tcp6       0      0 :::8080                 :::*                    LISTEN     
+
+2. 检查Nginx/Apache:
+root      106722  0.0  0.0   9840  1024 ?        Ss   Apr03   0:00 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx.conf
+nginx     106723  0.0  0.0  13396  8960 ?        S    Apr03   0:02 nginx: worker process
+nginx     106724  0.0  0.0  13416  8956 ?        S    Apr03   0:02 nginx: worker process
+nginx     106725  0.0  0.0  13436  8960 ?        S    Apr03   0:02 nginx: worker process
+nginx     106726  0.0  0.0  13360  8960 ?        S    Apr03   0:03 nginx: worker process
+
+3. 检查Node.js应用:
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:41:09 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214102.log

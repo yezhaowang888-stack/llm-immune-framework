@@ -1,0 +1,434 @@
+=== 执行者智能体启动 ===
+时间: Fri Apr 10 23:37:12 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 创建菜单项测试页面（简化版） ===' && cat > /opt/med-gsp-system/frontend/dynamic-menu-test.html << 'EOF'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态菜单项测试</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; background: #f0f2f5; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { color: #304156; margin-bottom: 20px; }
+        .test-section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .test-section h3 { color: #409EFF; margin-bottom: 15px; }
+        .button-group { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .btn-primary { background: #409EFF; color: white; }
+        .btn-secondary { background: #f0f2f5; color: #666; }
+        .btn-success { background: #67c23a; color: white; }
+        .btn-warning { background: #e6a23c; color: white; }
+        .status { padding: 10px; background: #f8f9fa; border-radius: 4px; margin-top: 10px; font-family: monospace; font-size: 12px; }
+        .status.success { background: #f0f9eb; color: #67c23a; }
+        .status.error { background: #fef0f0; color: #f56c6c; }
+        .menu-preview { border: 1px solid #e4e7ed; border-radius: 4px; padding: 15px; background: #fafafa; }
+        .menu-item { padding: 10px 15px; margin: 5px 0; background: white; border-radius: 4px; border-left: 3px solid #dcdfe6; display: flex; align-items: center; }
+        .menu-item:hover { background: #f5f7fa; }
+        .menu-item.active { border-left-color: #409EFF; background: #e6f7ff; }
+        .menu-icon { margin-right: 10px; color: #909399; }
+        .menu-text { flex: 1; }
+        .menu-badge { background: #67c23a; color: white; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>动态菜单项注册测试</h1>
+        
+        <div class="test-section">
+            <h3>菜单项注册测试</h3>
+            <p>测试动态添加客户管理和产品管理菜单项到侧边栏</p>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="loadDynamicMenu()">加载动态菜单插件</button>
+                <button class="btn btn-secondary" onclick="checkMenuItems()">检查菜单项</button>
+                <button class="btn btn-success" onclick="addCustomerMenuItem()">添加客户管理菜单项</button>
+                <button class="btn btn-success" onclick="addProductMenuItem()">添加产品管理菜单项</button>
+                <button class="btn btn-warning" onclick="highlightCurrent()">高亮当前菜单项</button>
+            </div>
+            
+            <div id="menu-status" class="status">等待测试...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>菜单项预览</h3>
+            <div class="menu-preview" id="menu-preview">
+                <div class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span class="menu-text">库存管理</span>
+                </div>
+                <!-- 动态菜单项将在这里显示 -->
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>路由测试</h3>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="navigateToCustomer()">导航到客户管理</button>
+                <button class="btn btn-primary" onclick="navigateToProduct()">导航到产品管理</button>
+                <button class="btn btn-secondary" onclick="checkRoutes()">检查路由注册</button>
+            </div>
+            
+            <div id="route-status" class="status">路由状态: 未检查</div>
+        </div>
+    </div>
+    
+    <script>
+        function updateStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = 'status ' + (type || '');
+        }
+        
+        function updateMenuPreview() {
+            const preview = document.getElementById('menu-preview');
+            const menuItems = document.querySelectorAll('.el-menu-item');
+            
+            // 清空预览
+            preview.innerHTML = '<div class="menu-item"><span class="menu-icon">📊</span><span class="menu-text">库存管理</span></div>';
+            
+            // 添加动态菜单项
+            Array.from(menuItems).forEach(item => {
+                const index = item.getAttribute('index');
+                if (index === '/customer' || index === '/product') {
+                    const title = index === '/customer' ? '客户管理' : '产品管理';
+                    const menuItem = document.createElement('div');
+                    menuItem.className = 'menu-item active';
+                    menuItem.innerHTML = `
+                        <span class="menu-icon">${index === '/customer' ? '👥' : '📦'}</span>
+                        <span class="menu-text">${title}</span>
+                        <span class="menu-badge">动态</span>
+                    `;
+                    preview.appendChild(menuItem);
+                }
+            });
+        }
+        
+        function loadDynamicMenu() {
+            const script = document.createElement('script');
+            script.src = '/js/dynamic-menu.js';
+            script.onload = function() {
+                updateStatus('menu-status', '✅ 动态菜单插件加载成功', 'success');
+                setTimeout(checkMenuItems, 500);
+            };
+            script.onerror = function() {
+                updateStatus('menu-status', '❌ 动态菜单插件加载失败', 'error');
+            };
+            document.head.appendChild(script);
+        }
+        
+        function checkMenuItems() {
+            const menuItems = document.querySelectorAll('.el-menu-item');
+            const dynamicItems = Array.from(menuItems).filter(item => {
+                const index = item.getAttribute('index');
+                return index === '/customer' || index === '/product';
+            });
+            
+            if (dynamicItems.length > 0) {
+                updateStatus('menu-status', `✅ 找到 ${dynamicItems.length} 个动态菜单项`, 'success');
+                updateMenuPreview();
+            } else {
+                updateStatus('menu-status', '⚠️ 未找到动态菜单项', 'error');
+            }
+        }
+        
+        function addCustomerMenuItem() {
+            if (window.__dynamicMenu) {
+                const success = window.__dynamicMenu.addItem('客户管理', '/customer', 'User');
+                if (success) {
+                    updateStatus('menu-status', '✅ 客户管理菜单项已添加', 'success');
+                    updateMenuPreview();
+                } else {
+                    updateStatus('menu-status', '❌ 添加菜单项失败', 'error');
+                }
+            } else {
+                updateStatus('menu-status', '❌ 动态菜单API未就绪', 'error');
+            }
+        }
+        
+        function addProductMenuItem() {
+            if (window.__dynamicMenu) {
+                const success = window.__dynamicMenu.addItem('产品管理', '/product', 'Box');
+                if (success) {
+                    updateStatus('menu-status', '✅ 产品管理菜单项已添加', 'success');
+                    updateMenuPreview();
+                } else {
+                    updateStatus('menu-status', '❌ 添加菜单项失败', 'error');
+                }
+            } else {
+                updateStatus('menu-status', '❌ 动态菜单API未就绪', 'error');
+            }
+        }
+        
+        function highlightCurrent() {
+            if (window.__dynamicMenu && window.__dynamicMenu.highlight) {
+                window.__dynamicMenu.highlight();
+                updateStatus('menu-status', '✅ 已高亮当前菜单项', 'success');
+            } else {
+                updateStatus('menu-status', '❌ 高亮功能不可用', 'error');
+            }
+        }
+        
+        function navigateToCustomer() {
+            window.location.href = '/customer';
+        }
+        
+        function navigateToProduct() {
+            window.location.href = '/product';
+        }
+        
+        function checkRoutes() {
+            if (window.__dynamicRouter) {
+                const routes = window.__dynamicRouter.getRoutes();
+                const customerRoute = routes.find(r => r.path === '/customer');
+                const productRoute = routes.find(r => r.path === '/product');
+                
+                let message = '路由状态: ';
+                if (customerRoute && productRoute) {
+                    message += '✅ 客户管理和产品管理路由均已注册';
+                } else if (customerRoute) {
+                    message += '⚠️ 只有客户管理路由已注册';
+                } else if (productRoute) {
+                    message += '⚠️ 只有产品管理路由已注册';
+                } else {
+                    message += '❌ 两个路由均未注册';
+                }
+                
+                updateStatus('route-status', message, customerRoute && productRoute ? 'success' : 'error');
+            } else {
+                updateStatus('route-status', '❌ 动态路由系统未就绪', 'error');
+            }
+        }
+        
+        // 自动加载测试
+        setTimeout(loadDynamicMenu, 1000);
+    </script>
+</body>
+</html>
+EOF
+echo '✅ 菜单项测试页面已创建' && echo '' && echo '5. 更新Nginx配置:' && if ! grep -q 'dynamic-menu-test' /etc/nginx/conf.d/medgsp.conf; then sed -i '/location \/js\/dynamic-router\.js/a\    location /dynamic-menu-test.html {\n        alias /opt/med-gsp-system/frontend/dynamic-menu-test.html;\n    }' /etc/nginx/conf.d/medgsp.conf; fi && echo '' && echo '6. 重启Nginx并测试:' && nginx -s reload && echo '✅ Nginx已重启' && echo '等待2秒...' && sleep 2 && echo '测试页面访问:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/dynamic-menu-test.html && echo ' HTTP状态码' && echo '动态菜单脚本:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/js/dynamic-menu.js && echo ' HTTP状态码'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 创建菜单项测试页面（简化版） ===' && cat > /opt/med-gsp-system/frontend/dynamic-menu-test.html << 'EOF'
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态菜单项测试</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 20px; background: #f0f2f5; }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { color: #304156; margin-bottom: 20px; }
+        .test-section { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .test-section h3 { color: #409EFF; margin-bottom: 15px; }
+        .button-group { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        .btn-primary { background: #409EFF; color: white; }
+        .btn-secondary { background: #f0f2f5; color: #666; }
+        .btn-success { background: #67c23a; color: white; }
+        .btn-warning { background: #e6a23c; color: white; }
+        .status { padding: 10px; background: #f8f9fa; border-radius: 4px; margin-top: 10px; font-family: monospace; font-size: 12px; }
+        .status.success { background: #f0f9eb; color: #67c23a; }
+        .status.error { background: #fef0f0; color: #f56c6c; }
+        .menu-preview { border: 1px solid #e4e7ed; border-radius: 4px; padding: 15px; background: #fafafa; }
+        .menu-item { padding: 10px 15px; margin: 5px 0; background: white; border-radius: 4px; border-left: 3px solid #dcdfe6; display: flex; align-items: center; }
+        .menu-item:hover { background: #f5f7fa; }
+        .menu-item.active { border-left-color: #409EFF; background: #e6f7ff; }
+        .menu-icon { margin-right: 10px; color: #909399; }
+        .menu-text { flex: 1; }
+        .menu-badge { background: #67c23a; color: white; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>动态菜单项注册测试</h1>
+        
+        <div class="test-section">
+            <h3>菜单项注册测试</h3>
+            <p>测试动态添加客户管理和产品管理菜单项到侧边栏</p>
+            
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="loadDynamicMenu()">加载动态菜单插件</button>
+                <button class="btn btn-secondary" onclick="checkMenuItems()">检查菜单项</button>
+                <button class="btn btn-success" onclick="addCustomerMenuItem()">添加客户管理菜单项</button>
+                <button class="btn btn-success" onclick="addProductMenuItem()">添加产品管理菜单项</button>
+                <button class="btn btn-warning" onclick="highlightCurrent()">高亮当前菜单项</button>
+            </div>
+            
+            <div id="menu-status" class="status">等待测试...</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>菜单项预览</h3>
+            <div class="menu-preview" id="menu-preview">
+                <div class="menu-item">
+                    <span class="menu-icon">📊</span>
+                    <span class="menu-text">库存管理</span>
+                </div>
+                <!-- 动态菜单项将在这里显示 -->
+            </div>
+        </div>
+        
+        <div class="test-section">
+            <h3>路由测试</h3>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="navigateToCustomer()">导航到客户管理</button>
+                <button class="btn btn-primary" onclick="navigateToProduct()">导航到产品管理</button>
+                <button class="btn btn-secondary" onclick="checkRoutes()">检查路由注册</button>
+            </div>
+            
+            <div id="route-status" class="status">路由状态: 未检查</div>
+        </div>
+    </div>
+    
+    <script>
+        function updateStatus(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = 'status ' + (type || '');
+        }
+        
+        function updateMenuPreview() {
+            const preview = document.getElementById('menu-preview');
+            const menuItems = document.querySelectorAll('.el-menu-item');
+            
+            // 清空预览
+            preview.innerHTML = '<div class="menu-item"><span class="menu-icon">📊</span><span class="menu-text">库存管理</span></div>';
+            
+            // 添加动态菜单项
+            Array.from(menuItems).forEach(item => {
+                const index = item.getAttribute('index');
+                if (index === '/customer' || index === '/product') {
+                    const title = index === '/customer' ? '客户管理' : '产品管理';
+                    const menuItem = document.createElement('div');
+                    menuItem.className = 'menu-item active';
+                    menuItem.innerHTML = `
+                        <span class="menu-icon">${index === '/customer' ? '👥' : '📦'}</span>
+                        <span class="menu-text">${title}</span>
+                        <span class="menu-badge">动态</span>
+                    `;
+                    preview.appendChild(menuItem);
+                }
+            });
+        }
+        
+        function loadDynamicMenu() {
+            const script = document.createElement('script');
+            script.src = '/js/dynamic-menu.js';
+            script.onload = function() {
+                updateStatus('menu-status', '✅ 动态菜单插件加载成功', 'success');
+                setTimeout(checkMenuItems, 500);
+            };
+            script.onerror = function() {
+                updateStatus('menu-status', '❌ 动态菜单插件加载失败', 'error');
+            };
+            document.head.appendChild(script);
+        }
+        
+        function checkMenuItems() {
+            const menuItems = document.querySelectorAll('.el-menu-item');
+            const dynamicItems = Array.from(menuItems).filter(item => {
+                const index = item.getAttribute('index');
+                return index === '/customer' || index === '/product';
+            });
+            
+            if (dynamicItems.length > 0) {
+                updateStatus('menu-status', `✅ 找到 ${dynamicItems.length} 个动态菜单项`, 'success');
+                updateMenuPreview();
+            } else {
+                updateStatus('menu-status', '⚠️ 未找到动态菜单项', 'error');
+            }
+        }
+        
+        function addCustomerMenuItem() {
+            if (window.__dynamicMenu) {
+                const success = window.__dynamicMenu.addItem('客户管理', '/customer', 'User');
+                if (success) {
+                    updateStatus('menu-status', '✅ 客户管理菜单项已添加', 'success');
+                    updateMenuPreview();
+                } else {
+                    updateStatus('menu-status', '❌ 添加菜单项失败', 'error');
+                }
+            } else {
+                updateStatus('menu-status', '❌ 动态菜单API未就绪', 'error');
+            }
+        }
+        
+        function addProductMenuItem() {
+            if (window.__dynamicMenu) {
+                const success = window.__dynamicMenu.addItem('产品管理', '/product', 'Box');
+                if (success) {
+                    updateStatus('menu-status', '✅ 产品管理菜单项已添加', 'success');
+                    updateMenuPreview();
+                } else {
+                    updateStatus('menu-status', '❌ 添加菜单项失败', 'error');
+                }
+            } else {
+                updateStatus('menu-status', '❌ 动态菜单API未就绪', 'error');
+            }
+        }
+        
+        function highlightCurrent() {
+            if (window.__dynamicMenu && window.__dynamicMenu.highlight) {
+                window.__dynamicMenu.highlight();
+                updateStatus('menu-status', '✅ 已高亮当前菜单项', 'success');
+            } else {
+                updateStatus('menu-status', '❌ 高亮功能不可用', 'error');
+            }
+        }
+        
+        function navigateToCustomer() {
+            window.location.href = '/customer';
+        }
+        
+        function navigateToProduct() {
+            window.location.href = '/product';
+        }
+        
+        function checkRoutes() {
+            if (window.__dynamicRouter) {
+                const routes = window.__dynamicRouter.getRoutes();
+                const customerRoute = routes.find(r => r.path === '/customer');
+                const productRoute = routes.find(r => r.path === '/product');
+                
+                let message = '路由状态: ';
+                if (customerRoute && productRoute) {
+                    message += '✅ 客户管理和产品管理路由均已注册';
+                } else if (customerRoute) {
+                    message += '⚠️ 只有客户管理路由已注册';
+                } else if (productRoute) {
+                    message += '⚠️ 只有产品管理路由已注册';
+                } else {
+                    message += '❌ 两个路由均未注册';
+                }
+                
+                updateStatus('route-status', message, customerRoute && productRoute ? 'success' : 'error');
+            } else {
+                updateStatus('route-status', '❌ 动态路由系统未就绪', 'error');
+            }
+        }
+        
+        // 自动加载测试
+        setTimeout(loadDynamicMenu, 1000);
+    </script>
+</body>
+</html>
+EOF
+echo '✅ 菜单项测试页面已创建' && echo '' && echo '5. 更新Nginx配置:' && if ! grep -q 'dynamic-menu-test' /etc/nginx/conf.d/medgsp.conf; then sed -i '/location \/js\/dynamic-router\.js/a\    location /dynamic-menu-test.html {\n        alias /opt/med-gsp-system/frontend/dynamic-menu-test.html;\n    }' /etc/nginx/conf.d/medgsp.conf; fi && echo '' && echo '6. 重启Nginx并测试:' && nginx -s reload && echo '✅ Nginx已重启' && echo '等待2秒...' && sleep 2 && echo '测试页面访问:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/dynamic-menu-test.html && echo ' HTTP状态码' && echo '动态菜单脚本:' && curl -s -o /dev/null -w "%{http_code}" http://localhost/js/dynamic-menu.js && echo ' HTTP状态码'
+=== 创建菜单项测试页面（简化版） ===
+✅ 菜单项测试页面已创建
+
+5. 更新Nginx配置:
+
+6. 重启Nginx并测试:
+nginx: [emerg] location "/dynamic-menu-test.html" is outside location "/js/dynamic-router.js" in /etc/nginx/conf.d/medgsp.conf:7
+
+=== 执行完成 ===
+完成时间: Fri Apr 10 23:37:15 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260410_233712.log

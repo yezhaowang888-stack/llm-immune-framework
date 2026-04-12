@@ -1,0 +1,32 @@
+=== 执行者智能体启动 ===
+时间: Wed Apr  8 21:49:00 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 检查应用状态和日志 ===' && echo '' && echo '1. 查找JAR文件位置:' && find / -name 'med-gsp-final-*.jar' -type f 2>/dev/null | head -5 && echo '' && echo '2. 检查应用运行目录:' && ls -la /proc/32437/cwd 2>/dev/null && echo '' && echo '3. 查看应用标准输出:' && tail -20 /proc/32437/fd/1 2>/dev/null | head -10 || echo '无法读取进程输出'
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 检查应用状态和日志 ===' && echo '' && echo '1. 查找JAR文件位置:' && find / -name 'med-gsp-final-*.jar' -type f 2>/dev/null | head -5 && echo '' && echo '2. 检查应用运行目录:' && ls -la /proc/32437/cwd 2>/dev/null && echo '' && echo '3. 查看应用标准输出:' && tail -20 /proc/32437/fd/1 2>/dev/null | head -10 || echo '无法读取进程输出'
+=== 检查应用状态和日志 ===
+
+1. 查找JAR文件位置:
+/app/backend/med-gsp-final-0.0.1-SNAPSHOT.jar
+
+2. 检查应用运行目录:
+lrwxrwxrwx 1 root root 0 Mar 31 12:23 /proc/32437/cwd -> /app/backend
+
+3. 查看应用标准输出:
+JDBC Connection [HikariProxyConnection@126419115 wrapping com.mysql.cj.jdbc.ConnectionImpl@4dff1b65] will not be managed by Spring
+==>  Preparing: SELECT * FROM product_catalog
+==> Parameters: 
+<==    Columns: id, category_level, medical_device_no, product_code, product_name, production_enterprise, registration_expiry_date, specification, status, storage_condition
+<==        Row: 1, 二类, 国械注准20203123456, PM001, 一次性使用注射器, 山东惠迈生物科技有限公司, null, 5ml, 正常, 常温避光
+<==        Row: 2, 二类, 国械注准20203123457, PM002, 医用外科口罩, 山东惠迈生物科技有限公司, null, 无菌型, 正常, 干燥通风
+<==        Row: 3, 二类, 国械注准20203123458, PM003, 医用防护服, 山东惠迈生物科技有限公司, null, 连体式, 正常, 干燥避光
+<==      Total: 3
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@22a1e123]
+Creating a new SqlSession
+
+=== 执行完成 ===
+完成时间: Wed Apr  8 21:49:08 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260408_214900.log

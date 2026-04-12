@@ -1,0 +1,88 @@
+=== 执行者智能体启动 ===
+时间: Sat Apr 11 23:19:01 CST 2026
+执行者: 本地执行智能体
+目标服务器: cloud-medgsp-sync
+任务ID: echo '=== 第二阶段：集成到主应用程序 ===' && echo '' && echo '时间: Sat Apr 11 23:19:01 CST 2026' && echo '' && echo '1. 备份当前主应用程序HTML:' && cp /opt/med-gsp-system/frontend/index.html /opt/med-gsp-system/frontend/index.html.backup.20260411_2318 && echo '✅ 备份完成: index.html.backup.20260411_2318' && echo '' && echo '2. 在主应用程序中集成动态菜单系统:' && echo '' && echo '检查当前index.html结构:' && head -20 /opt/med-gsp-system/frontend/index.html && echo '...' && tail -10 /opt/med-gsp-system/frontend/index.html && echo '' && echo '3. 创建集成脚本:' && cat > /opt/med-gsp-system/frontend/integrate-dynamic-menu.sh << 'EOF'
+#!/bin/bash
+echo '🔧 开始集成动态菜单系统到主应用程序...'
+
+# 备份原文件
+BACKUP_FILE=/opt/med-gsp-system/frontend/index.html.backup.20260411_231901
+cp /opt/med-gsp-system/frontend/index.html $BACKUP_FILE
+echo ✅
+
+1. 验证SSH连接...
+✅ SSH连接正常
+2. 直接执行命令: echo '=== 第二阶段：集成到主应用程序 ===' && echo '' && echo '时间: Sat Apr 11 23:19:01 CST 2026' && echo '' && echo '1. 备份当前主应用程序HTML:' && cp /opt/med-gsp-system/frontend/index.html /opt/med-gsp-system/frontend/index.html.backup.20260411_2318 && echo '✅ 备份完成: index.html.backup.20260411_2318' && echo '' && echo '2. 在主应用程序中集成动态菜单系统:' && echo '' && echo '检查当前index.html结构:' && head -20 /opt/med-gsp-system/frontend/index.html && echo '...' && tail -10 /opt/med-gsp-system/frontend/index.html && echo '' && echo '3. 创建集成脚本:' && cat > /opt/med-gsp-system/frontend/integrate-dynamic-menu.sh << 'EOF'
+#!/bin/bash
+echo '🔧 开始集成动态菜单系统到主应用程序...'
+
+# 备份原文件
+BACKUP_FILE=/opt/med-gsp-system/frontend/index.html.backup.20260411_231901
+cp /opt/med-gsp-system/frontend/index.html $BACKUP_FILE
+echo ✅ 备份完成: $BACKUP_FILE
+
+# 检查是否已集成
+if grep -q dynamic-menu-integration.js /opt/med-gsp-system/frontend/index.html; then
+    echo ⚠️ 动态菜单系统已集成，跳过
+    exit 0
+fi
+
+# 在</body>标签前添加动态菜单系统
+echo 🔧 添加动态菜单系统脚本...
+sed -i '/<\/body>/i    <!-- 动态菜单系统 -->    <script type="module" src="/js/dynamic-menu-integration.js"></script>' /opt/med-gsp-system/frontend/index.html
+
+echo ✅ 动态菜单系统集成完成
+echo 📋 集成后检查:
+grep -n dynamic-menu-integration /opt/med-gsp-system/frontend/index.html
+EOF
+chmod +x /opt/med-gsp-system/frontend/integrate-dynamic-menu.sh && /opt/med-gsp-system/frontend/integrate-dynamic-menu.sh
+=== 第二阶段：集成到主应用程序 ===
+
+时间: Sat Apr 11 23:19:01 CST 2026
+
+1. 备份当前主应用程序HTML:
+✅ 备份完成: index.html.backup.20260411_2318
+
+2. 在主应用程序中集成动态菜单系统:
+
+检查当前index.html结构:
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医疗器械管理系统</title>
+    <link rel="stylesheet" href="/css/medical-management.css">
+</head>
+<body>
+    <div id="app"></div>
+    <script src="/js/app.3b24beff.js"></script>
+    <!-- 动态注册系统 -->
+    <script src="/js/dynamic-router.js"></script>
+    <script src="/js/dynamic-menu.js"></script>
+</body>
+</html>
+...
+    <link rel="stylesheet" href="/css/medical-management.css">
+</head>
+<body>
+    <div id="app"></div>
+    <script src="/js/app.3b24beff.js"></script>
+    <!-- 动态注册系统 -->
+    <script src="/js/dynamic-router.js"></script>
+    <script src="/js/dynamic-menu.js"></script>
+</body>
+</html>
+
+3. 创建集成脚本:
+🔧 开始集成动态菜单系统到主应用程序...
+✅ 备份完成: /opt/med-gsp-system/frontend/index.html.backup.20260411_231901
+🔧 添加动态菜单系统脚本...
+✅ 动态菜单系统集成完成
+📋 集成后检查:
+15:<!-- 动态菜单系统 -->    <script type="module" src="/js/dynamic-menu-integration.js"></script>
+
+=== 执行完成 ===
+完成时间: Sat Apr 11 23:19:05 CST 2026
+日志文件: /Users/mac/.openclaw/workspace/executor-agent/logs/execution_20260411_231901.log
