@@ -1,0 +1,41 @@
+# 惠迈智能体框架 .gitignore
+# 内部资产 — 永不上传公开仓库
+
+# Solidity合约源码
+contracts/
+*.sol
+
+# Hardhat/Foundry 项目
+hardhat-project/
+onchain-trust-layer/
+
+# 部署参数和密钥
+deployment-artifact*.json
+*.key
+*.pem
+*.enc
+
+# 本地inbox
+inbox/cn001/
+inbox/cn002/
+inbox/hk001/
+
+# 内存记忆
+memory/
+MEMORY.md
+HEARTBEAT.md
+
+# 内部规格（选择哪些公开需老王批准）
+specs/
+
+# 排毒训练数据
+detox-agent/
+training-set/
+training-configs/
+
+# sanitization策略
+sanitization/
+
+# 配置文件中的密钥
+.env
+.env.*
