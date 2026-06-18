@@ -89,7 +89,6 @@ History-informed pre-triggering. When a new input matches stored failure pattern
 **王业朝及惠迈智能体团队 (Sharp Agent Team)**
 
 - 王业朝 (Yezhao Wang) — 项目负责人 & 架构设计
-- 魏端 (Wei Duan) — 通讯作者
 - Sharp Agent Team — 技术协调 / 数据工程 / 基础设施
 
 Correspondence: yezhaowang@163.com
