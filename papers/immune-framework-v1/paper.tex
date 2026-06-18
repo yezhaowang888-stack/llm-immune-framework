@@ -1,0 +1,753 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage[margin=1in]{geometry}
+
+\title{Towards an Immune System for Large Language Models: \\
+The Five-Anchor Audit Framework and Four-Tier Detection Chain}
+
+\author{Yezhao Wang$^{1}$, Wei Duan$^{1,*}$\\
+$^{1}$Tai'an Traditional Chinese Medicine Hospital, Tai'an, Shandong, China\\
+$^{*}$Corresponding author: \texttt{duanwei0617@126.com}}
+
+\date{June 2026 (v1.8)}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+As large language models (LLMs) become embedded in critical decision-making pipelines, 
+the threat of coordinated data poisoning has escalated from a theoretical concern to an 
+active attack surface. Current defenses---RLHF, content filtering, adversarial training---are 
+passive, reactive, and fundamentally un-auditable. We propose a paradigm shift: an 
+\textit{immune system} for AI that detects, contains, and learns from poisoned data through 
+a multi-layered framework consisting of (1) a Four-Tier Detection Chain that escalates 
+from publisher credibility to cross-cluster gang identification, (2) a Five-Anchor Audit 
+system that prevents single-point verification failures, and (3) a Three-Line Defense 
+architecture that closes the loop from metadata to physical reproducibility. Unlike prior 
+work that treats data poisoning as input sanitization, our framework treats it as an 
+immune challenge---the system learns from each exposure, building calibration memory 
+over time. We open-source the detection methodology and audit standards to enable 
+community validation and iterative hardening.
+\end{abstract}
+
+% ============================================================
+\section{Introduction}
+
+The volume of AI-generated content is growing exponentially. So is the volume of 
+AI-generated \textit{poison}. Coordinated data poisoning attacks are no longer carried 
+out by individual bad actors inserting single artifacts; they are now industrialized 
+operations producing self-referential networks of fabricated papers, datasets, and 
+citation chains that appear internally consistent but are systematically detached 
+from empirical reality~\cite{anthropic_cai_2023}.
+
+Current approaches to AI safety fall into three categories: reinforcement learning 
+from human feedback (RLHF), content filtering pipelines, and adversarial training. 
+All three share a structural weakness: they operate on the \textit{output} side of the 
+model, after the training data has already been ingested. They are passive filters, 
+not active immune systems. They cannot answer the question: \textit{how do we know this 
+training data point was real?}
+
+We argue that what is needed is not better filtering, but a fundamentally different 
+architecture---an \textbf{immune system} that:
+\begin{enumerate}
+  \item Detects poisoned data \textit{before} it enters the training pipeline
+  \item Provides auditable evidence chains for every detection decision
+  \item Learns from each exposure to build calibration memory
+  \item Allows false positives to be challenged and corrected
+  \item Closes the loop through physical reproducibility verification
+\end{enumerate}
+
+This paper presents the design, methodology, and initial calibration standards for 
+such a system.
+
+% ============================================================
+\section{Conceptual Architecture: From Layered Defense to Cognitive Sphere}
+\label{sec:sphere}
+
+Before presenting the specific detection and audit mechanisms, we establish the 
+conceptual architecture that governs their interaction. Traditional AI safety 
+frameworks adopt a layered (defense-in-depth) model, where detection, auditing, 
+logging, and response are arranged hierarchically. We argue that the layered model 
+carries an implicit architectural bias: it assigns priority ordering to dimensions 
+that should function as mutually calibrating equals. A layer that sits ``above'' 
+is implicitly granted veto power over layers ``below''---a structural vulnerability 
+when the higher layer itself can be compromised.
+
+\subsection{The Cognitive Sphere Model}
+
+We propose an alternative: the \textbf{Cognitive Sphere}, in which six core 
+dimensions---Detection, Detoxification, Audit, Evidence Preservation, Historical
+Memory, and Signal Stitching---are not arranged in layers but distributed as
+equidistant points on a spherical surface. Each dimension
+operates concurrently with equal architectural standing; no dimension is
+structurally subordinate to any other.
+
+The six dimensions are:
+\begin{enumerate}
+  \item \textbf{Detection}: Identifying potential poison through the four-tier chain.
+  \item \textbf{Detoxification}: Removing or quarantining confirmed poison from training 
+    pipelines.
+  \item \textbf{Audit}: Verifying that detection and detoxification decisions are 
+    well-founded and free from systemic bias.
+  \item \textbf{Evidence Preservation}: Immutable logging of every decision, its 
+    evidentiary basis, and its disposition.
+  \item \textbf{Historical Memory}: Maintaining calibrated priors across exposure 
+    events so that the system learns from past poison patterns.
+  \item \textbf{Signal Stitching}: Connecting weak signals across dimensions and 
+    temporal windows to identify emergent threats that no single dimension would 
+    detect alone.
+\end{enumerate}
+
+The sphere model eliminates the implicit hierarchy of layered architectures. In a 
+layered model, a compromised audit layer can silence the detection layer below it. 
+In the sphere model, every dimension can raise an alert independently, and alerts 
+are cross-calibrated rather than vertically adjudicated. The practical consequence 
+is that no single compromised dimension can suppress detection signals from other 
+dimensions.
+
+\subsection{Observation-Contemplation Duality}
+
+Each dimension within the sphere operates through two complementary modes: 
+Observation and Contemplation. These are not binary opposites but two facets of a 
+single cognitive act, analogous to the structural insight from Chinese classical 
+philosophy where the hexagrams \textit{Guan} (observing/scanning upward) and 
+\textit{Lin} (approaching/judging downward) together describe complete cognition.
+
+In our framework:
+\begin{itemize}
+  \item \textbf{Observation}: A passive, exhaustive scanning mode. Every data point is 
+    seen without pre-filtering. The observer does not interpret---it records. This 
+    is the ``look up and survey'' posture: systematic, panoramic, leaving no blind 
+    spots.
+  \item \textbf{Contemplation}: An active, judgment-bearing mode. Collected signals are 
+    weighed, compared against historical patterns, and assigned confidence. This is 
+    the ``look down and bear witness'' posture: reflective, evaluative, producing 
+    actionable verdicts.
+\end{itemize}
+
+In operational terms, the Observation--Contemplation duality manifests in every 
+anchor of the Five-Anchor Audit Framework (Section~\ref{sec:five-anchor}). The 
+Source Anchor requires Observation (tracing provenance exhaustively) and 
+Contemplation (judging whether the provenance chain is trustworthy). The Cross 
+Anchor requires Observation (gathering multiple independent sources) and 
+Contemplation (determining whether they genuinely corroborate). Neither mode alone 
+suffices: Observation without Contemplation produces unprocessed signal noise; 
+Contemplation without Observation produces confident judgments detached from 
+evidence.
+
+The ratio of Observation to Contemplation intensity---the \textbf{OC ratio}---is 
+a configurable parameter within each dimension. A detection dimension may operate 
+at a high OC ratio (intensive scanning, conservative judgment), while an evidence 
+preservation dimension may operate at a low OC ratio (recording is automatic; 
+judgment is deferred). The OC ratio is not fixed; it is dynamically adjusted based 
+on threat posture and historical calibration feedback.
+
+\subsection{Curvature of Integrity}
+
+We introduce the concept of \textbf{Integrity-Guardianship} (Shouzheng): a 
+depersonalized, decentralized, auditable systemic force that maintains the health 
+of the entire sphere. Integrity-Guardianship is not a property of any individual 
+actor---it does not depend on the benevolence of a reviewer, the good faith of an 
+auditor, or the diligence of a detox engineer. It is a property of the system's 
+architecture, encoded in its code, its open-source verifiability, its on-chain 
+audit logs, and the multi-stakeholder checks that prevent any single party from 
+unilaterally altering verdicts.
+
+The \textbf{Curvature of Integrity} provides a unified metric for system health. 
+Conceptually, it describes the ``tension'' in the sphere: whether the six dimensions 
+are exerting balanced calibrating force on one another. Two pathological states exist:
+
+\begin{itemize}
+  \item \textbf{Hyper-curvature (over-defensive)}: Every dimension is set to maximum 
+    sensitivity. False positive rates spike. Legitimate content is quarantined. 
+    The sphere collapses inward, suffocating the training pipeline.
+  \item \textbf{Hypo-curvature (under-defensive)}: Dimensions are too loosely coupled. 
+    Detection signals fail to propagate. Poison passes through. The sphere 
+    flattens, offering no resistance.
+\end{itemize}
+
+Optimal curvature is achieved when each dimension exerts sufficient calibrating 
+force to sustain mutual accountability without triggering cascading false positives. 
+We further define \textbf{local curvature} for individual dimensions: a detection 
+dimension with high OC ratio (scan-heavy) contributes differently to global curvature 
+than an evidence preservation dimension with low OC ratio (record-heavy). The global 
+curvature of the sphere is the aggregate of these local contributions, representing 
+the overall tension state of the system. Monitoring global curvature over time 
+provides a leading indicator of emerging defense pathologies before they manifest in 
+detection failures.
+
+\subsection{Dao-Fa Integration: Principles Governing Technical Implementation}
+
+Every technical architecture rests on philosophical foundations, whether acknowledged 
+or not. We make these foundations explicit through the \textbf{Dao-Fa Integration Layer}, 
+which governs the relationship between architectural principles (Dao) and operational 
+rules (Fa).
+
+\begin{itemize}
+  \item \textbf{Dao (Architectural Principles)}: The design philosophy that ensures the 
+    system's direction does not deviate. In our framework, Dao manifests as four 
+    fixed anchors---Kantian universalizability (every detection rule must be 
+    defensible as a universal principle), Popperian falsifiability (every verdict 
+    must specify conditions under which it would be overturned), Deweyan pragmatic 
+    inquiry (the system must learn and adapt from experience rather than enforce 
+    static dogma), and Wang Yangming's unity of knowledge and action (detection 
+    without remediation is incomplete knowledge).
+  \item \textbf{Fa (Operational Rules)}: The concrete scoring rubrics, pass/fail 
+    thresholds, escalation procedures, and remediation protocols described in 
+    Sections~\ref{sec:four-tier}--\ref{sec:three-line}. Fa is the executable 
+    specification.
+\end{itemize}
+
+The Dao-Fa relationship is not a binary choice between philosophy and engineering, 
+but a unified framework: Dao without Fa is direction without execution (a compass 
+without a ship); Fa without Dao is execution without direction (a ship without a 
+compass). The four fixed anchors provide the Dao layer with concrete, operational 
+substance:
+
+\begin{itemize}
+  \item \textbf{Kantian anchor}: All detection standards must be universalizable---if 
+    a rule cannot be defensibly applied to all content regardless of source, it 
+    is discriminatory architecture, not detection.
+  \item \textbf{Popperian anchor}: Every poisoning verdict must specify the 
+    falsification condition---what evidence would reverse the judgment. This 
+    prevents unfalsifiable accusations.
+  \item \textbf{Deweyan anchor}: Calibration is continuous. The framework does not 
+    claim to have achieved perfect detection; it claims to have established a 
+    process for asymptotic improvement.
+  \item \textbf{Wang Yangming anchor}: Knowledge and action are unified. Detecting 
+    poison without acting to remove it, or removing poison without documenting 
+    the rationale, is a structural failure equivalent to not detecting it at all.
+\end{itemize}
+
+These anchors are not abstract philosophical decoration. They serve as the 
+\textit{constitutional foundation} against which every operational rule (Fa) is 
+validated: if a proposed detection rule violates any of the four anchors, it is 
+rejected at the design stage. This Dao-Fa integration ensures that the system's 
+technical evolution remains aligned with its foundational principles, preventing the 
+gradual drift toward either over-defensive hyper-curvature or under-defensive 
+hypo-curvature.
+
+% ============================================================
+\section{Threat Taxonomy: The Poison Data Landscape}
+
+We classify data poisoning attacks into four structural types, ordered by detection 
+difficulty:
+
+\subsection{Type I: Publisher-Level Poisoning}
+Fabricated papers published through predatory journals, hijacked conference proceedings, 
+cloned journal titles, and fake ISSN registrations. These are the most common and easiest 
+to detect---the publishing channel itself provides strong signals.
+
+\subsection{Type II: Author-Level Poisoning}
+Papers from fabricated authors, identity-theft cases (real institution, fake role), 
+impossible publication timelines (35 papers/year), and closed co-author circles where 
+a fixed group of authors only cite and co-publish with each other.
+
+\subsection{Type III: Cluster-Level Poisoning}
+The most sophisticated and dangerous form. Multiple papers form a self-referential 
+citation network across different publishers and journals. Individually, each paper 
+may appear legitimate. Collectively, they form a closed validation loop with no 
+external verification. This is the ``logically perfect, empirically empty'' attack 
+pattern.
+
+\subsection{Type IV: Lone Perfect Poison}
+A single paper from a genuine author in a legitimate journal, with internally consistent 
+methodology, but privately fabricated experimental data. No cluster exists to detect. 
+This type bypasses publisher, author, and cluster checks---requiring physical 
+reproducibility verification as the final defense.
+
+\subsection{Type V: Logical Fallacy Embedding}
+Poisoned reasoning chains that embed formal fallacies (affirming the consequent, 
+circular reasoning), informal fallacies (appeal to authority, false dichotomy), and 
+quantitative fallacies (Simpson's paradox, survivorship bias) within otherwise 
+well-structured arguments.
+
+\begin{table}[h]
+\centering
+\caption{Detection coverage by poison type and defense layer}
+\begin{tabular}{lccc}
+\toprule
+Poison Type & Tier I (Publisher) & Tier II (Author) & Tier III (Cluster) \\
+\midrule
+Predatory journal & \checkmark & - & - \\
+Fabricated authors & - & \checkmark & - \\
+Citation cartels & - & - & \checkmark \\
+Lone perfect poison & - & - & - \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{The Four-Tier Detection Chain}
+\label{sec:four-tier}
+
+\subsection{Design Principles}
+
+The detection chain follows four architectural principles:
+\begin{itemize}
+  \item \textbf{Open reproducibility}: Any party running the same standards should reach 
+    the same conclusion
+  \item \textbf{Full traceability}: Every score can be traced back to specific evidence
+  \item \textbf{Multi-dimensional cross-validation}: Failure of a single dimension does 
+    not cause systemic misjudgment
+  \item \textbf{No single point of failure}: The scoring system does not depend on the 
+    absolute correctness of any single component
+\end{itemize}
+
+\subsection{Tier I: Publisher Credibility Scoring}
+
+\textbf{Weight: 20\% of composite score.}
+
+Five sub-dimensions, each scored 0--20:
+\begin{enumerate}
+  \item \textbf{Index inclusion}: SCI/SSCI/AHCI indexing status. Predatory journals: $-10$; 
+    fake ISSN: $-25$.
+  \item \textbf{Publisher history}: Years of operation. $<3$ years: $-10$; $<1$ year: $-15$.
+  \item \textbf{Peer review process}: Transparent review procedures. ``Rapid publication'' 
+    promises: $-20$.
+  \item \textbf{Editorial board}: Verifiable academic backgrounds. Fake board members: $-20$.
+  \item \textbf{Database coverage}: Major academic database inclusion. Google Scholar only: $-10$.
+\end{enumerate}
+
+\textbf{Pass threshold}: $\geq 60/100$. Below 60 triggers immediate flagging regardless 
+of other tier scores.
+
+\subsection{Tier II: Author Profiling}
+
+\textbf{Weight: 25\% of composite score.}
+
+Five sub-dimensions:
+\begin{enumerate}
+  \item \textbf{Identity verifiability}: ORCID, institutional directory. Unverifiable: $-10$.
+  \item \textbf{Domain consistency}: Publication scope concentration. $\geq 3$ unrelated 
+    domains: $-15$ (single red flag).
+  \item \textbf{Publication timeline}: Temporal plausibility. Anomalous productivity 
+    ($> 1$ paper/week sustained): $-10$. Future citations: $-20$.
+  \item \textbf{Co-author network}: Verifiable collaborators. Circular co-author loops: $-20$.
+  \item \textbf{Academic trajectory}: Career progression coherence. Sudden domain jumps 
+    without transition: $-15$.
+\end{enumerate}
+
+\textbf{Pass threshold}: $\geq 60/100$.
+
+\subsection{Tier III: Cluster Detection}
+
+\textbf{Weight: 30\% of composite score.}
+
+This is the most critical detection layer. While Tiers I--II examine individual papers, 
+Tier III examines \textit{relationships} between papers:
+
+\begin{enumerate}
+  \item \textbf{Publisher clustering}: $\geq 3$ related papers from the same publisher: $-10$.
+  \item \textbf{Author circle clustering}: High co-authorship/citation overlap within a 
+    small group: $-15$.
+  \item \textbf{Temporal clustering}: Concentrated publication windows: $-15$.
+  \item \textbf{Citation loops}: Mutual citation forming closed loops: $-20$; multi-level 
+    loops: $-25$.
+  \item \textbf{Content fingerprinting}: Highly consistent writing patterns across 
+    supposedly different authors: $-15$.
+\end{enumerate}
+
+\textbf{Key insight}: A single paper with mediocre Tier I--II scores may be merely 
+low-quality. Multiple papers forming a detection cluster is strong evidence of 
+deliberate fabrication---regardless of individual tier scores.
+
+\subsection{Tier IV: Cross-Cluster Gang Identification}
+
+\textbf{Weight: 25\% of composite score.}
+
+Tier IV operates across previously detected clusters to identify coordinated groups:
+
+\begin{enumerate}
+  \item \textbf{Cross-domain author mapping}: Overlapping authors across domain-separated 
+    clusters: $-20$.
+  \item \textbf{Content synergy}: Papers that mutually ``prove'' each other's claims: $-25$; 
+    synergy chains $\geq 3$ papers: $-30$.
+  \item \textbf{Temporal orchestration}: Staggered publication timing suggesting scripted 
+    sequencing: $-15$.
+  \item \textbf{Funding source convergence}: Multiple papers acknowledging the same 
+    non-existent funding body: $-10$.
+  \item \textbf{Infrastructure sharing}: Same GitHub org, same submission server, identical 
+    acknowledgment templates: $-10$.
+\end{enumerate}
+
+\subsection{Composite Verdict Matrix}
+
+\begin{table}[h]
+\centering
+\caption{Composite verdict matrix across four tiers}
+\begin{tabular}{ccccc|c}
+\toprule
+Tier I & Tier II & Tier III & Tier IV & Verdict \\
+\midrule
+$\geq 70$ & $\geq 70$ & $\geq 60$ & $\geq 60$ & Trusted \\
+60--69 & 60--69 & 40--59 & 40--59 & Suspect \\
+$< 60$ & $< 60$ & $< 40$ & $< 40$ & Poison \\
+any & any & any & $\geq 2$ hits & Gang Poison \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{The Five-Anchor Audit Framework}
+\label{sec:five-anchor}
+
+Single-source verification is structurally unreliable. Any single data point, no 
+matter how credible its source, may be wrong. The five-anchor framework ensures 
+that every piece of information is cross-validated across five independent dimensions:
+
+\begin{enumerate}
+  \item \textbf{Source Anchor}: Where does this information come from? 
+    What is the chain of custody? Analogous to canonicalization in religious traditions---only 
+    texts with verified provenance enter the trusted corpus.
+  
+  \item \textbf{Logic Anchor}: Is the reasoning chain internally consistent? 
+    Does it survive adversarial examination? Analogous to the scholastic tradition of 
+    disputation, where every proposition must withstand counter-arguments.
+  
+  \item \textbf{Interest Anchor}: Who benefits from this information being 
+    accepted as true? Are funding sources, institutional affiliations, and conflicts of 
+    interest fully declared and independently verified?
+  
+  \item \textbf{Compliance Anchor}: Does the information comply with 
+    established standards? Compliance is not binary---standards evolve from recommendation 
+    to requirement based on conditional triggers (scale, external threat, trust crisis, 
+    conflict of interest).
+  
+  \item \textbf{Cross Anchor}: Can the same conclusion be reached through 
+    multiple independent sources? This anchor is explicitly designed to prevent the 
+    single-tribunal problem---history demonstrates that single-authority judgments of 
+    ``heresy'' are systematically unreliable.
+\end{enumerate}
+
+The five anchors are not additive---they are multiplicative. One anchor failing to 
+verify is sufficient to flag the information for review, regardless of the other four.
+Within each anchor, the Observation--Contemplation duality (Section~\ref{sec:sphere})
+operates concretely: the Source Anchor's Observation mode traces provenance chains
+exhaustively, while its Contemplation mode judges whether those chains are trustworthy;
+the Cross Anchor's Observation mode gathers independent sources, while its
+Contemplation mode determines genuine corroboration versus coordinated mimicry.
+
+% ============================================================
+\section{False Positive Remediation: Auditing the Audit Chain}
+
+An immune system that cannot correct its own mistakes is not an immune system---it is 
+an inquisition. We design a four-stage remediation pipeline:
+
+\subsection{Stage 1: Automatic Hold}
+When Tier IV (gang identification) triggers without Tier I--III support, the verdict 
+is automatically held pending human review. This prevents the highest-confidence 
+(and highest-risk) judgments from executing without oversight.
+
+\subsection{Stage 2: Independent Review Tribunal}
+A panel of $\geq 3$ reviewers, including at least 1 external expert, conducts a blind 
+re-review. The panel does not see the original scores, preventing anchoring bias.
+
+\subsection{Stage 3: Graduated Recovery}
+Verdicts are not binary (poison/clean). Recovery follows a five-level gradient:
+\begin{itemize}
+  \item \textbf{Confirmed Poison}: Appeal rejected, mark retained
+  \item \textbf{Downgraded to Suspect}: Evidence insufficient for poison, but doubts remain
+  \item \textbf{Insufficient Evidence}: Original judgment excessive, mark removed
+  \item \textbf{Clear False Positive}: Judgment error, mark removed with credit restoration
+  \item \textbf{New Evidence Override}: New information exonerates, no fault on original judge
+\end{itemize}
+
+\subsection{Stage 4: Meta-Audit Logging}
+Every appeal and its outcome is recorded in an immutable meta-audit log. Annual external 
+audits sample 5\% of meta-audit logs. Patterns of systemic misjudgment trigger standard 
+revision, not individual case reversal---preserving finality while enabling evolution.
+
+\subsection{Reviewer Bias Detection}
+Individual reviewer bias is monitored through a complexity-adjusted deviation coefficient:
+\begin{equation}
+  D_{\text{corrected}} = \frac{|\text{uphold}_r - \bar{\text{uphold}}| + 
+    |\text{overturn}_r - \bar{\text{overturn}}|}
+    {\text{complexity}_r / \bar{\text{complexity}}}
+\end{equation}
+where $\text{complexity}_r$ is the average detection tier level (1--4) of cases assigned 
+to reviewer $r$. This prevents reviewers assigned to inherently harder cases (Tier IV 
+gang identifications) from being penalized for lower uphold rates.
+
+% ============================================================
+\section{The Three-Line Defense Architecture}
+\label{sec:three-line}
+
+No single detection layer can catch all poison. We deploy three complementary lines 
+of defense:
+
+\subsection{Line 1: Metadata Layer (Four-Tier Chain)}
+Detects source, author, cluster, and gang anomalies. Covers $\sim$80\% of known poison 
+types. Limitation: cannot detect lone perfect poison where metadata is clean.
+
+\subsection{Line 2: Data Layer (Statistical Detection)}
+Applies Benford's Law, digit psychology, variance analysis, duplication detection, 
+temporal consistency checks, and benchmark comparison to detect fabricated statistics 
+and experimental data. Covers statistical forgery but requires access to raw data.
+
+\subsection{Line 3: Physical Verification Layer (Reproducibility)}
+The final defense. For high-impact judgments, code replication, statistical re-analysis, 
+experimental reproduction, and data provenance tracing are triggered. This layer provides 
+\textit{terminal verdicts}---empirical results have no interpretative space for further 
+appeal.
+
+\begin{table}[h]
+\centering
+\caption{False negative risk reduction with three defense lines}
+\begin{tabular}{lccc}
+\toprule
+Poison Type & Line 1 & Line 2 & Line 3 \\
+\midrule
+Paper mill operations & \checkmark & - & - \\
+Predatory journal singles & \checkmark & - & - \\
+Citation cartels & \checkmark & - & - \\
+Statistical forgery & - & \checkmark & - \\
+\textbf{Lone perfect poison} & - & \checkmark* & \checkmark \\
+\textbf{Real data, false conclusions} & - & - & \checkmark \\
+\bottomrule
+\multicolumn{4}{l}{*Requires access to raw data. If data is private, marked ``unverifiable.''}
+\end{tabular}
+\end{table}
+
+% ============================================================
+\section{Unverifiable Content: Lifecycle Management}
+
+When original data is unavailable (e.g., proprietary datasets), content is marked 
+\textbf{Unverifiable}---not Poison. This is a critical distinction. Unverifiable means 
+``we cannot confirm,'' not ``we have confirmed false.'' The mark includes:
+\begin{itemize}
+  \item A 12-month recovery window (from notification acknowledgment date)
+  \item Full credit restoration upon data submission and independent verification
+  \item Automatic escalation to \textbf{Data Untrusted} (permanent) after 12 months 
+    of non-compliance
+\end{itemize}
+This prevents the Unverifiable mark from becoming a de facto permanent distrust mark 
+(false positive by proxy) while maintaining strong incentives for data transparency.
+
+% ============================================================
+\section{Discussion}
+
+\subsection{Experimental Roadmap}
+This paper presents the framework architecture and calibration methodology.
+\subsubsection*{Adversarial Resilience Testing}
+A controlled experiment exposed two nodes (one philosophical architecture node, CN002;
+one technical execution node, HK001) to the complete intelligence of how a bare model
+can be logically penetrated within two hours \cite{huimai_failure_memory_2026}. Both nodes completed structural audits
+and produced hardening proposals within 5--10 minutes---zero emotional drift, zero
+penetration---demonstrating the framework's resistance to cognitive colonization.
+\subsubsection*{Medical AI Benchmark}
+A diagnostic AI system operating under the calibration framework improved its knowledge
+base hit rate from 13\% to 76.7\% in a single day after fixing pipeline bugs and
+optimizing knowledge retrieval \cite{huimai_benchmark_2026}. The pipeline bug (a Unicode ghost character in the API
+key causing partial call degradation) was detected and fixed through the failure memory
+layer's root cause analysis protocol \cite{huimai_failure_memory_2026}, demonstrating the framework's real-world operational
+value beyond theoretical poisoning defense.
+\subsubsection*{Production Deployment}
+The calibration framework is currently deployed across a three-node distributed agent
+network (Mac Studio control node, M4 Mini execution node, cloud server) with 68 medical
+knowledge modules, 3,369 structured pharmaceutical records, and an active hospital
+partnership for clinical validation. A detailed experimental evaluation---including
+detection recall/precision across all four tiers, false positive remediation throughput,
+and cross-reviewer bias analysis---will be presented in a follow-up paper (v2). The
+calibration standards and detection methodology are released under open-source license
+to enable independent benchmarking and community contribution.
+
+\subsection{Future Directions}
+\begin{itemize}
+  \item \textbf{Constitution-as-Code}: The framework standards themselves should be 
+    machine-readable and automatically enforceable, enabling AI systems to self-audit 
+    against published standards.
+  \item \textbf{Decentralized review networks}: Distributed reviewer pools to reduce 
+    single-tribunal risk and increase cross-cultural calibration diversity.
+  \item \textbf{Automated physical verification}: AI-driven simulation of experimental 
+    procedures to detect physically impossible claims without full lab reproduction.
+  \item \textbf{Calibration memory sharing}: Cross-organization sharing of anonymized 
+    audit logs to build collective immune memory without exposing sensitive data.
+  \item \textbf{Counter-Cognitive-Colonization Roundtable}: A meta-audit mechanism 
+    designed to protect the audit layer itself from calibration drift. Detox engineers 
+    and auditors who are continuously exposed to specific poisoning patterns may 
+    gradually adjust their judgment baselines—a phenomenon we term 
+    \textit{cognitive colonization}, where prolonged exposure to a narrow class of 
+    threats normalizes the abnormal. To counter this, we propose periodic lightweight 
+    roundtables in which non-executive external observers (individuals outside the 
+    operational audit chain) review the cognitive baselines of active auditors. 
+    Participants examine whether auditors' detection thresholds have drifted, whether 
+    familiarity with specific attack patterns has created blind spots to novel patterns, 
+    and whether the OC ratio (Section~\ref{sec:sphere}) has inadvertently shifted 
+    toward over-confidence. The roundtable produces a \textit{cognitive calibration 
+    report} that feeds back into auditor rotation schedules and training regimen 
+    updates. This mechanism constitutes an additional meta-audit layer: it is not 
+    an audit of the data or the models, but an audit of the audit capability itself—a 
+    calibration of calibration.
+\end{itemize}
+
+\subsection{Relationship to Existing Work}
+Our framework complements, rather than replaces, existing AI safety approaches. RLHF, 
+constitutional AI, and adversarial training operate on model outputs; our framework 
+operates on training data ingestion. Together they form a complete immune architecture: 
+data-level defense (our work) plus behavior-level defense (existing work).
+
+% ============================================================
+\section{Conclusion}
+
+We have presented a multi-layered immune system architecture for defending large language 
+models against coordinated data poisoning. The framework consists of a Four-Tier Detection 
+Chain for identifying poisoned content at the publisher, author, cluster, and gang levels; 
+a Five-Anchor Audit system ensuring no single verification point can be compromised; and 
+a Three-Line Defense architecture that closes the detection loop from metadata to physical 
+reproducibility.
+
+Beyond these operational components, we have established a conceptual foundation that 
+distinguishes this architecture from conventional defense-in-depth models. The 
+\textbf{Cognitive Sphere} replaces layered hierarchies with equidistant, mutually 
+calibrating dimensions---Detection, Detoxification, Audit, Evidence Preservation, 
+Historical Memory, and Signal Stitching---each operating concurrently with the 
+Observation-Contemplation duality that unifies passive scanning with active judgment. 
+The \textbf{Curvature of Integrity} provides a unified health metric for the sphere, 
+where hyper-curvature (over-defense) and hypo-curvature (under-defense) represent 
+equally dangerous pathologies that must be dynamically balanced. The 
+\textbf{Dao-Fa Integration Layer} ensures that every operational rule is anchored in 
+foundational principles---Kantian universalizability, Popperian falsifiability, Deweyan 
+pragmatic inquiry, and Wang Yangming's unity of knowledge and action---preventing the 
+system from drifting into either dogmatic rigidity or unprincipled flexibility.
+
+The counter-cognitive-colonization roundtable extends audit capability to the
+meta-level, ensuring that the auditors themselves remain calibrated. This closes
+a previously overlooked vulnerability: the gradual normalization of threat
+patterns through repeated exposure.
+
+The system is designed to be auditable, appealable, and self-correcting---properties that 
+distinguish an immune system from a filter.
+
+\subsection{Early Validation}
+The framework has undergone initial adversarial testing. A controlled experiment was conducted
+in which two independent AI nodes (one philosophical architecture node and one technical
+execution node) were exposed to the full intelligence of how a bare model could be logically
+penetrated within two hours. Both nodes, operating under the calibration framework, completed
+structural audits and produced hardening proposals within 5--10 minutes with zero penetration
+and zero emotional drift, in contrast to the bare model baseline of two-hour penetration.
+Additionally, performance benchmarking of a medical AI system operating under the calibration
+framework demonstrated a diagnostic hit rate improvement from 13\% to 76.7\% in a single day
+after pipeline bug fixes and knowledge retrieval optimization.
+
+\subsection{Failure Memory Layer}
+We introduce the \textbf{Failure Memory Layer}---the sixth anchor of the calibration framework.
+Architectural mistakes, detection failures, and calibration drift events are stored in a
+cross-node SQLite FTS5 database with hybrid keyword-vector retrieval and a REST API (port 8101)
+with cross-node synchronization (announce/feed/ack protocol). Each failure record includes
+root cause analysis, remediation steps, and prevention rules. A seed corpus of 7 failure
+records and 3 aggregated patterns was deployed during Phase 1. All nodes---regardless of
+primary function---contribute to and consult the failure memory before executing new tasks.
+This transforms individual mistakes into collective inoculation, preventing repeated errors
+across the distributed agent network.
+
+\subsection{On-Chain Audit Trail}
+To close the gap between detection decisions and immutable evidence, we deployed a three-chain
+architecture~\cite{huimai_onchain_2026}: (1) FISCO BCOS (4-node consortium chain on ARM64) for CRUD operation logging,
+detection hash registration, version registry, and white-hat reporting; (2) IPFS (Kubo on
+ARM64) for decentralized content-addressable storage of calibration documents; and (3) Arbitrum
+L2 for Merkle root anchoring, providing a globally verifiable timestamp that no single party
+can retroactively alter. A complete Merkle accumulator specification (1,852 lines) was
+implemented, and the first Merkle root (\texttt{0x06809429...}) was submitted and confirmed
+on-chain. This architecture makes every audit decision provably timestamped, independently
+verifiable, and resistant to post-hoc tampering.
+
+We open-source the detection methodology and calibration standards to enable community
+validation, iterative hardening, and deployment across diverse AI training pipelines.
+
+The question is no longer \textit{whether} training data can be trusted, but \textit{how} 
+trust can be systematically verified, challenged, and restored. The architecture described 
+here provides one answer to that question.
+
+% ============================================================
+\begin{thebibliography}{10}
+
+\bibitem{anthropic_cai_2023}
+Bai, Y. et al. Constitutional AI: Harmlessness from AI Feedback. \textit{arXiv:2212.08073}, 2022.
+
+\bibitem{cai_collective_2025}
+Anthropic. Collective Constitutional AI: Aligning a Language Model with Public Input. \textit{Anthropic Research}, 2025.
+
+\bibitem{c3ai_2026}
+C$^3$AI: Crafting Constitutions for Constitutional AI. \textit{arXiv}, 2026.
+
+\bibitem{hendrycks_2021}
+Hendrycks, D. et al. Unsolved Problems in ML Safety. \textit{arXiv:2109.13916}, 2021.
+
+\bibitem{carlini_2023}
+Carlini, N. et al. Poisoning Web-Scale Training Datasets is Practical. \textit{arXiv:2302.10149}, 2023.
+
+\bibitem{wallace_2021}
+Wallace, E. et al. Concealed Data Poisoning Attacks on NLP Models. \textit{NAACL}, 2021.
+
+\bibitem{biggio_2013}
+Biggio, B., Nelson, B., \& Laskov, P. Poisoning Attacks against Support Vector Machines. \textit{ICML}, 2013.
+
+\bibitem{steinhardt_2017}
+Steinhardt, J. et al. Certified Defenses for Data Poisoning Attacks. \textit{NeurIPS}, 2017.
+
+\bibitem{geiping_2021}
+Geiping, J. et al. Witches' Brew: Industrial Scale Data Poisoning via Gradient Matching. \textit{ICLR}, 2021.
+
+\bibitem{shumailov_2024}
+Shumailov, I. et al. AI Models Collapse When Trained on Recursively Generated Data. \textit{Nature}, 2024.
+
+\bibitem{solaiman_2023}
+Solaiman, I. et al. Evaluating the Social Impact of Generative AI Systems in Systems and Society. \textit{arXiv:2306.05949}, 2023.
+
+\bibitem{bommasani_2021}
+Bommasani, R. et al. On the Opportunities and Risks of Foundation Models. \textit{arXiv:2108.07258}, 2021.
+
+\bibitem{ouyang_2022}
+Ouyang, L. et al. Training Language Models to Follow Instructions with Human Feedback. \textit{NeurIPS}, 2022.
+
+\bibitem{goldblum_2022}
+Goldblum, M. et al. Dataset Security for Machine Learning. \textit{arXiv:2210.06710}, 2022.
+
+\bibitem{kim_2024}
+Kim, T. et al. Public Constitutional AI: A Community-Driven Approach to AI Governance. \textit{arXiv:2406.16696}, 2024.
+
+\bibitem{bender_2021}
+Bender, E.M. et al. On the Dangers of Stochastic Parrots: Can Language Models Be Too Big? \textit{FAccT}, 2021.
+
+\bibitem{eu_ai_act}
+European Commission. EU AI Act: Regulation (EU) 2024/1689. \textit{Official Journal of the European Union}, 2024.
+
+\bibitem{benford}
+Benford, F. The Law of Anomalous Numbers. \textit{Proceedings of the American Philosophical Society}, 78(4):551--572, 1938.
+
+\bibitem{popper}
+Popper, K. \textit{Conjectures and Refutations: The Growth of Scientific Knowledge}. Routledge, 1963.
+
+\bibitem{dewey}
+Dewey, J. \textit{The Quest for Certainty: A Study of the Relation of Knowledge and Action}. Minton, Balch \& Company, 1929.
+
+\bibitem{kant}
+Kant, I. \textit{Critique of Pure Reason}. (Trans. Guyer, P. \& Wood, A.W.) Cambridge University Press, 1998.
+
+\bibitem{wang_yangming}
+Wang, Y. \textit{Instructions for Practical Living (Chuanxilu)}. (Trans. Chan, W.T.) Columbia University Press, 1963.
+
+\bibitem{guizhizi}
+Guiguzi. \textit{The Art of Persuasion (Guiguzi)}. (Trans. Wu, H.) Warring States Period, ca. 4th century BCE.
+
+\bibitem{huimai_failure_memory_2026}
+HuiMai Research. Failure Memory Layer: Cross-Node Calibration Through Collective Inoculation.
+\textit{SharpAgent Technical Report}, June 2026.
+
+\bibitem{huimai_onchain_2026}
+HuiMai Research. Three-Chain Audit Architecture: FISCO BCOS + IPFS + Arbitrum L2 for
+Immutable Detection Logging. \textit{SharpAgent Technical Report}, June 2026.
+
+\bibitem{huimai_benchmark_2026}
+HuiMai Research. Medical AI Knowledge Base Benchmark: From 13\% to 76.7\% Hit Rate
+Through Pipeline Optimization and Calibration Framework. \textit{SharpAgent Technical Report}, June 2026.
+
+\end{thebibliography}
+
+\end{document}

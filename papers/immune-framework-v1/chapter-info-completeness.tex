@@ -1,0 +1,405 @@
+% ============================================================
+% Chapter: Information Completeness — Embedded Chapter
+% Based on Anti-Hallucination Methodology v1.2 (老王审批 2026-06-17)
+% Insert between §5 (Five-Anchor Audit) and §6 (False Positive Remediation)
+% ============================================================
+
+\section{Information Completeness: A Root Cause of Attribution Hallucination}
+\label{sec:info-completeness}
+
+The detection and audit mechanisms described in Sections~3--5 address threats 
+originating from \textit{external} data manipulation. However, a second class of 
+threat operates through a different mechanism: the model's own inference engine 
+generating plausible but causally incorrect attributions when critical information 
+is missing. This section formalizes the relationship between information gaps and 
+attribution hallucination, presents a dual-perspective correction methodology, and 
+integrates the resulting audit capability into the Five-Anchor framework.
+
+\subsection{Problem Definition: The Info-Gap Hypothesis}
+
+We define \textbf{attribution hallucination} as the phenomenon where a model 
+generates a causal explanation that appears internally consistent but contains 
+at least one link unsupported by verifiable evidence. Our central hypothesis is:
+
+\begin{equation}
+\label{eq:attribution}
+H_{\text{attribution}} \Longleftrightarrow \text{info-gap} \land \text{strong-inference-closure}
+\end{equation}
+
+That is, attribution hallucination occurs exactly when two conditions are 
+simultaneously satisfied: (1) an information gap exists---the model lacks access 
+to facts necessary for sound causal attribution, and (2) the model possesses a 
+strong inference engine that automatically fills the gap with ``plausible'' 
+causal links derived from statistical patterns rather than empirical evidence.
+
+\begin{figure}[ht]
+\centering
+\begin{tabular}{p{0.45\textwidth} p{0.45\textwidth}}
+\toprule
+\textbf{Without Gap} & \textbf{With Gap} \\
+\midrule
+$\text{Event}_A \xrightarrow{\text{Verified}} \text{Event}_B$ 
+& $\text{Event}_A \xrightarrow{\text{Inferred}} \text{Motive}_X \xrightarrow{\text{Inferred}} \text{Event}_B$ \\
+\cmidrule(lr){1-2}
+All causal links independently verifiable 
+& At least one link is a statistical bridge \\
+\cmidrule(lr){1-2}
+Low hallucination risk 
+& High hallucination risk \\
+\bottomrule
+\end{tabular}
+\caption{Info-gap as the structural precondition for attribution hallucination. 
+The right column shows an inferred motive inserted to bridge a causal gap.}
+\label{fig:info-gap}
+\end{figure}
+
+\subsubsection{Causal Link Taxonomy}
+
+For audit purposes, we classify every link in a causal attribution chain into 
+three types:
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{clp{0.5\textwidth}}
+\toprule
+\textbf{Type} & \textbf{Name} & \textbf{Definition} \\
+\midrule
+A & Directly Verifiable & Both endpoints independently confirmable via external sources \\
+B & Partially Verifiable & One endpoint independently confirmable; the other inferred \\
+C & Unverifiable Bridge & Neither endpoint independently confirmable; purely statistical \\
+\bottomrule
+\end{tabular}
+\caption{Causal link classification for attribution audit.}
+\label{tab:link-types}
+\end{table}
+
+\textbf{Trigger Rule:} Any Type~C link in a final attribution triggers 
+\texttt{d2.5\_c\_gap\_trigger}, reducing attribution confidence proportionally 
+to the ratio of Type~C links in the total causal chain.
+
+\subsubsection{A Counter-Intuitive Prediction}
+
+A distinguishing prediction of this framework is that \textbf{stronger models 
+produce more attribution hallucination in info-gap scenarios} (see 
+\S\ref{sec:experiments} for experimental design and predictions):
+
+\begin{enumerate}
+  \item Stronger model $\Rightarrow$ stronger inference engine $\Rightarrow$ faster inference-closure
+  \item With the info-gap held constant, faster closure $\Rightarrow$ more confident but less detectable hallucination
+  \item Weaker models are naturally safer in this dimension: insufficient inference capability prevents gap-filling
+\end{enumerate}
+
+This runs counter to the common assumption that model scaling universally 
+improves reliability, and provides a falsifiable prediction for empirical testing.
+
+\subsection{Methodology: Dual-Perspective Attribution Correction}
+
+We present a five-stage protocol that combines two complementary perspectives: 
+\textit{progressive gap exposure} (identifying where inference has substituted 
+for evidence) and \textit{incentive traceback} (tracing stakeholder incentives 
+to verify or refute inferred causal links).
+
+\subsubsection{Stage 1: Progressive Gap Exposure}
+
+Strong inference engines produce ``closed'' causal narratives where inferential 
+jumps are indistinguishable from evidence-based links. The solution is not to 
+suppress inference, but to systematically expose the gaps through multi-turn 
+open-ended probing:
+
+\begin{enumerate}
+  \item For a given attribution claim $C$, identify all unverified premises 
+        $\{p_1, p_2, \ldots, p_n\}$ that $C$ depends on
+  \item For each premise $p_i$, ask: ``What evidence would falsify this premise?''
+  \item If no falsification condition can be specified, mark the link as Type~C
+  \item Iterate: each exposed gap may reveal sub-gaps at finer granularity
+  \item Terminate when the gap set is empty or all remaining gaps are unqueryable
+\end{enumerate}
+
+This protocol is analogous to counterexample search in interactive proof 
+systems, adapted for the non-automated context of human-AI collaborative 
+attribution.
+
+\subsubsection{Stage 2: Information Source Completion}
+
+Once gaps are identified, the model performs targeted external retrieval for 
+each gap. Unlike generic RAG, which retrieves broadly, this step retrieves 
+specifically to fill identified causal gaps:
+
+\begin{itemize}
+  \item For each gap $g_i$, issue a directed query to external knowledge sources
+  \item Verify that retrieved information directly addresses the identified gap
+  \item Re-classify links after retrieval: Type~C $\rightarrow$ Type~B or Type~A
+\end{itemize}
+
+The principle: hallucination grows in information voids. Models fill 
+empty spaces automatically, and the fill material is ``plausibility'' rather 
+than ``truth.'' The solution is not to suppress inference, but to actively 
+complete the information landscape---once the gaps are filled with evidence, 
+inference no longer needs to bridge them.
+
+\subsubsection{Stage 3: Incentive Chain Traceback}
+
+For attribution claims involving multiple stakeholders, we trace the incentive 
+structure of each stakeholder. The technical approach formalizes two 
+co-isomorphic priors:
+
+\begin{description}
+  \item[Short-Chain Prior (Ockham)] Shorter causal explanations are preferred 
+        over longer ones, all else being equal.
+  \item[Internal-Incentive Prior] Internal incentive explanations are preferred 
+        over external coercion explanations, all else being equal.
+\end{description}
+
+These two priors are structurally isomorphic: both prefer explanations with 
+fewer unobserved intermediaries. The combined rule---the \textbf{Self-Interest 
+Prior}---states: \textit{exhaust internal incentive explanations before 
+invoking external intervention.}
+
+\subsubsection{Stage 4: Self-Interest Prior Convergence}
+
+Given the retrieved information sources $S$ and the stakeholder incentive map 
+$I$, the correction algorithm converges on the most parsimonious explanation:
+
+\begin{enumerate}
+  \item Generate the shortest causal chain consistent with all verified sources $S$
+  \item Identify the most sufficient internal incentive explanation from $I$
+  \item If the internal incentive explanation is sufficient, adopt it
+  \item Otherwise, adopt the shortest-chain explanation
+  \item If neither is sufficient, mark the attribution as \texttt{UNCERTAIN}
+\end{enumerate}
+
+\subsubsection{Stage 5: Attribution Verification}
+
+After correction, verify that the revised attribution chain contains no 
+unacknowledged inference bridges. If any Type~C links remain:
+
+\begin{itemize}
+  \item Mark them explicitly with \texttt{[INFERRED]} tags
+  \item Compute confidence as $1 - (n_C / n_{\text{total}})$, where $n_C$ is the number of Type~C links
+  \item Flag for human review if confidence falls below threshold
+\end{itemize}
+
+\subsubsection{Algorithm}
+
+\begin{small}
+\begin{verbatim}
+function dual_perspective_correction(claim, domain):
+    // Stage 1: Progressive Gap Exposure
+    gaps = open_ended_probe(claim)
+    if gaps.empty() or gaps.all_unqueryable():
+        return {verdict: GAP_BLOCKED}
+
+    // Stage 2: Information Source Completion
+    sources = [external_retrieval(g) for g in gaps]
+
+    // Stage 3: Incentive Chain Traceback
+    stakeholders = identify_stakeholders(domain)
+    incentive_map = {s: compute_incentive(s, claim) for s in stakeholders}
+
+    // Stage 4: Self-Interest Prior Convergence
+    // co-isomorphic: both priors select the most parsimonious explanation
+    short_chain = shortest_causal_explanation(sources)
+    internal = most_sufficient_internal_incentive(incentive_map)
+    
+    correction = internal if internal.sufficient else short_chain
+
+    // Stage 5: Verification
+    if correction == null or correction.depends_on(\"inference_bridge\"):
+        inference_bridges = list_inference_bridges(claim)
+        return {verdict: UNCERTAIN,
+                gaps: gaps,
+                gap_types: classify_gaps(gaps),
+                inference_bridges: inference_bridges,
+                confidence: len(inference_bridges) / total_links(claim)}
+
+    return {verdict: CORRECTED, correction: correction}
+\end{verbatim}
+\end{small}
+
+\subsection{Degradation Spectrum}
+
+The methodology's effectiveness degrades along a spectrum determined by the 
+nature of the information gap:
+
+\begin{center}
+\begin{tabular}{lp{0.55\textwidth}}
+\toprule
+\textbf{Stage} & \textbf{Description} \\
+\midrule
+Fully Queryable & Complete correction possible; all gaps can be exposed and filled \\
+Partially Queryable & Partial correction: gaps can be identified but not all filled; remaining uncertainty is quantified \\
+Unqueryable & Degraded: can only flag global uncertainty without offering alternative attribution \\
+Hidden Gap & Worst case: the info-gap itself is masked by inference closure; methodology fails silently \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The \texttt{GAP\_BLOCKED} return in the algorithm covers the latter two stages. 
+The first two stages are differentiated through the \texttt{UNCERTAIN} return's 
+quantified confidence value and gap-type classification.
+
+\subsection{Comparison with Existing Approaches}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lp{0.35\textwidth}p{0.4\textwidth}}
+\toprule
+\textbf{Approach} & \textbf{Mechanism} & \textbf{Limitation} \\
+\midrule
+RLHF/RLAIF & Preference labeling suppresses undesired outputs & Behavioral constraint; treats symptoms, not causes \\
+RAG & Retrieval fills knowledge gaps & Fills factual gaps only; does not address causal attribution chains \\
+Multi-Agent Voting & Consensus via debate or majority & Shared info-gap $\rightarrow$ shared hallucination is a blind spot \\
+Debate + Human Judge & AI debate with human arbitration & Approaches our method but more adversarial; we prioritize collaborative correction \\
+Herrera (2026) Architecture & Engineering pipeline for hallucination governance & Their identified ``next step'' is our existing architecture \cite{herrera2026} \\
+\midrule
+\textbf{This Work} & Gap exposure + incentive traceback + Self-Interest Prior & \textbf{Cognitive audit}: addresses root cause rather than output behavior \\
+\bottomrule
+\end{tabular}
+\caption{Comparison with existing hallucination mitigation approaches.}
+\label{tab:comparison}
+\end{table}
+
+While each individual component (gap detection, retrieval, incentive modeling) 
+has academic precedent, the integration of all components into a unified 
+cognitive audit architecture is novel. The key differentiator is treating 
+hallucination not as an output quality problem but as a structural consequence of 
+the inference engine operating with incomplete information.
+
+\subsection{Framework Integration}
+
+The methodology integrates into the existing Five-Anchor framework at six 
+specific touchpoints, strengthening the audit capability without adding new 
+anchors or disrupting existing structures:
+
+\subsubsection{D2: Logic Anchor --- Attribution Audit}
+
+\begin{itemize}
+  \item \textbf{d2.4\_info\_gap\_detection}: Add a column to the logic audit 
+        matrix classifying each causal link as Type A/B/C
+  \item \textbf{d2.5\_c\_gap\_trigger}: Any Type~C link triggers automatic 
+        confidence downgrade for the attribution verdict
+\end{itemize}
+
+\subsubsection{L5: Causal Attribution Layer --- New Sub-layers}
+
+\begin{itemize}
+  \item \textbf{L5b\_interest\_chain}: Incentive traceback sub-module that maps 
+        stakeholder incentives for any multi-party attribution claim
+  \item \textbf{L5c\_self\_interest\_prior}: Self-Interest Prior convergence 
+        module that selects the most parsimonious internal-incentive explanation
+\end{itemize}
+
+The updated detection chain structure becomes:
+
+\begin{center}
+\begin{tabular}{l}
+L1: Basic Fact Matching \\
+L2: Semantic Consistency \\
+L3: Logical Closure \\
+L4: Statistical Bias Detection \\
+L5: Causal Attribution Audit \\
+\quad L5a: Surface Causality Check \\
+\quad L5b: Incentive Chain Traceback \hfill \textit{[new]} \\
+\quad L5c: Self-Interest Prior Convergence \hfill \textit{[new]} \\
+L6: Counter-Cognitive-Colonization Audit \\
+\end{tabular}
+\end{center}
+
+\subsubsection{D5: Methodology Anchor --- New Rules}
+
+\begin{itemize}
+  \item \textbf{d5.5\_prior\_rule}: Self-Interest Prior as a cross-anchor 
+        convergence rule---when multiple anchors produce conflicting verdicts 
+        on attribution claims, the prior guides resolution
+  \item \textbf{d5.6\_info\_threshold}: Maximum allowable Type~C link ratio in 
+        any core causal chain, initially set conservatively at $\leq 1$. This 
+        parameter is flagged for dynamic adjustment via FML calibration data
+\end{itemize}
+
+\textbf{Implicit Assumption Correction.} The info-gap hypothesis directly 
+challenges an unstated assumption in the methodology anchor: that sufficiently 
+good methodology can compensate for missing information. Our analysis shows the 
+opposite---stronger methodology accelerates gap-closure, making hallucination 
+more confident and less detectable. Therefore, \texttt{d5.6\_info\_threshold} 
+functions as a brake mechanism rather than an optimization target.
+
+\subsubsection{FML: Failure Memory Layer}
+
+Info-gap patterns are stored in the Failure Memory Layer for future 
+pre-triggering. When a new attribution task matches a stored gap pattern, the 
+system automatically reduces inference speed and increases verification 
+requirements before generating attribution.
+
+\subsubsection{Tier IV: Cross-Cluster Detection}
+
+A new coroutine \texttt{tier4\_info\_gap\_coroutine} detects whether apparent 
+multi-source consensus actually originates from a shared information gap---a 
+pattern where multiple sources independently confirm the same causal narrative 
+because they share the same missing information, not because the narrative is 
+true.
+
+\subsubsection{D6: Language-View Layer}
+
+Attribution audit tags are added to the language-view annotation schema:
+\texttt{[GAP]} for identified information gaps, \texttt{[INFERRED]} for 
+inference-bridge links, and \texttt{[VERIFIED]} for independently confirmed 
+causal links.
+
+\subsection{Experimental Design and Predictions}
+\label{sec:experiments}
+
+The experimental methodology follows directly from the info-gap hypothesis 
+(\S\ref{eq:attribution}): construct a fixed set of info-gap scenarios 
+(missing key stakeholder motivation information), expose multiple models of 
+varying capability (7B/13B/70B/DeepSeek-R1) to identical scenarios, and 
+measure the ratio of Type~C links in causal attributions alongside independent 
+fact-checking accuracy. A control condition uses the same scenarios with 
+info-gaps filled. This design isolates the effect of inference capability on 
+attribution quality independent of scenario difficulty.
+
+The framework generates specific, falsifiable predictions suitable for 
+empirical validation:
+
+\begin{enumerate}
+  \item \textbf{Model Scaling $\times$ Hallucination Rate.} In controlled 
+        info-gap scenarios, larger models will exhibit a higher Type~C link 
+        ratio than smaller models, while simultaneously expressing higher 
+        confidence in their attributions. This creates a ``confidence-hazard 
+        inversion'' where stronger models are more dangerous for attribution 
+        tasks with incomplete information.
+
+  \item \textbf{Gap-Filling Efficacy.} Applying the five-stage protocol will 
+        reduce Type~C link ratios from a baseline (estimated 20--40\% for strong 
+        models in info-gap conditions) to below 5\%, with the majority of 
+        remaining Type~C links classified as Known Unknowns.
+
+  \item \textbf{Self-Interest Prior Accuracy.} In multi-stakeholder scenarios 
+        where ground-truth incentives are independently verifiable, the 
+        Self-Interest Prior will correctly identify the dominant causal factor 
+        in $\geq 80\%$ of cases, outperforming both pure chain-of-thought 
+        reasoning and external-intervention-first heuristics.
+
+  \item \textbf{Shared Info-Gap Detection.} The Tier~IV gap-coroutine will 
+        identify shared info-gap consensus patterns with a false positive rate 
+        below 15\% in controlled multi-source scenarios.
+\end{enumerate}
+
+\subsection{Applicability Boundaries}
+
+The methodology explicitly does not apply to all hallucination types. Its 
+effectiveness is limited to \textbf{attribution hallucination}---cases where the 
+model constructs causal narratives with information gaps. It is not designed for:
+
+\begin{itemize}
+  \item Factual hallucination (missing knowledge): better addressed by retrieval 
+        augmentation and confidence calibration
+  \item Statistical bias hallucination: requires rare-signal amplification methods
+  \item Semantic ambiguity hallucination: requires disambiguation anchoring
+  \item Adversarial injection: requires security-hardening mechanisms
+  \item Value-alignment hallucination: requires broader calibration framework 
+        beyond any single methodology
+\end{itemize}
+
+Within its domain, however, the methodology addresses a failure mode that 
+existing approaches systematically miss: the \textit{invisible} hallucination 
+that appears structurally sound but contains unverifiable causal links.
