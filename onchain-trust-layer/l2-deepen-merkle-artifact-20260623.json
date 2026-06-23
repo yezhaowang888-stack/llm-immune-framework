@@ -1,0 +1,75 @@
+{
+  "chain": "Arbitrum One",
+  "batch_id": "L2-deepen-14-modules",
+  "batch_description": "L2 Core Applications Layer \u2014 14 deepened modules, all tiers closed (T1-T3 + Nursing NANDA-I+NIC)",
+  "timestamp": "2026-06-23T21:05:42+08:00",
+  "merkle_root": "b126b032b0f1dc59821e988d9745eecdd757ea4eede51d6b7faa0a802fb95d4f",
+  "batch_size": 14,
+  "files": [
+    {
+      "name": "09-laboratory-medicine-deepened.md",
+      "sha256": "2c63bb79674243cb670b961621237372590fdd74b49ac0a6a3b5d0ba36c72cab"
+    },
+    {
+      "name": "10-medical-imaging-deepened.md",
+      "sha256": "e64f3da7248ef3dcafa39a7465b9b369e1c9c0c92ca12828af9da31f12bb96aa"
+    },
+    {
+      "name": "11-pharmacology-deepened.md",
+      "sha256": "49a0f300d29702acac5f7f6281fea72db5c91a0780d1a4f94f357acf4529460b"
+    },
+    {
+      "name": "12-biomedical-engineering-deepened.md",
+      "sha256": "066e156459bc24ab41bd660956fe1eae5b46522e914d0813cd4b135ef71571d8"
+    },
+    {
+      "name": "13-toxicology-deepened.md",
+      "sha256": "0717b70ec0cca01837c25d25477fdab7a8d078c1f3e83ce7655c731e33cf9f7b"
+    },
+    {
+      "name": "14-nanda-nursing-deepened.md",
+      "sha256": "95ff667ab93bea863ce9816f0bea309b6e95dcd509648ac8473e31c8e957602d"
+    },
+    {
+      "name": "14-nuclear-medicine-deepened.md",
+      "sha256": "b59686a2817f487bc80091e5d486aec1714f95d1e1a91d98d71308c2a0c0e662"
+    },
+    {
+      "name": "15-health-psychology-deepened.md",
+      "sha256": "44b9bfa47ec6ae05f6c328be9352b7b6b3282418e3d9fc7600593a1a8e2d0a9c"
+    },
+    {
+      "name": "16-sports-medicine-deepened.md",
+      "sha256": "91ecbc193dcebb4d9bec7d037d78190123401589ca1bd4c393a718e7779a1401"
+    },
+    {
+      "name": "17-clinical-nutrition-deepened.md",
+      "sha256": "427b9394265e90797c4960a32b3d658ecfc623d9d445648ce52b25c1c07e2efb"
+    },
+    {
+      "name": "18-pathology-deepened.md",
+      "sha256": "6cc19a63cb0ae9e8d439470c83818e0b11f087a9479cb65e54f69837a5ad9694"
+    },
+    {
+      "name": "20-radiation-oncology-deepened.md",
+      "sha256": "343826ad9208f3816fa482c9a3ae67b9d4b28d373d9c46dd85f4ba78a14e7d69"
+    },
+    {
+      "name": "21-medical-gas-deepened.md",
+      "sha256": "8bd03cf5c612a3ee56ad57b8bce83b6d2706939ff96cb810618d423c09c6fde6"
+    },
+    {
+      "name": "22-ai-in-medicine-deepened.md",
+      "sha256": "8be952ca035303ecd3e61cbd77f3ef1a22b64401466dfd9f431554b5fd3a2ec0"
+    }
+  ],
+  "contract_address": "0x79116d6C94b1684AFce3d88a85b4ECEB198b3bcD",
+  "contract_function": "submitMerkleRoot(bytes32,uint256,uint256)",
+  "previous_batch_merkle_root": "0x42dd4adf0a1709a0242b59b15feac8845a4fbda090a0809c3399d86e32b5c506",
+  "committer": "cn001",
+  "txHash": "0x86fcb5a39c9cb8c623ee24c656e013757b9768e9db1329443a485860df2d072d",
+  "blockNumber": 476512826,
+  "batchId": 3,
+  "arbiscanUrl": "https://arbiscan.io/tx/0x86fcb5a39c9cb8c623ee24c656e013757b9768e9db1329443a485860df2d072d",
+  "status": "success"
+}
