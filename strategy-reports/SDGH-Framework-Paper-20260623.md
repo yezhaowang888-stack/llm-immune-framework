@@ -195,6 +195,26 @@ The SDGH framework demonstrates that medical AI can be simultaneously powerful, 
 
 ---
 
+## References
+
+1. Singhal, K., Azizi, S., Tu, T., et al. (2023). Large Language Models Encode Clinical Knowledge. *Nature*, 620(7972), 172-180. DOI: 10.1038/s41586-023-06291-2
+
+2. Nori, H., King, N., McKinney, S. M., Carignan, D., & Horvitz, E. (2023). Capabilities of GPT-4 on Medical Challenge Problems. *arXiv preprint*, arXiv:2303.13375.
+
+3. Singhal, K., Tu, T., Gottweis, J., et al. (2023). Towards Expert-Level Medical Question Answering with Large Language Models. *arXiv preprint*, arXiv:2305.09617.
+
+4. Lee, P., Bubeck, S., & Petro, J. (2023). Benefits, Limits, and Risks of GPT-4 as an AI Chatbot for Medicine. *New England Journal of Medicine*, 388(13), 1233-1239. DOI: 10.1056/NEJMsr2214184
+
+5. Kung, T. H., Cheatham, M., Medenilla, A., et al. (2023). Performance of ChatGPT on USMLE: Potential for AI-Assisted Medical Education Using Large Language Models. *PLOS Digital Health*, 2(2), e0000198.
+
+6. Wang, Y. & SharpAgent Research Team. (2026). An Immunization Framework for LLM-Based Multi-Agent Systems: Self-Calibration, Input Sanitization, and Hallucination Defense. *Zenodo*. DOI: 10.5281/zenodo.14654321
+
+7. Nakamoto, S. (2008). Bitcoin: A Peer-to-Peer Electronic Cash System. *White Paper*.
+
+8. Wood, G. (2014). Ethereum: A Secure Decentralised Generalised Transaction Ledger. *Ethereum Project Yellow Paper*.
+
+9. Wang, Y. & SharpAgent Research Team. (2026). Knowledge-Base-Driven Explainable AI Diagnosis with On-Chain Auditability: The SDGH Framework. *Zenodo*. https://zenodo.org/records/20815219
+
 ## Data Availability
 
 The SDGH knowledge base structure (module framework and public-domain content) is available upon reasonable request. On-chain evidence is publicly accessible through Arbiscan at the transaction hashes listed in Section 5. The full knowledge base contains proprietary content and is not publicly released.
